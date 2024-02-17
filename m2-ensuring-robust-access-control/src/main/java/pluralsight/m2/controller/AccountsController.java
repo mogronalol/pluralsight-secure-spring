@@ -16,17 +16,18 @@ public class AccountsController {
         this.accountRepository = accountRepository;
     }
 
-    @GetMapping("/accounts")
-    public void accounts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    @GetMapping("/my-accounts")
+    public String accounts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         model.addAttribute("accounts", accountRepository.getAccountForUser(userDetails.getUsername()));
         model.addAttribute("username", userDetails.getUsername());
+        return "my-accounts";
     }
 
-    @GetMapping("/accounts/{accountId}/transactions")
+    @GetMapping("/accounts/{accountIndex}/transactions")
     public String transactions(@AuthenticationPrincipal final UserDetails userDetails,
                                final Model model,
-                               @PathVariable("accountId") int accountId) {
-        model.addAttribute("account", accountRepository.getAccountForUser(userDetails.getUsername()).get(accountId));
+                               @PathVariable("accountIndex") int accountIndex) {
+        model.addAttribute("account", accountRepository.getAccountForUser(userDetails.getUsername()).get(accountIndex));
         model.addAttribute("username", userDetails.getUsername());
         return "transactions";
     }

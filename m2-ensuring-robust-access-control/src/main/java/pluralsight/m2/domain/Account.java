@@ -1,10 +1,24 @@
 package pluralsight.m2.domain;
 
-import java.util.List;
+import lombok.Builder;
+import lombok.Data;
 
-public record Account(String accountCode, int index, String userName, String displayName, double balance, List<Transaction> transactions) {
+import java.math.BigDecimal;
+import java.util.TreeSet;
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+@Data
+@Builder
+public final class Account {
+    private final String username;
+    private final String accountCode;
+    private final int index;
+    private final String displayName;
+    @Builder.Default private final TreeSet<Transaction> transactions = new TreeSet<>();
+
+    public BigDecimal getBalance() {
+        return transactions.stream()
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
 }

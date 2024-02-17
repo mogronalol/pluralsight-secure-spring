@@ -6,6 +6,10 @@
 
     <artifactId>m2-ensuring-robust-access-control</artifactId>
 
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+    </properties>
+
     <parent>
         <groupId>com.pluralsight</groupId>
         <artifactId>spring-framework-secure-coding</artifactId>

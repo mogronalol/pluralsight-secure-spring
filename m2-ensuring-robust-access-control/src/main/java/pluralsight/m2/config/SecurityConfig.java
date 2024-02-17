@@ -9,11 +9,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import pluralsight.m2.repository.TestAccountDataFactory;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static pluralsight.m2.repository.AccountRepository.USERNAMES;
 
 @Configuration
 @EnableWebSecurity
@@ -38,7 +37,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(Stream.of(USERNAMES)
+        return new InMemoryUserDetailsManager(Stream.of(TestAccountDataFactory.USERNAMES)
                 .map(u -> User.withDefaultPasswordEncoder()
                         .username(u)
                         .password("password")

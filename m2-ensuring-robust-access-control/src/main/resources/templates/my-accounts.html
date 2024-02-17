@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base.html}">
+<head>
+    <title>Accounts</title>
+</head>
+<body>
+<main role="main" class="container mt-4" layout:fragment="content">
+    <div class="card">
+        <div class="card-header">
+            Your Accounts
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Display Name</th>
+                    <th>Account Number</th>
+                    <th>Balance</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="account : ${accounts}">
+                    <td th:text="${account.displayName}">Account Type</td>
+                    <td th:text="${account.accountCode}">Account Number</td>
+                    <td th:text="${#numbers.formatDecimal(account.balance, 2, 2)}">$0.00</td>
+                    <td>
+                        <a th:href="@{/accounts/{accountId}/transactions(accountId=${account.index})}" class="btn btn-primary btn-sm">View Transactions</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+</body>
+</html>
