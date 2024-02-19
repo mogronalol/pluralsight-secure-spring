@@ -1,5 +1,6 @@
-package pluralsight.m2.controller;
+package pluralsight.m2.controller.mvc;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +30,7 @@ public class AdminController {
     }
 
     @GetMapping("/accounts/{accountCode}")
+    @PreAuthorize("hasPermission(#accountCode, 'ACCOUNT', 'VIEW')")
     public String transactions(final Model model,
                                @PathVariable("accountCode") String accountCode) {
         model.addAttribute("account", accountsService.getAccountByCode(accountCode));
@@ -42,10 +44,12 @@ public class AdminController {
     }
 
     @PostMapping("/transfer")
+//    @PreAuthorize("hasAuthority('ADMIN_TRANSFERS') and (#transfer.amount <= 1000 or hasAuthority('LARGE_TRANSFERS') and #transfer.amount > 10000)")
+    @PreAuthorize("hasPermission(#transfer, 'TRANSFER')")
     public String processTransfer(@ModelAttribute TransferModel transfer,
                                   final RedirectAttributes redirectAttributes) {
 
-        accountsService.transfer(transfer.getFromAccountCode(), transfer.getToAccountCode(), transfer.getAmount());
+        accountsService.transfer(transfer);
         redirectAttributes.addFlashAttribute("completed", transfer);
         return "redirect:/admin/transfer";
     }

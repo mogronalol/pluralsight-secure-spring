@@ -1,4 +1,4 @@
-package pluralsight.m2.controller;
+package pluralsight.m2.controller.mvc;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;

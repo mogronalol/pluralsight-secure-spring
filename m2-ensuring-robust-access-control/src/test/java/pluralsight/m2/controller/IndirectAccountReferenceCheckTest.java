@@ -10,14 +10,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pluralsight.m2.domain.Account;
 import pluralsight.m2.repository.AccountRepository;
-import pluralsight.m2.repository.TestAccountDataFactory;
+import pluralsight.m2.repository.TestDataFactory;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class AccountsControllerTest {
+public class IndirectAccountReferenceCheckTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -35,31 +35,15 @@ public class AccountsControllerTest {
 
         accountRepository.deleteAll();
 
-        user1Account1 = TestAccountDataFactory.generateAccount("user-1", 0);
-        user1Account2 = TestAccountDataFactory.generateAccount("user-1", 1);
-        user2Account1 = TestAccountDataFactory.generateAccount("user-2", 0);
-        user2Account2 = TestAccountDataFactory.generateAccount("user-2", 1);
+        user1Account1 = TestDataFactory.generateAccount("user-1", 0);
+        user1Account2 = TestDataFactory.generateAccount("user-1", 1);
+        user2Account1 = TestDataFactory.generateAccount("user-2", 0);
+        user2Account2 = TestDataFactory.generateAccount("user-2", 1);
 
         accountRepository.save(user1Account1);
         accountRepository.save(user1Account2);
         accountRepository.save(user2Account1);
         accountRepository.save(user2Account2);
-    }
-
-    @Test
-    public void redirectToLoginPageWhenViewingAccountsWithoutLogin() throws Exception {
-
-        mockMvc.perform(get("/accounts"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(header().stringValues("Location", "http://localhost/login"));
-    }
-
-    @Test
-    public void redirectToLoginPageWhenViewingAnyPageWithoutLogin() throws Exception {
-
-        mockMvc.perform(get("/accounts"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(header().stringValues("Location", "http://localhost/login"));
     }
 
     @Test

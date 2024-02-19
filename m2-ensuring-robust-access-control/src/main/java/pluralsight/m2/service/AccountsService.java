@@ -1,37 +1,42 @@
 package pluralsight.m2.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import pluralsight.m2.domain.Account;
 import pluralsight.m2.domain.Transaction;
+import pluralsight.m2.model.TransferModel;
 import pluralsight.m2.repository.AccountRepository;
+import pluralsight.m2.repository.FraudRepository;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
 public class AccountsService {
     private final AccountRepository accountRepository;
+    private final FraudRepository fraudRepository;
 
-    public AccountsService(AccountRepository accountRepository) {
+    public AccountsService(AccountRepository accountRepository, FraudRepository fraudRepository) {
         this.accountRepository = accountRepository;
+        this.fraudRepository = fraudRepository;
     }
 
-    public void transfer(final String fromAccountCode, final String toAccountCode, final BigDecimal amount){
-        final Account from = accountRepository.getAccountByCode(fromAccountCode);
+    @PreAuthorize("hasPermission(#transfer, 'TRANSFER')")
+    public void transfer(final TransferModel transfer){
+        final Account from = accountRepository.getAccountByCode(transfer.getFromAccountCode());
         from.getTransactions().add(Transaction.builder()
-                        .description("Transfer to " + toAccountCode)
+                        .description("Transfer to " + transfer.getToAccountCode())
                         .id(from.getTransactions().size())
                         .date(LocalDateTime.now())
-                        .amount(amount.negate())
+                        .amount(transfer.getAmount().negate())
                 .build());
 
-        final Account to = accountRepository.getAccountByCode(toAccountCode);
+        final Account to = accountRepository.getAccountByCode(transfer.getToAccountCode());
         to.getTransactions().add(Transaction.builder()
-                .description("Transfer from " + toAccountCode)
+                .description("Transfer from " + transfer.getToAccountCode())
                 .id(from.getTransactions().size())
                 .date(LocalDateTime.now())
-                .amount(amount)
+                .amount(transfer.getAmount())
                 .build());
     }
 
@@ -39,7 +44,12 @@ public class AccountsService {
         return accountRepository.findAllAccounts();
     }
 
+    @PreAuthorize("hasPermission(#accountCode, 'ACCOUNT', 'VIEW')")
     public Account getAccountByCode(final String accountCode) {
         return accountRepository.getAccountByCode(accountCode);
+    }
+
+    public boolean isFraudSuspectedAccount(final String accountCode) {
+        return fraudRepository.isFraudSuspected(accountCode);
     }
 }

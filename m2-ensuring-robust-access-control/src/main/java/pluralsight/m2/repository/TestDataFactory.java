@@ -1,6 +1,8 @@
 package pluralsight.m2.repository;
 
 import jakarta.annotation.PostConstruct;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pluralsight.m2.domain.Account;
 import pluralsight.m2.domain.AccountType;
@@ -8,15 +10,15 @@ import pluralsight.m2.domain.Transaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toCollection;
 
 @Component
-public class TestAccountDataFactory {
+public class TestDataFactory {
     public static final String[] POSSIBLE_DESCRIPTIONS = {
             "Grocery Store Purchase",
             "Online Shopping",
@@ -30,18 +32,30 @@ public class TestAccountDataFactory {
             "Insurance Premium"
     };
 
-    public static final String[] USERNAMES = {
-            "admin",
-            "tom",
-            "jane"
-    };
+    public static final List<UserDetails> USERS = List.of(
+            createUser("tom", "password", "CUSTOMER"),
+            createUser("jane", "password", "CUSTOMER"),
+            createUser("jack", "password", "CUSTOMER_SERVICE", "ADMIN_TRANSFERS"),
+            createUser("jill", "password", "CUSTOMER_SERVICE_MANAGER", "ADMIN_TRANSFERS", "LARGE_TRANSFERS"),
+            createUser("bob", "password", "RISK_ANALYST")
+    );
 
     public static final Random RANDOM = new Random(1);
 
     private final AccountRepository accountRepository;
 
-    public TestAccountDataFactory(final AccountRepository accountRepository) {
+    public TestDataFactory(final AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
+    }
+
+    private static UserDetails createUser(String username, String password, String roles, String... authorities) {
+        // Note: User.withDefaultPasswordEncoder() is deprecated and should only be used for demonstration purposes
+        return User.withDefaultPasswordEncoder()
+                .username(username)
+                .password(password)
+                .roles(roles)
+                .authorities(authorities)
+                .build();
     }
 
     public static Account generateAccount(final String username, final int accountIndex) {
@@ -65,7 +79,7 @@ public class TestAccountDataFactory {
                 .accountCode(generateAccountCode())
                 .index(accountIndex)
                 .username(username)
-                .displayName( accountTypes[randomIndex].getDisplayName() + " " + (accountIndex + 1))
+                .displayName(accountTypes[randomIndex].getDisplayName() + " " + (accountIndex + 1))
                 .transactions(transactions)
                 .build();
     }
@@ -83,14 +97,15 @@ public class TestAccountDataFactory {
 
     @PostConstruct
     public void generateAccounts() {
-        Stream.of(USERNAMES)
-                .filter(u -> !u.equals("admin"))
-                .flatMap(username -> {
-                    final int numberOfAccounts = RANDOM.nextInt(6) + 2;
+        saveAccount("tom");
+        saveAccount("jane");
+    }
 
-                    return IntStream.range(0, numberOfAccounts)
-                            .mapToObj(i -> generateAccount(username, i));
-                })
+    private void saveAccount(final String username) {
+        final int numberOfAccounts = RANDOM.nextInt(6) + 2;
+
+        IntStream.range(0, numberOfAccounts)
+                .mapToObj(i -> generateAccount(username, i))
                 .forEach(accountRepository::save);
     }
 }
