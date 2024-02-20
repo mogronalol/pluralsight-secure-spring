@@ -1,15 +1,26 @@
 package pluralsight.m2.controller.mvc;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import pluralsight.m2.security.Roles;
+
+import java.util.Set;
 
 @Controller
 public class HomeController {
 
     @GetMapping("/")
     public String redirectRootToAccounts(@AuthenticationPrincipal final UserDetails userDetails) {
-        return "redirect:/" + (userDetails.getUsername().equals("admin") ? "admin/accounts" : "my-accounts");
+
+        final Set<String> admins = Set.of(Roles.CUSTOMER_SERVICE_MANAGER.grantedAuthorityName(), Roles.CUSTOMER_SERVICE.grantedAuthorityName());
+
+        if (userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(admins::contains)) {
+            return "redirect:/admin/accounts";
+        }
+
+        return "redirect:/my-accounts";
     }
 }

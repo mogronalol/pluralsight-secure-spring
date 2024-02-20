@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import pluralsight.m2.domain.Account;
 import pluralsight.m2.domain.AccountType;
 import pluralsight.m2.domain.Transaction;
+import pluralsight.m2.security.Roles;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,11 +34,11 @@ public class TestDataFactory {
     };
 
     public static final List<UserDetails> USERS = List.of(
-            createUser("tom", "password", "CUSTOMER"),
-            createUser("jane", "password", "CUSTOMER"),
-            createUser("jack", "password", "CUSTOMER_SERVICE", "ADMIN_TRANSFERS"),
-            createUser("jill", "password", "CUSTOMER_SERVICE_MANAGER", "ADMIN_TRANSFERS", "LARGE_TRANSFERS"),
-            createUser("bob", "password", "RISK_ANALYST")
+            createUser("tom", Roles.CUSTOMER),
+            createUser("jane", Roles.CUSTOMER),
+            createUser("jack", Roles.CUSTOMER_SERVICE),
+            createUser("jill", Roles.CUSTOMER_SERVICE_MANAGER),
+            createUser("bob", Roles.FRAUD_ANALYST)
     );
 
     public static final Random RANDOM = new Random(1);
@@ -48,13 +49,13 @@ public class TestDataFactory {
         this.accountRepository = accountRepository;
     }
 
-    private static UserDetails createUser(String username, String password, String roles, String... authorities) {
+    private static UserDetails createUser(String username, Roles role) {
         // Note: User.withDefaultPasswordEncoder() is deprecated and should only be used for demonstration purposes
         return User.withDefaultPasswordEncoder()
                 .username(username)
-                .password(password)
-                .roles(roles)
-                .authorities(authorities)
+                .password("password")
+                .roles(role.name())
+                .authorities(role.getGrantedAuthorities())
                 .build();
     }
 
