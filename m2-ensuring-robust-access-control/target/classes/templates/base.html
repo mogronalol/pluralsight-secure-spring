@@ -11,29 +11,30 @@
         <div class="navbar-brand py-0">
             <img src="/images/logo.png" alt="" class="img-fluid" style="max-height: 50px;">
         </div>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav me-auto">
-                <li th:if="${!#authentication.name.equals('admin')}" class="nav-item">
+                <li th:if="${!#authorization.expression('hasRole(''CUSTOMER_SERVICE'') or hasRole(''CUSTOMER_SERVICE_MANAGER'')')}" class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/my-accounts">My Accounts</a>
                 </li>
-                <li th:if="${#authentication.name.equals('admin')}" class="nav-item">
+                <li th:if="${#authorization.expression('hasRole(''CUSTOMER_SERVICE'') or hasRole(''CUSTOMER_SERVICE_MANAGER'')')}" class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/admin/accounts">Accounts</a>
-                </li>
-                <li th:if="${#authentication.name.equals('admin')}" class="nav-item">
+                <li th:if="${#authorization.expression('hasRole(''customer_service'') or hasRole(''CUSTOMER_SERVICE_MANAGER'')')}" class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/admin/transfer">Transfers</a>
                 </li>
             </ul>
             <div class="dropdown">
-                <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                   aria-expanded="false">
                     <span th:text="${#authentication.name}">Username</span>
                 </a>
                 <ul class="dropdown-menu text-small">
                     <li>
                         <form action="/logout" method="post">
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
                             <button type="submit" class="dropdown-item">Sign out</button>
                         </form>
                     </li>
