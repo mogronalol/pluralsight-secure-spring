@@ -6,15 +6,13 @@
 
     <artifactId>m2-ensuring-robust-access-control</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>m2-demo-1-deny-by-default</module>
         <module>m2-demo-2-indirect-object-references</module>
         <module>m2-demo-3-role-based-access</module>
+        <module>m2-demo-4-permission-based-access</module>
     </modules>
-
-    <properties>
-        <maven.compiler.release>21</maven.compiler.release>
-    </properties>
 
     <parent>
         <groupId>com.pluralsight</groupId>
