@@ -32,7 +32,7 @@ public class BankingPermissionEvaluator implements PermissionEvaluator {
 
 
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Permissions permission) {
-        if (permission.equals(Permissions.TRANSFER) &&
+        if (permission.equals(Permissions.EXECUTE) &&
                 targetDomainObject instanceof final TransferModel transferModel &&
                 hasAuthority(authentication, Authorities.TRANSFERS)) {
 

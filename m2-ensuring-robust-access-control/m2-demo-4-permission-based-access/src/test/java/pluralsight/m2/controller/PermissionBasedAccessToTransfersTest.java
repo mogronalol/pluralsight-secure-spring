@@ -76,13 +76,13 @@ public class PermissionBasedAccessToTransfersTest {
 
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER, Roles.CUSTOMER_SERVICE})
+    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER})
     public void largeTransfersCanOnlyBeDoneByCustomerServiceManagers(final Roles role, final boolean permitted) throws Exception {
 
         final ResultActions perform = mockMvc.perform(post("/admin/transfer")
                 .param("fromAccountCode", account1.getAccountCode())
                 .param("toAccountCode", account2.getAccountCode())
-                .param("amount", "100")
+                .param("amount", "1000")
                 .with(user("user").roles(role.name()).authorities(role.getGrantedAuthorities()))
                 .with(csrf()));
 

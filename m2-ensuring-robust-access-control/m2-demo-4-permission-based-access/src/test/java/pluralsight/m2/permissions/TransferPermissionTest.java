@@ -71,7 +71,7 @@ public class TransferPermissionTest {
 
     private DynamicTest verifyTransferPermission(final TestTransferParams p, final boolean permitted) {
         return DynamicTest.dynamicTest(p.toString() + ", permitted=" + permitted, () -> {
-            final boolean hasPermission = bankingPermissionEvaluator.hasPermission(createAuthenticationWithAuthorities(p.authorities()), new TransferModel("from", "to", p.transferSize()), Permissions.TRANSFER);
+            final boolean hasPermission = bankingPermissionEvaluator.hasPermission(createAuthenticationWithAuthorities(p.authorities()), new TransferModel("from", "to", p.transferSize()), Permissions.EXECUTE);
             assertThat(hasPermission).isEqualTo(permitted);
         });
     }
