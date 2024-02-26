@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,7 +31,7 @@ public class DenyByDefaultTest {
     @Test
     public void redirectToLoginPageWhenViewingAnyPageWithoutLogin() throws Exception {
 
-        mockMvc.perform(get("/accounts"))
+        mockMvc.perform(get(UUID.randomUUID().toString()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().stringValues("Location", "http://localhost/login"));
     }

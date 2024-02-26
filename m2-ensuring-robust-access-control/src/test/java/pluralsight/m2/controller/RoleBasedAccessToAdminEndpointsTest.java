@@ -8,8 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import pluralsight.m2.security.Roles;
-import pluralsight.m2.util.AllowedRoles;
-import pluralsight.m2.util.RoleBasedArgumentsProvider;
+import pluralsight.m2.controller.util.AllowedRoles;
+import pluralsight.m2.controller.util.RoleBasedArgumentsProvider;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

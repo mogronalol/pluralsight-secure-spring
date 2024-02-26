@@ -32,7 +32,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers("/images/**").permitAll()
+                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
                                 .requestMatchers("/admin/**").hasAnyRole(Roles.CUSTOMER_SERVICE.name(), Roles.CUSTOMER_SERVICE_MANAGER.name())
                                 .requestMatchers("/api/**").hasAnyRole(Roles.FRAUD_ANALYST.name())
                                 .requestMatchers("/").hasAnyRole(Arrays.stream(Roles.values()).map(Enum::name).toArray(String[]::new))

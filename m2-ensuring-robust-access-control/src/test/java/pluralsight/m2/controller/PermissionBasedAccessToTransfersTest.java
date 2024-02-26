@@ -14,8 +14,8 @@ import pluralsight.m2.domain.Account;
 import pluralsight.m2.repository.AccountRepository;
 import pluralsight.m2.repository.TestDataFactory;
 import pluralsight.m2.security.Roles;
-import pluralsight.m2.util.AllowedRoles;
-import pluralsight.m2.util.RoleBasedArgumentsProvider;
+import pluralsight.m2.controller.util.AllowedRoles;
+import pluralsight.m2.controller.util.RoleBasedArgumentsProvider;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
