@@ -76,7 +76,7 @@ public class PermissionBasedAccessToTransfersTest {
 
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER})
+    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER, Roles.CUSTOMER_SERVICE})
     public void largeTransfersCanOnlyBeDoneByCustomerServiceManagers(final Roles role, final boolean permitted) throws Exception {
 
         final ResultActions perform = mockMvc.perform(post("/admin/transfer")

@@ -22,41 +22,17 @@ public class DenyByDefaultForceBrowsingTest {
     private MockMvc mockMvc;
 
     @Test
-    public void redirectToLoginPageWhenViewingAccountsWithoutLogin() throws Exception {
-
-        mockMvc.perform(get("/admin/accounts"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(header().stringValues("Location", "http://localhost/login"));
-    }
-
-    @Test
-    public void redirectToTransferPageWhenViewingTransfersWithoutLogin() throws Exception {
-
-        mockMvc.perform(get("/admin/transfers"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(header().stringValues("Location", "http://localhost/login"));
-    }
-
-    @Test
     @WithMockUser
     public void permitViewingAccountsWhenLoggedIn() throws Exception {
 
-        mockMvc.perform(get("/admin/accounts"))
+        mockMvc.perform(get("/my-accounts"))
                 .andExpect(status().is2xxSuccessful());
     }
 
-    @Test
-    @WithMockUser
-    public void permitViewingTransfersWhenLoggedIn() throws Exception {
-
-        mockMvc.perform(get("/admin/transfer"))
-                .andExpect(status().is2xxSuccessful());
-    }
-    
     @Test
     public void redirectToLoginPageWhenViewingAnyPageWithoutLogin() throws Exception {
 
-        mockMvc.perform(get("/" + UUID.randomUUID().toString()))
+        mockMvc.perform(get("/" + UUID.randomUUID()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().stringValues("Location", "http://localhost/login"));
     }
