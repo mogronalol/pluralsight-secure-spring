@@ -2,83 +2,79 @@ package pluralsight.m2.permissions;
 
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import pluralsight.m2.model.TransferModel;
 import pluralsight.m2.security.Authorities;
 import pluralsight.m2.security.BankingPermissionEvaluator;
 import pluralsight.m2.security.Permissions;
-import pluralsight.m2.service.AccountsService;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static pluralsight.m2.permissions.TestUtils.allAuthoritiesExcluding;
-import static pluralsight.m2.permissions.TestUtils.createAuthenticationWithAuthorities;
 
-@ExtendWith(MockitoExtension.class)
 public class TransferPermissionTest {
 
-    @Mock
-    private AccountsService accountsService;
-
-    @InjectMocks
-    private BankingPermissionEvaluator bankingPermissionEvaluator;
-
-
+    private final BankingPermissionEvaluator bankingPermissionEvaluator = new BankingPermissionEvaluator();
 
     @TestFactory
     Stream<DynamicTest> generateTransferPermissionTests() {
 
-        final List<TestTransferParams> permitted = List.of(
-                // Permitted if less than 1000 and has transfer authority
-                new TestTransferParams(new BigDecimal("1"), Authorities.TRANSFERS),
-                new TestTransferParams(new BigDecimal("999.99"), Authorities.TRANSFERS),
-                // Permitted for any amount if has large transfer authority
-                new TestTransferParams(new BigDecimal("1"), Authorities.TRANSFERS, Authorities.LARGE_TRANSFERS),
-                new TestTransferParams(new BigDecimal("999.99"), Authorities.TRANSFERS, Authorities.LARGE_TRANSFERS),
-                new TestTransferParams(new BigDecimal("1000"), Authorities.TRANSFERS, Authorities.LARGE_TRANSFERS),
-                new TestTransferParams(new BigDecimal("1001"), Authorities.TRANSFERS, Authorities.LARGE_TRANSFERS),
-                new TestTransferParams(new BigDecimal("100000"), Authorities.TRANSFERS, Authorities.LARGE_TRANSFERS)
-        );
+        final List<Authorities> lowTransferAuthorities = List.of(Authorities.TRANSFERS);
+        final List<Authorities> highTransferAuthorities = List.of(Authorities.TRANSFERS, Authorities.LARGE_TRANSFERS);
+        final Set<Authorities> doesNotGrantTransfer = allAuthoritiesExcluding(Authorities.TRANSFERS);
+        final List<String> lowTransfer = List.of("1", "500", "999.99");
+        final List<String> highTransfer = List.of("1000", "1000000");
 
-        final Authorities[] allNotPermittedAuthorities = allAuthoritiesExcluding(Authorities.TRANSFERS, Authorities.LARGE_TRANSFERS);
+        List<DynamicTest> dynamicTests = new ArrayList<>();
 
-        final List<TestTransferParams> notPermitted = List.of(
-                // Not permitted if 1000 or higher and only has transfer permission
-                new TestTransferParams(new BigDecimal("1000"), Authorities.TRANSFERS),
-                new TestTransferParams(new BigDecimal("1001"), Authorities.TRANSFERS),
-                new TestTransferParams(new BigDecimal("100000"), Authorities.TRANSFERS),
-                // Not permitted for any authority which is not TRANSFER or LARGE_TRANSFER
-                new TestTransferParams(new BigDecimal("1"), allNotPermittedAuthorities),
-                new TestTransferParams(new BigDecimal("999.99"), allNotPermittedAuthorities),
-                new TestTransferParams(new BigDecimal("1000"), allNotPermittedAuthorities),
-                new TestTransferParams(new BigDecimal("1001"), allNotPermittedAuthorities),
-                new TestTransferParams(new BigDecimal("100000"), allNotPermittedAuthorities)
-        );
+        for (String amount : lowTransfer) {
+            dynamicTests.add(verifyTransferPermission(new BigDecimal(amount), lowTransferAuthorities, true));
+            dynamicTests.add(verifyTransferPermission(new BigDecimal(amount), highTransferAuthorities, true));
+            for (Authorities authorities : doesNotGrantTransfer) {
+                dynamicTests.add(verifyTransferPermission(new BigDecimal(amount), List.of(authorities), false));
+            }
+        }
 
-        return Stream.concat(
-                permitted.stream()
-                        .map(p -> verifyTransferPermission(p, true)),
-                notPermitted.stream()
-                        .map(p -> verifyTransferPermission(p, false))
-        );
+        for (String amount : highTransfer) {
+            dynamicTests.add(verifyTransferPermission(new BigDecimal(amount), lowTransferAuthorities, false));
+            dynamicTests.add(verifyTransferPermission(new BigDecimal(amount), highTransferAuthorities, true));
+            for (Authorities authorities : doesNotGrantTransfer) {
+                dynamicTests.add(verifyTransferPermission(new BigDecimal(amount), List.of(authorities), false));
+            }
+        }
+
+        return dynamicTests.stream();
     }
 
-    private DynamicTest verifyTransferPermission(final TestTransferParams p, final boolean permitted) {
-        return DynamicTest.dynamicTest(p.toString() + ", permitted=" + permitted, () -> {
-            final boolean hasPermission = bankingPermissionEvaluator.hasPermission(createAuthenticationWithAuthorities(p.authorities()), new TransferModel("from", "to", p.transferSize()), Permissions.EXECUTE);
-            assertThat(hasPermission).isEqualTo(permitted);
+    private static Set<Authorities> allAuthoritiesExcluding(final Authorities ... values) {
+        final Set<Authorities> excludedAsSet = Stream.of(values).collect(Collectors.toSet());
+        return Arrays.stream(Authorities.values())
+                .filter(a -> !excludedAsSet.contains(a))
+                .collect(Collectors.toSet());
+    }
+
+    private DynamicTest verifyTransferPermission(BigDecimal transferSize, List<Authorities> authorities, final boolean permitted) {
+        return DynamicTest.dynamicTest(String.format("transferSize=%s, authorities=%s, permitted=%s", transferSize, authorities, permitted), () -> {
+            final Authentication authentication = createAuthenticationWithAuthorities(authorities);
+            final Object targetDomainObject = new TransferModel("from", "to", transferSize);
+            assertThat(bankingPermissionEvaluator.hasPermission(authentication, targetDomainObject, Permissions.EXECUTE))
+                    .isEqualTo(permitted);
         });
     }
 
-    public record TestTransferParams(BigDecimal transferSize, List<Authorities> authorities) {
-        public TestTransferParams(BigDecimal transferSize, Authorities... authorities) {
-            this(transferSize, List.of(authorities));
-        }
+    private static Authentication createAuthenticationWithAuthorities(final List<Authorities> authorities) {
+        final Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
+                .map(a -> new SimpleGrantedAuthority(a.name()))
+                .collect(Collectors.toSet());
+
+        return new UsernamePasswordAuthenticationToken("username", new Object(), simpleGrantedAuthorities);
     }
 }

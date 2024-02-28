@@ -5,7 +5,6 @@ import pluralsight.m2.domain.Account;
 import pluralsight.m2.domain.Transaction;
 import pluralsight.m2.model.TransferModel;
 import pluralsight.m2.repository.AccountRepository;
-import pluralsight.m2.repository.FraudRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,11 +12,9 @@ import java.util.List;
 @Component
 public class AccountsService {
     private final AccountRepository accountRepository;
-    private final FraudRepository fraudRepository;
 
-    public AccountsService(AccountRepository accountRepository, FraudRepository fraudRepository) {
+    public AccountsService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-        this.fraudRepository = fraudRepository;
     }
 
     public void transfer(final TransferModel transfer) {
@@ -44,9 +41,5 @@ public class AccountsService {
 
     public Account getAccountByCode(final String accountCode) {
         return accountRepository.getAccountByCode(accountCode);
-    }
-
-    public boolean isFraudSuspectedAccount(final String accountCode) {
-        return fraudRepository.isFraudSuspected(accountCode);
     }
 }

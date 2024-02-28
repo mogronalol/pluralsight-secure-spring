@@ -24,15 +24,6 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests ->
-
-//                                requests
-//                                        .requestMatchers("/images/**", "/favicon.ico").permitAll()
-//                                        .requestMatchers("/admin/**").authenticated()
-//                                        .requestMatchers("/my-accounts").authenticated()
-//                                        .requestMatchers("/accounts/*/transactions").authenticated()
-//                                        .requestMatchers("/").authenticated()
-
-
                     requests
                             .requestMatchers("/images/**", "/favicon.ico").permitAll()
                             .requestMatchers("/admin/accounts").hasAnyRole(Roles.CUSTOMER_SERVICE.name(), Roles.CUSTOMER_SERVICE_MANAGER.name())

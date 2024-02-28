@@ -60,7 +60,7 @@ public class PermissionBasedAccessToTransfersTest {
         final ResultActions perform = mockMvc.perform(post("/admin/transfer")
                 .param("fromAccountCode", account1.getAccountCode())
                 .param("toAccountCode", account2.getAccountCode())
-                .param("amount", "99.99")
+                .param("amount", "999.99")
                 .with(user("user").roles(role.name()).authorities(role.getGrantedAuthorities()))
                 .with(csrf()));
 
