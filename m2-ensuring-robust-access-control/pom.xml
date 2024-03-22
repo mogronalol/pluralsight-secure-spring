@@ -11,7 +11,10 @@
         <module>m2-demo-1-deny-by-default</module>
         <module>m2-demo-2-indirect-object-references</module>
         <module>m2-demo-3-role-based-access</module>
-        <module>m2-demo-4-permission-based-access</module>
+        <module>m2-demo-4-introducing-authorities</module>
+        <module>m2-demo-5-method-level-security</module>
+        <module>m2-demo-6-permission-based-access</module>
+        <module>m2-demo-7-introducing-role-hierarchies</module>
     </modules>
 
     <parent>
