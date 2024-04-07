@@ -16,7 +16,9 @@
     </parent>
 
     <modules>
-        <module>m2-ensuring-robust-access-control</module>
+        <module>m2-a01-access-control-attack-vectors-and-mitigation-in-spring-applications</module>
+        <module>m3-a01-managing-access-control-with-roles-and-authorities</module>
+        <module>m4-a01-managing-access-control-with-annotations-and-hierarchies</module>
     </modules>
 
     <dependencies>
