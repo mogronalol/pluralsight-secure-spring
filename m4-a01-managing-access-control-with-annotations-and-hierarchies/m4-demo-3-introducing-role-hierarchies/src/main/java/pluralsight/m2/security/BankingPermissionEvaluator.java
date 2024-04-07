@@ -12,7 +12,8 @@ import java.math.BigDecimal;
 @Component
 public class BankingPermissionEvaluator implements PermissionEvaluator {
 
-    private static boolean hasAuthority(final Authentication auth, final Authorities authority) {
+    private static boolean hasAuthority(final Authentication auth,
+                                        final Authorities authority) {
         return auth.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
@@ -20,7 +21,8 @@ public class BankingPermissionEvaluator implements PermissionEvaluator {
     }
 
     @Override
-    public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+    public boolean hasPermission(Authentication authentication, Object targetDomainObject,
+                                 Object permission) {
         if (Permissions.valueOf(permission.toString()).equals(Permissions.EXECUTE) &&
                 targetDomainObject instanceof final TransferModel transferModel &&
                 hasAuthority(authentication, Authorities.TRANSFERS)) {
@@ -36,7 +38,9 @@ public class BankingPermissionEvaluator implements PermissionEvaluator {
     }
 
     @Override
-    public boolean hasPermission(final Authentication authentication, final Serializable targetId, final String targetType, final Object permission) {
+    public boolean hasPermission(final Authentication authentication,
+                                 final Serializable targetId, final String targetType,
+                                 final Object permission) {
         return false;
     }
 }

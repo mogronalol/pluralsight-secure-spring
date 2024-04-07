@@ -18,7 +18,8 @@ public class AccountsController {
 
     @GetMapping("/my-accounts")
     public String accounts(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        model.addAttribute("accounts", accountRepository.getAccountForUser(userDetails.getUsername()));
+        model.addAttribute("accounts",
+                accountRepository.getAccountForUser(userDetails.getUsername()));
         model.addAttribute("username", userDetails.getUsername());
         return "my-accounts";
     }
@@ -27,7 +28,9 @@ public class AccountsController {
     public String transactions(@AuthenticationPrincipal final UserDetails userDetails,
                                final Model model,
                                @PathVariable("accountIndex") int accountIndex) {
-        model.addAttribute("account", accountRepository.getAccountForUser(userDetails.getUsername()).get(accountIndex));
+        model.addAttribute("account",
+                accountRepository.getAccountForUser(userDetails.getUsername())
+                        .get(accountIndex));
         model.addAttribute("username", userDetails.getUsername());
         return "transactions";
     }

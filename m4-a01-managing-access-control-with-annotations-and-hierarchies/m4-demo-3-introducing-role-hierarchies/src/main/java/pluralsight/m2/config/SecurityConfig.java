@@ -28,10 +28,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests
                                 .requestMatchers("/images/**", "/favicon.ico").permitAll()
-                                .requestMatchers("/admin/accounts").hasAnyRole(Roles.CUSTOMER_SERVICE.name(), Roles.CUSTOMER_SERVICE_MANAGER.name())
-                                .requestMatchers("/admin/transfer").hasAnyRole(Roles.CUSTOMER_SERVICE.name(), Roles.CUSTOMER_SERVICE_MANAGER.name())
+                                .requestMatchers("/admin/accounts")
+                                .hasAnyRole(Roles.CUSTOMER_SERVICE.name(),
+                                        Roles.CUSTOMER_SERVICE_MANAGER.name())
+                                .requestMatchers("/admin/transfer")
+                                .hasAnyRole(Roles.CUSTOMER_SERVICE.name(),
+                                        Roles.CUSTOMER_SERVICE_MANAGER.name())
                                 .requestMatchers("/my-accounts").hasRole(Roles.CUSTOMER.name())
-                                .requestMatchers("/accounts/*/transactions").hasRole(Roles.CUSTOMER.name())
+                                .requestMatchers("/accounts/*/transactions")
+                                .hasRole(Roles.CUSTOMER.name())
                                 .requestMatchers("/").authenticated()
                 )
                 .formLogin((form) -> form
@@ -52,19 +57,21 @@ public class SecurityConfig {
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         roleHierarchy.setHierarchy("""
-                        ROLE_CUSTOMER_SERVICE > TRANSFERS
-                        ROLE_CUSTOMER_SERVICE > VIEW_ACCOUNTS
-                        ROLE_CUSTOMER_SERVICE_MANAGER > LARGE_TRANSFERS
-                        ROLE_CUSTOMER_SERVICE_MANAGER > ROLE_CUSTOMER_SERVICE
-                        ROLE_SENIOR_VICE_PRESIDENT > ROLE_CUSTOMER_SERVICE_MANAGER
-                        """
+                ROLE_CUSTOMER_SERVICE > TRANSFERS
+                ROLE_CUSTOMER_SERVICE > VIEW_ACCOUNTS
+                ROLE_CUSTOMER_SERVICE_MANAGER > LARGE_TRANSFERS
+                ROLE_CUSTOMER_SERVICE_MANAGER > ROLE_CUSTOMER_SERVICE
+                ROLE_SENIOR_VICE_PRESIDENT > ROLE_CUSTOMER_SERVICE_MANAGER
+                """
         );
         return roleHierarchy;
     }
 
     @Bean
-    public MethodSecurityExpressionHandler expressionHandler(RoleHierarchy roleHierarchy, BankingPermissionEvaluator bankingPermissionEvaluator) {
-        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
+    public MethodSecurityExpressionHandler expressionHandler(RoleHierarchy roleHierarchy,
+                                                             BankingPermissionEvaluator bankingPermissionEvaluator) {
+        DefaultMethodSecurityExpressionHandler expressionHandler =
+                new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setRoleHierarchy(roleHierarchy);
         expressionHandler.setPermissionEvaluator(bankingPermissionEvaluator);
         return expressionHandler;

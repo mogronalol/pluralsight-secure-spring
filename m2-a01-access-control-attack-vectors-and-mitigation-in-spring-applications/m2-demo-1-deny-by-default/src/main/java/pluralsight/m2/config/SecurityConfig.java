@@ -20,16 +20,15 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
 
-
         http
                 .authorizeHttpRequests(requests ->
 //                        requests
 //                                .requestMatchers("/admin/accounts").authenticated()
 //                                .requestMatchers("/**").permitAll()
-                    requests
-                            .requestMatchers("/images/**", "/favicon.ico").permitAll()
-                            .requestMatchers("/admin/**").authenticated()
-                            .requestMatchers("/").authenticated()
+                                requests
+                                        .requestMatchers("/images/**", "/favicon.ico").permitAll()
+                                        .requestMatchers("/admin/**").authenticated()
+                                        .requestMatchers("/").authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")

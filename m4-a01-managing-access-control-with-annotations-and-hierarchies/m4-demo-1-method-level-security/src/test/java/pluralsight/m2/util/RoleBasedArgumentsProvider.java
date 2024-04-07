@@ -14,10 +14,13 @@ public class RoleBasedArgumentsProvider implements ArgumentsProvider {
 
     @Override
     public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-        AllowedRoles allowedRolesAnnotation = context.getRequiredTestMethod().getAnnotation(AllowedRoles.class);
-        final Roles[] allowedRoles = allowedRolesAnnotation == null ? new Roles[]{} : allowedRolesAnnotation.value();
+        AllowedRoles allowedRolesAnnotation =
+                context.getRequiredTestMethod().getAnnotation(AllowedRoles.class);
+        final Roles[] allowedRoles = allowedRolesAnnotation == null ? new Roles[]{} :
+                allowedRolesAnnotation.value();
 
         return Arrays.stream(Roles.values())
-                .map(role -> Arguments.of(createTestAuthentication(role), Arrays.asList(allowedRoles).contains(role)));
+                .map(role -> Arguments.of(createTestAuthentication(role),
+                        Arrays.asList(allowedRoles).contains(role)));
     }
 }

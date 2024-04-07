@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{base.html}" lang="en">
+<html lang="en" layout:decorate="~{base.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title>View Accounts</title>
 </head>
 <body>
-<main role="main" class="container mt-4" layout:fragment="content">
+<main class="container mt-4" layout:fragment="content" role="main">
     <div class="card">
         <div class="card-header">
             Accounts Overview
@@ -26,8 +26,8 @@
                         <td th:text="${account.username}">Username</td>
                         <td th:text="${account.balance}">Balance</td>
                         <td>
-                            <a th:href="@{/admin/accounts/{accountCode}(accountCode=${account.accountCode})}"
-                               class="btn btn-primary btn-sm">View</a>
+                            <a class="btn btn-primary btn-sm"
+                               th:href="@{/admin/accounts/{accountCode}(accountCode=${account.accountCode})}">View</a>
                         </td>
                     </tr>
                     </tbody>

@@ -8,7 +8,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toSet;
-import static pluralsight.m2.security.Authorities.*;
+import static pluralsight.m2.security.Authorities.LARGE_TRANSFERS;
+import static pluralsight.m2.security.Authorities.TRANSFERS;
 
 public enum Roles {
     CUSTOMER,
@@ -24,7 +25,8 @@ public enum Roles {
 
     public Set<SimpleGrantedAuthority> getGrantedAuthorities() {
         return Stream.concat(authorities.stream()
-                        .map(a -> new SimpleGrantedAuthority(a.name())), Stream.of(new SimpleGrantedAuthority(grantedAuthorityName())))
+                                .map(a -> new SimpleGrantedAuthority(a.name())),
+                        Stream.of(new SimpleGrantedAuthority(grantedAuthorityName())))
                 .collect(toSet());
     }
 

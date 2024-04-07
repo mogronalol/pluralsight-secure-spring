@@ -13,11 +13,14 @@ import java.util.Set;
 public class HomeController {
 
     @GetMapping("/")
-    public String redirectRootToAccounts(@AuthenticationPrincipal final UserDetails userDetails) {
+    public String redirectRootToAccounts(
+            @AuthenticationPrincipal final UserDetails userDetails) {
 
-        final Set<String> admins = Set.of("ROLE_" + Roles.CUSTOMER_SERVICE.name(), "ROLE_" + Roles.CUSTOMER_SERVICE_MANAGER.name());
+        final Set<String> admins = Set.of("ROLE_" + Roles.CUSTOMER_SERVICE.name(),
+                "ROLE_" + Roles.CUSTOMER_SERVICE_MANAGER.name());
 
-        if (userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(admins::contains)) {
+        if (userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .anyMatch(admins::contains)) {
             return "redirect:/admin/accounts";
         }
 

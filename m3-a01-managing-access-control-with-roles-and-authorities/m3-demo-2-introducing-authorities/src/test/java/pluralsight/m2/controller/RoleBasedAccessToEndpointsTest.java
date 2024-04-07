@@ -37,7 +37,9 @@ public class RoleBasedAccessToEndpointsTest {
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
     @AllowedRoles({Roles.CUSTOMER})
-    public void myAccountsIsSecured(final Authentication authentication, final boolean permitted) throws Exception {
+    public void myAccountsIsSecured(
+            final Authentication authentication,
+            final boolean permitted) throws Exception {
 
         final ResultActions perform = mockMvc.perform(
                 get("/my-accounts")
@@ -46,9 +48,12 @@ public class RoleBasedAccessToEndpointsTest {
         if (permitted) {
             perform
                     .andExpect(status().is(200))
-                    .andExpect(content().string(containsString("data-test-id=\"nav-my-accounts\"")))
-                    .andExpect(content().string(not(containsString("data-test-id=\"nav-admin-accounts\""))))
-                    .andExpect(content().string(not(containsString("data-test-id=\"nav-admin-transactions\""))));
+                    .andExpect(content().string(
+                            containsString("data-test-id=\"nav-my-accounts\"")))
+                    .andExpect(content().string(
+                            not(containsString("data-test-id=\"nav-admin-accounts\""))))
+                    .andExpect(content().string(
+                            not(containsString("data-test-id=\"nav-admin-transactions\""))));
         } else {
             perform
                     .andExpect(status().is(403));
@@ -58,7 +63,9 @@ public class RoleBasedAccessToEndpointsTest {
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
     @AllowedRoles({Roles.CUSTOMER})
-    public void myAccountTransactionsIsSecured(final Authentication authentication, final boolean permitted) throws Exception {
+    public void myAccountTransactionsIsSecured(
+            final Authentication authentication,
+            final boolean permitted) throws Exception {
 
         accountRepository.save(TestDataFactory.generateAccount("user", 0));
 
@@ -69,9 +76,12 @@ public class RoleBasedAccessToEndpointsTest {
         if (permitted) {
             perform
                     .andExpect(status().is(200))
-                    .andExpect(content().string(containsString("data-test-id=\"nav-my-accounts\"")))
-                    .andExpect(content().string(not(containsString("data-test-id=\"nav-admin-accounts\""))))
-                    .andExpect(content().string(not(containsString("data-test-id=\"nav-admin-transactions\""))));
+                    .andExpect(content().string(
+                            containsString("data-test-id=\"nav-my-accounts\"")))
+                    .andExpect(content().string(
+                            not(containsString("data-test-id=\"nav-admin-accounts\""))))
+                    .andExpect(content().string(
+                            not(containsString("data-test-id=\"nav-admin-transactions\""))));
         } else {
             perform
                     .andExpect(status().is(403));
@@ -82,23 +92,34 @@ public class RoleBasedAccessToEndpointsTest {
 
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER_SERVICE, Roles.CUSTOMER_SERVICE_MANAGER})
-    public void adminAccountsPageIsSecuredByRoles(final Authentication authentication, final boolean permitted) throws Exception {
+    @AllowedRoles({Roles.CUSTOMER_SERVICE,
+            Roles.CUSTOMER_SERVICE_MANAGER})
+    public void adminAccountsPageIsSecuredByRoles(
+            final Authentication authentication,
+            final boolean permitted) throws Exception {
 
         final ResultActions perform = mockMvc.perform(
                         get("/admin/accounts")
                                 .with(authentication(authentication)))
-                .andExpect(status().is(permitted ? 200 : 403));
+                .andExpect(status().is(permitted ? 200 :
+                        403));
 
         if (permitted) {
 
-            final Matcher<String> containsAdminTransactions = containsString("data-test-id=\"nav-admin-transactions\"");
+            final Matcher<String> containsAdminTransactions =
+                    containsString("data-test-id=\"nav-admin-transactions\"");
 
             perform
                     .andExpect(status().is(200))
-                    .andExpect(content().string(not(containsString("data-test-id=\"nav-my-accounts\""))))
-                    .andExpect(content().string(containsString("data-test-id=\"nav-admin-accounts\"")))
-                    .andExpect(content().string(hasRole(authentication, Roles.CUSTOMER_SERVICE_MANAGER) ? containsAdminTransactions : not(containsAdminTransactions)));
+                    .andExpect(content().string(
+                            not(containsString("data-test-id=\"nav-my-accounts\""))))
+                    .andExpect(
+                            content().string(
+                                    containsString("data-test-id=\"nav-admin-accounts\"")))
+                    .andExpect(content().string(
+                            hasRole(authentication, Roles.CUSTOMER_SERVICE_MANAGER) ?
+                                    containsAdminTransactions :
+                                    not(containsAdminTransactions)));
         } else {
             perform
                     .andExpect(status().is(403));
@@ -107,8 +128,11 @@ public class RoleBasedAccessToEndpointsTest {
 
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER, Roles.CUSTOMER_SERVICE})
-    public void transferPageIsSecuredByRoles(final Authentication authentication, final boolean permitted) throws Exception {
+    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER,
+            Roles.CUSTOMER_SERVICE})
+    public void transferPageIsSecuredByRoles(
+            final Authentication authentication,
+            final boolean permitted) throws Exception {
 
         final ResultActions perform = mockMvc.perform(
                 get("/admin/transfer")
@@ -117,13 +141,20 @@ public class RoleBasedAccessToEndpointsTest {
 
         if (permitted) {
 
-            final Matcher<String> containsAdminTransactions = containsString("data-test-id=\"nav-admin-transactions\"");
+            final Matcher<String> containsAdminTransactions =
+                    containsString("data-test-id=\"nav-admin-transactions\"");
 
             perform
                     .andExpect(status().is(200))
-                    .andExpect(content().string(not(containsString("data-test-id=\"nav-my-accounts\""))))
-                    .andExpect(content().string(containsString("data-test-id=\"nav-admin-accounts\"")))
-                    .andExpect(content().string(hasRole(authentication, Roles.CUSTOMER_SERVICE_MANAGER) ? containsAdminTransactions : not(containsAdminTransactions)));
+                    .andExpect(content().string(
+                            not(containsString("data-test-id=\"nav-my-accounts\""))))
+                    .andExpect(
+                            content().string(
+                                    containsString("data-test-id=\"nav-admin-accounts\"")))
+                    .andExpect(content().string(
+                            hasRole(authentication, Roles.CUSTOMER_SERVICE_MANAGER) ?
+                                    containsAdminTransactions :
+                                    not(containsAdminTransactions)));
         } else {
             perform
                     .andExpect(status().is(403));

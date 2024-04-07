@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{base.html}" lang="en">
+<html lang="en"
+      layout:decorate="~{base.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title>Money Transfer</title>
 </head>
 <body>
-<main role="main" class="container mt-4" layout:fragment="content">
+<main class="container mt-4" layout:fragment="content" role="main">
     <div class="card">
         <div class="card-header">
             Money Transfer
         </div>
         <div class="card-body">
-            <div th:if="${completed}" class="alert alert-success" role="alert">
+            <div class="alert alert-success" role="alert" th:if="${completed}">
                 <h4 class="alert-heading">Transfer Successful!</h4>
                 <p class="mb-2">Amount transferred: <span th:text="${completed.amount}">Amount</span></p>
                 <p class="mb-2">From Account:
@@ -25,31 +25,31 @@
                 <hr>
                 <p class="mb-0">You can now view the transactions for each account.</p>
             </div>
-            <form action="#" th:action="@{/admin/transfer}" th:object="${transfer}" method="post">
+            <form action="#" method="post" th:action="@{/admin/transfer}" th:object="${transfer}">
                 <div class="mb-3">
-                    <label for="fromAccount" class="form-label">From Account:</label>
-                    <select id="fromAccount" class="form-select" th:field="*{fromAccountCode}">
-                        <option value="" disabled selected>Select Account</option>
-                        <option th:each="account : ${accounts}" th:value="${account.accountCode}"
-                                th:text="${account.accountCode + ' (' + account.username + ')'}">Account Name
+                    <label class="form-label" for="fromAccount">From Account:</label>
+                    <select class="form-select" id="fromAccount" th:field="*{fromAccountCode}">
+                        <option disabled selected value="">Select Account</option>
+                        <option th:each="account : ${accounts}" th:text="${account.accountCode + ' (' + account.username + ')'}"
+                                th:value="${account.accountCode}">Account Name
                         </option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="toAccount" class="form-label">To Account:</label>
-                    <select id="toAccount" class="form-select" th:field="*{toAccountCode}">
-                        <option value="" disabled selected>Select Account</option>
-                        <option th:each="account : ${accounts}" th:value="${account.accountCode}"
-                                th:text="${account.accountCode + ' (' + account.username + ')'}">Account Name
+                    <label class="form-label" for="toAccount">To Account:</label>
+                    <select class="form-select" id="toAccount" th:field="*{toAccountCode}">
+                        <option disabled selected value="">Select Account</option>
+                        <option th:each="account : ${accounts}" th:text="${account.accountCode + ' (' + account.username + ')'}"
+                                th:value="${account.accountCode}">Account Name
                         </option>
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label for="amount" class="form-label">Amount:</label>
-                    <input type="number" id="amount" class="form-control" th:field="*{amount}" min="0.01" step="0.01"
-                           required>
+                    <label class="form-label" for="amount">Amount:</label>
+                    <input class="form-control" id="amount" min="0.01" required step="0.01" th:field="*{amount}"
+                           type="number">
                 </div>
-                <button type="submit" class="btn btn-success">Transfer</button>
+                <button class="btn btn-success" type="submit">Transfer</button>
             </form>
         </div>
     </div>

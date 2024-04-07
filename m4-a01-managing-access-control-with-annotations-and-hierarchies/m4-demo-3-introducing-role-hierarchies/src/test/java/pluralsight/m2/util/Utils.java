@@ -18,22 +18,28 @@ public class Utils {
         return createAuthentication(List.of(new SimpleGrantedAuthority("ROLE_" + role)));
     }
 
-    private static UsernamePasswordAuthenticationToken createAuthentication(final List<GrantedAuthority> grantedAuthorities) {
+    private static UsernamePasswordAuthenticationToken createAuthentication(
+            final List<GrantedAuthority> grantedAuthorities) {
 
         final UserDetails principal = new User("user", "password", grantedAuthorities);
-        return new UsernamePasswordAuthenticationToken(principal, "password", grantedAuthorities) {
+        return new UsernamePasswordAuthenticationToken(principal, "password",
+                grantedAuthorities) {
             @Override
             public String toString() {
-                return String.format("{Authorities=%s}", grantedAuthorities.stream().map(GrantedAuthority::getAuthority).toList());
+                return String.format("{Authorities=%s}",
+                        grantedAuthorities.stream().map(GrantedAuthority::getAuthority)
+                                .toList());
             }
         };
     }
 
-    public static Authentication enrichWithRoleHierarchy(final Authentication authentication, final RoleHierarchy roleHierarchy) {
+    public static Authentication enrichWithRoleHierarchy(final Authentication authentication,
+                                                         final RoleHierarchy roleHierarchy) {
 
         final List<GrantedAuthority> authorities = Stream.concat(
                         authentication.getAuthorities().stream(),
-                        roleHierarchy.getReachableGrantedAuthorities(authentication.getAuthorities()).stream())
+                        roleHierarchy.getReachableGrantedAuthorities(authentication.getAuthorities())
+                                .stream())
                 .toList();
 
         return createAuthentication(authorities);

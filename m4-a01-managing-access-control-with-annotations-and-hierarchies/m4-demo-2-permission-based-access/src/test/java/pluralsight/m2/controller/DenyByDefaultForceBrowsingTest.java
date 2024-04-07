@@ -53,7 +53,7 @@ public class DenyByDefaultForceBrowsingTest {
         mockMvc.perform(get("/admin/transfer"))
                 .andExpect(status().is2xxSuccessful());
     }
-    
+
     @Test
     public void redirectToLoginPageWhenViewingAnyPageWithoutLogin() throws Exception {
 

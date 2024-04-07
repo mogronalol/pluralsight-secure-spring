@@ -51,7 +51,8 @@ public class TestDataFactory {
     }
 
     private static UserDetails createUser(String username, Roles role) {
-        // Note: User.withDefaultPasswordEncoder() is deprecated and should only be used for demonstration purposes
+        // Note: User.withDefaultPasswordEncoder() is deprecated and should only be used for
+        // demonstration purposes
         return User.withDefaultPasswordEncoder()
                 .username(username)
                 .password("password")
@@ -63,24 +64,30 @@ public class TestDataFactory {
         final AccountType[] accountTypes = AccountType.values();
         int randomIndex = RANDOM.nextInt(accountTypes.length);
 
-        final TreeSet<Transaction> transactions = IntStream.range(0, 10).mapToObj(transactionIndex -> {
-            final LocalDateTime transactionDate = LocalDateTime.now().minusDays(transactionIndex);
-            final String description = POSSIBLE_DESCRIPTIONS[RANDOM.nextInt(POSSIBLE_DESCRIPTIONS.length)];
-            final BigDecimal amount = BigDecimal.valueOf(Math.round(RANDOM.nextDouble() * 1000.0) / 100.0); // amounts up to 1000.00
+        final TreeSet<Transaction> transactions =
+                IntStream.range(0, 10).mapToObj(transactionIndex -> {
+                    final LocalDateTime transactionDate =
+                            LocalDateTime.now().minusDays(transactionIndex);
+                    final String description = POSSIBLE_DESCRIPTIONS[RANDOM.nextInt(
+                            POSSIBLE_DESCRIPTIONS.length)];
+                    final BigDecimal amount = BigDecimal.valueOf(
+                            Math.round(RANDOM.nextDouble() * 1000.0) /
+                                    100.0); // amounts up to 1000.00
 
-            return Transaction.builder()
-                    .date(transactionDate)
-                    .amount(amount.negate())
-                    .description(description)
-                    .id(transactionIndex)
-                    .build();
-        }).collect(toCollection(TreeSet::new));
+                    return Transaction.builder()
+                            .date(transactionDate)
+                            .amount(amount.negate())
+                            .description(description)
+                            .id(transactionIndex)
+                            .build();
+                }).collect(toCollection(TreeSet::new));
 
         return Account.builder()
                 .accountCode(String.valueOf(accountCode++))
                 .index(accountIndex)
                 .username(username)
-                .displayName(accountTypes[randomIndex].getDisplayName() + " " + (accountIndex + 1))
+                .displayName(
+                        accountTypes[randomIndex].getDisplayName() + " " + (accountIndex + 1))
                 .transactions(transactions)
                 .build();
     }

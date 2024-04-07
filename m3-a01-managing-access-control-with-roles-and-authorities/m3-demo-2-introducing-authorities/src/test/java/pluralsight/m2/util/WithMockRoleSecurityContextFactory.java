@@ -7,7 +7,8 @@ import pluralsight.m2.security.Roles;
 
 import static pluralsight.m2.util.Utils.createTestAuthentication;
 
-public class WithMockRoleSecurityContextFactory implements WithSecurityContextFactory<WithMockRole> {
+public class WithMockRoleSecurityContextFactory
+        implements WithSecurityContextFactory<WithMockRole> {
 
     @Override
     public SecurityContext createSecurityContext(WithMockRole withMockRole) {

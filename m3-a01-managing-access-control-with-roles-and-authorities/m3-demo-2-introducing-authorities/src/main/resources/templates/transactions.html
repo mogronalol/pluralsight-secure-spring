@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{base.html}" lang="en">
+<html lang="en"
+      layout:decorate="~{base.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <title>Account Transactions</title>
 </head>
 <body>
-<main role="main" class="container mt-4" layout:fragment="content">
+<main class="container mt-4" layout:fragment="content" role="main">
     <div class="card mb-4">
         <div class="card-header">
             Account Summary
         </div>
         <div class="card-body">
             <p class="card-text"><strong>Username:</strong> <span th:text="${account.username}">Username</span></p>
-            <p class="card-text"><strong>Account Code:</strong> <span th:text="${account.accountCode}">Account Code</span></p>
-            <p class="card-text"><strong>Nickname:</strong> <span th:text="${account.displayName}">Display Name</span></p>
+            <p class="card-text"><strong>Account Code:</strong> <span
+                    th:text="${account.accountCode}">Account Code</span></p>
+            <p class="card-text"><strong>Nickname:</strong> <span th:text="${account.displayName}">Display Name</span>
+            </p>
             <p class="card-text"><strong>Balance:</strong> <span th:text="${account.balance}">Balance</span></p>
         </div>
     </div>

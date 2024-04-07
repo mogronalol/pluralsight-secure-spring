@@ -43,7 +43,9 @@ public class AdminController {
     }
 
     @PostMapping("/transfer")
-    @PreAuthorize("hasAuthority('TRANSFERS') and (#transfer.amount < 1000 || hasAuthority('LARGE_TRANSFERS'))")
+    @PreAuthorize(
+            "hasAuthority('TRANSFERS') and (#transfer.amount < 1000 || hasAuthority" +
+                    "('LARGE_TRANSFERS'))")
     public String processTransfer(@ModelAttribute TransferModel transfer,
                                   final RedirectAttributes redirectAttributes) {
 

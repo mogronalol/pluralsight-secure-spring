@@ -47,7 +47,7 @@ public class IndirectAccountReferenceCheckTest {
     }
 
     @Test
-    @WithMockUser(username="user-1", roles = {"CUSTOMER"})
+    @WithMockUser(username = "user-1", roles = {"CUSTOMER"})
     public void shouldReturnUser1AccountsByIndex() throws Exception {
 
         mockMvc.perform(get("/accounts/0/transactions"))
@@ -64,7 +64,7 @@ public class IndirectAccountReferenceCheckTest {
     }
 
     @Test
-    @WithMockUser(username="user-2", roles = {"CUSTOMER"})
+    @WithMockUser(username = "user-2", roles = {"CUSTOMER"})
     public void shouldReturnUser2AccountsByIndex() throws Exception {
 
         mockMvc.perform(get("/accounts/0/transactions"))

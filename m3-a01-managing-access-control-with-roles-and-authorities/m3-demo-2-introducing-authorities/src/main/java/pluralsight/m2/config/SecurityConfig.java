@@ -22,13 +22,16 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests ->
-                    requests
-                            .requestMatchers("/images/**", "/favicon.ico").permitAll()
-                            .requestMatchers("/admin/accounts").hasAuthority(Authorities.VIEW_ACCOUNTS.name())
-                            .requestMatchers("/admin/transfer").hasAuthority(Authorities.TRANSFERS.name())
-                            .requestMatchers("/my-accounts").hasRole(Roles.CUSTOMER.name())
-                            .requestMatchers("/accounts/*/transactions").hasRole(Roles.CUSTOMER.name())
-                            .requestMatchers("/").authenticated()
+                        requests
+                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
+                                .requestMatchers("/admin/accounts")
+                                .hasAuthority(Authorities.VIEW_ACCOUNTS.name())
+                                .requestMatchers("/admin/transfer")
+                                .hasAuthority(Authorities.TRANSFERS.name())
+                                .requestMatchers("/my-accounts").hasRole(Roles.CUSTOMER.name())
+                                .requestMatchers("/accounts/*/transactions")
+                                .hasRole(Roles.CUSTOMER.name())
+                                .requestMatchers("/").authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")

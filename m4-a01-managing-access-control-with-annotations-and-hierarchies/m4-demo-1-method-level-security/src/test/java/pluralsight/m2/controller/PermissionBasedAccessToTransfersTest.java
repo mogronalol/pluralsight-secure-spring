@@ -18,7 +18,8 @@ import pluralsight.m2.security.Roles;
 import pluralsight.m2.util.AllowedRoles;
 import pluralsight.m2.util.RoleBasedArgumentsProvider;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -55,7 +56,9 @@ public class PermissionBasedAccessToTransfersTest {
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
     @AllowedRoles({Roles.CUSTOMER_SERVICE, Roles.CUSTOMER_SERVICE_MANAGER})
-    public void transfersCanOnlyBeDoneByCustomerService(final Authentication authentication, final boolean permitted) throws Exception {
+    public void transfersCanOnlyBeDoneByCustomerService(final Authentication authentication,
+                                                        final boolean permitted)
+            throws Exception {
 
         final ResultActions perform = mockMvc.perform(post("/admin/transfer")
                 .param("fromAccountCode", account1.getAccountCode())
@@ -77,7 +80,8 @@ public class PermissionBasedAccessToTransfersTest {
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
     @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER})
-    public void largeTransfersCanOnlyBeDoneByCustomerServiceManagers(final Authentication authentication, final boolean permitted) throws Exception {
+    public void largeTransfersCanOnlyBeDoneByCustomerServiceManagers(
+            final Authentication authentication, final boolean permitted) throws Exception {
 
         final ResultActions perform = mockMvc.perform(post("/admin/transfer")
                 .param("fromAccountCode", account1.getAccountCode())
