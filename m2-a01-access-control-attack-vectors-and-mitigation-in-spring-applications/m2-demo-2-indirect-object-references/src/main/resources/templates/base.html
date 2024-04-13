@@ -19,13 +19,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item" sec:authorize="hasRole('CUSTOMER')">
+                <li class="nav-item">
                     <a aria-current="page" class="nav-link active" href="/my-accounts">My Accounts</a>
-                </li>
-                <li class="nav-item" sec:authorize="hasRole('CUSTOMER_SERVICE')">
-                    <a aria-current="page" class="nav-link active" href="/admin/accounts">Accounts</a>
-                <li class="nav-item" sec:authorize="hasRole('CUSTOMER_SERVICE')">
-                    <a aria-current="page" class="nav-link active" href="/admin/transfer">Transfers</a>
                 </li>
             </ul>
             <div class="dropdown">

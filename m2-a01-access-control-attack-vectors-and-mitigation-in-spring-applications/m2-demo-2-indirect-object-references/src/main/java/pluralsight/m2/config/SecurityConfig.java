@@ -2,7 +2,6 @@ package pluralsight.m2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
@@ -13,7 +12,6 @@ import pluralsight.m2.repository.TestDataFactory;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -21,11 +19,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
-                                .requestMatchers("/admin/**").authenticated()
-                                .requestMatchers("/my-accounts").authenticated()
-                                .requestMatchers("/accounts/*/transactions").authenticated()
-                                .requestMatchers("/").authenticated()
+                                .requestMatchers("/images/**", "favicon.ico").permitAll()
+                                .requestMatchers("/admin/**", "/", "/my-accounts",
+                                        "/accounts/*/transactions").authenticated()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
@@ -40,6 +36,5 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(TestDataFactory.USERS);
     }
-
 }
 

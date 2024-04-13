@@ -26,9 +26,8 @@
                     <td th:text="${account.accountCode}">Account Number</td>
                     <td th:text="${#numbers.formatDecimal(account.balance, 2, 2)}">$0.00</td>
                     <td>
-                        <a class="btn btn-primary btn-sm"
-                           th:href="@{/accounts/{accountId}/transactions(accountId=${account.index})}">View Transactions</a>
-                        <!--                        <a th:href="@{/accounts/{accountCode}/transactions(accountCode=${account.accountCode})}" class="btn btn-primary btn-sm">View Transactions</a>-->
+                        <a th:href="@{/accounts/{accountIndex}/transactions(accountIndex=${account.index})}"
+                           class="btn btn-primary btn-sm">View Transactions</a>
                     </td>
                 </tr>
                 </tbody>

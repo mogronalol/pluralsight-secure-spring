@@ -1,6 +1,5 @@
 package pluralsight.m2.controller;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,58 +24,50 @@ public class IndirectAccountReferenceCheckTest {
     @Autowired
     private AccountRepository accountRepository;
 
-    private Account user1Account1;
-    private Account user1Account2;
-    private Account user2Account1;
-    private Account user2Account2;
+    private Account account1;
+    private Account account2;
+    private Account account3;
+    private Account account4;
 
     @BeforeEach
     public void setUp() {
-
         accountRepository.deleteAll();
+        account1 = TestDataFactory.generateAccount("user-1", 0);
+        account2 = TestDataFactory.generateAccount("user-1", 1);
+        account3 = TestDataFactory.generateAccount("user-2", 0);
+        account4 = TestDataFactory.generateAccount("user-2", 1);
 
-        user1Account1 = TestDataFactory.generateAccount("user-1", 0);
-        user1Account2 = TestDataFactory.generateAccount("user-1", 1);
-        user2Account1 = TestDataFactory.generateAccount("user-2", 0);
-        user2Account2 = TestDataFactory.generateAccount("user-2", 1);
-
-        accountRepository.save(user1Account1);
-        accountRepository.save(user1Account2);
-        accountRepository.save(user2Account1);
-        accountRepository.save(user2Account2);
+        accountRepository.save(account1);
+        accountRepository.save(account2);
+        accountRepository.save(account3);
+        accountRepository.save(account4);
     }
 
     @Test
     @WithMockUser(username = "user-1")
     public void shouldReturnUser1AccountsByIndex() throws Exception {
-
         mockMvc.perform(get("/accounts/0/transactions"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("account"))
-                .andExpect(model().attribute("account", user1Account1))
+                .andExpect(model().attribute("account", account1))
                 .andExpect(view().name("transactions"));
 
         mockMvc.perform(get("/accounts/1/transactions"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("account"))
-                .andExpect(model().attribute("account", user1Account2))
+                .andExpect(model().attribute("account", account2))
                 .andExpect(view().name("transactions"));
     }
 
     @Test
     @WithMockUser(username = "user-2")
     public void shouldReturnUser2AccountsByIndex() throws Exception {
-
         mockMvc.perform(get("/accounts/0/transactions"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("account"))
-                .andExpect(model().attribute("account", user2Account1))
+                .andExpect(model().attribute("account", account3))
                 .andExpect(view().name("transactions"));
 
         mockMvc.perform(get("/accounts/1/transactions"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("account"))
-                .andExpect(model().attribute("account", user2Account2))
+                .andExpect(model().attribute("account", account4))
                 .andExpect(view().name("transactions"));
     }
 }

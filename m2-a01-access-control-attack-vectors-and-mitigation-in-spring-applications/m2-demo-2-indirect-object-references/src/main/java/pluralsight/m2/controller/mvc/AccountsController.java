@@ -25,15 +25,11 @@ public class AccountsController {
     }
 
     @GetMapping("/accounts/{accountIndex}/transactions")
-//    @GetMapping("/accounts/{accountCode}/transactions")
     public String transactions(@AuthenticationPrincipal final UserDetails userDetails,
                                final Model model,
                                @PathVariable("accountIndex") int accountIndex) {
-//                               @PathVariable("accountCode") String accountCode) {
         model.addAttribute("account",
-                accountRepository.getAccountForUser(userDetails.getUsername())
-                        .get(accountIndex));
-//        model.addAttribute("account", accountRepository.getAccountByCode(accountCode));
+                accountRepository.getAccountForUser(userDetails.getUsername()).get(accountIndex));
         model.addAttribute("username", userDetails.getUsername());
         return "transactions";
     }
