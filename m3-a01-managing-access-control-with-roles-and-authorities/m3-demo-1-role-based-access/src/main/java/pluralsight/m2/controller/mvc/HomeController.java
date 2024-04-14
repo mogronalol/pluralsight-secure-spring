@@ -9,27 +9,27 @@ import org.springframework.web.bind.annotation.GetMapping;
 import pluralsight.m2.security.Roles;
 
 import java.util.Set;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 
 @Controller
 public class HomeController {
 
     @GetMapping("/")
-    public String redirectRootToAccounts(
-            @AuthenticationPrincipal final UserDetails userDetails) {
+    public String redirectRootToAccounts(@AuthenticationPrincipal UserDetails userDetails) {
 
-        final Set<String> roles =
-                userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                        .collect(
-                                Collectors.toSet());
+        final Set<String> usersAuthorities = userDetails.getAuthorities()
+                .stream().map(GrantedAuthority::getAuthority)
+                .collect(toSet());
 
-        if (roles.contains(Roles.CUSTOMER_SERVICE.grantedAuthorityName()) ||
-                roles.contains(Roles.CUSTOMER_SERVICE_MANAGER.grantedAuthorityName())) {
+        if (usersAuthorities.contains(Roles.CUSTOMER_SERVICE.getGrantedAuthorityName())
+                || usersAuthorities.contains(
+                Roles.CUSTOMER_SERVICE_MANAGER.getGrantedAuthorityName())) {
             return "redirect:/admin/accounts";
-        } else if (roles.contains(Roles.CUSTOMER.grantedAuthorityName())) {
+        } else if (usersAuthorities.contains(Roles.CUSTOMER.getGrantedAuthorityName())) {
             return "redirect:/my-accounts";
         }
 
-        throw new AccessDeniedException("Not a customer or admin");
+        throw new AccessDeniedException("User not a customer or customer service");
     }
 }

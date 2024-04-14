@@ -16,7 +16,6 @@
     <modules>
         <module>m4-demo-1-method-level-security</module>
         <module>m4-demo-2-permission-based-access</module>
-        <module>m4-demo-3-introducing-role-hierarchies</module>
     </modules>
 
     <properties>

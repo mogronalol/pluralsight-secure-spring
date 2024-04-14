@@ -16,6 +16,7 @@
     <modules>
         <module>m3-demo-1-role-based-access</module>
         <module>m3-demo-2-introducing-authorities</module>
+        <module>m3-demo-3-introducing-role-hierarchies</module>
     </modules>
 
     <properties>

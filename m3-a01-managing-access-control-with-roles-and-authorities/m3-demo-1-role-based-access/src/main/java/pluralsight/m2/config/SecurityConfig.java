@@ -22,16 +22,14 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
-                                .requestMatchers("/admin/accounts")
-                                .hasAnyRole(Roles.CUSTOMER_SERVICE.name(),
-                                        Roles.CUSTOMER_SERVICE_MANAGER.name())
                                 .requestMatchers("/admin/transfer")
-                                .hasRole(Roles.CUSTOMER_SERVICE_MANAGER.name())
-                                .requestMatchers("/my-accounts").hasRole(Roles.CUSTOMER.name())
-                                .requestMatchers("/accounts/*/transactions")
-                                .hasRole(Roles.CUSTOMER.name())
+                                    .hasRole(Roles.CUSTOMER_SERVICE_MANAGER.name())
+                                .requestMatchers("/admin/accounts")
+                                .hasAnyRole(Roles.CUSTOMER_SERVICE_MANAGER.name(), Roles.CUSTOMER_SERVICE.name())
+                                .requestMatchers("/my-accounts",
+                                        "/accounts/*/transactions").hasRole(Roles.CUSTOMER.name())
                                 .requestMatchers("/").authenticated()
+                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")

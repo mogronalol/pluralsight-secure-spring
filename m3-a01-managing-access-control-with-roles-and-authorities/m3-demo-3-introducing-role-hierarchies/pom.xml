@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>m4-a01-managing-access-control-with-annotations-and-hierarchies</artifactId>
+        <artifactId>m3-a01-managing-access-control-with-roles-and-authorities</artifactId>
         <version>1</version>
     </parent>
 

@@ -19,33 +19,37 @@ public class HomeControllerRedirectTest {
     private MockMvc mockMvc;
 
     @Test
-    @WithMockUser(roles = {"CUSTOMER_SERVICE"})
-    public void whenCustomerService_thenRedirectToAdminAccounts() throws Exception {
+    @WithMockUser(roles = "CUSTOMER_SERVICE")
+    public void whenCustomerSupportThenRedirectToAdminAccounts() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/accounts"));
+
     }
 
     @Test
-    @WithMockUser(roles = {"CUSTOMER_SERVICE_MANAGER"})
-    public void whenAdmin_thenRedirectToAdminAccounts() throws Exception {
+    @WithMockUser(roles = "CUSTOMER_SERVICE_MANAGER")
+    public void whenCustomerServiceManagerThenRedirectToAdminAccounts() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/accounts"));
+
     }
 
     @Test
-    @WithMockUser(roles = {"CUSTOMER"})
-    public void whenCustomer_thenRedirectToMyAccounts() throws Exception {
+    @WithMockUser(roles = "CUSTOMER")
+    public void whenCustomerThenRedirectToMyAccounts() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/my-accounts"));
+
     }
 
     @Test
-    @WithMockUser()
-    public void whenUnknownUser_thenRedirectToMyAccounts() throws Exception {
+    @WithMockUser
+    public void whenNoRoleThenForbidden() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isForbidden());
+
     }
 }

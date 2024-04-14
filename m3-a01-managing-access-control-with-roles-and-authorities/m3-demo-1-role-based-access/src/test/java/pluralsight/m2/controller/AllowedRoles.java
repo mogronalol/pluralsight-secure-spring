@@ -1,4 +1,4 @@
-package pluralsight.m2.util;
+package pluralsight.m2.controller;
 
 import pluralsight.m2.security.Roles;
 
