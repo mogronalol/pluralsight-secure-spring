@@ -23,15 +23,21 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
+
+
                                 .requestMatchers("/admin/accounts")
                                 .hasAuthority(Authorities.VIEW_ACCOUNTS.name())
+
                                 .requestMatchers("/admin/transfer")
                                 .hasAuthority(Authorities.TRANSFERS.name())
-                                .requestMatchers("/my-accounts").hasRole(Roles.CUSTOMER.name())
-                                .requestMatchers("/accounts/*/transactions")
+
+                                .requestMatchers("/my-accounts", "/accounts/*/transactions")
                                 .hasRole(Roles.CUSTOMER.name())
+
                                 .requestMatchers("/").authenticated()
+
+                                .requestMatchers("/images/**", "/favicon.ico")
+                                .permitAll()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")

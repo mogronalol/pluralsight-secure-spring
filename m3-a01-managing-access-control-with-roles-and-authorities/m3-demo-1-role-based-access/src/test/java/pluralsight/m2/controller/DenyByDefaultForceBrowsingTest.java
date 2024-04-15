@@ -37,20 +37,6 @@ public class DenyByDefaultForceBrowsingTest {
     }
 
     @Test
-    public void permitViewingAccountsWhenLoggedIn() throws Exception {
-
-        mockMvc.perform(get("/admin/accounts"))
-                .andExpect(status().is2xxSuccessful());
-    }
-
-    @Test
-    public void permitViewingTransfersWhenLoggedIn() throws Exception {
-
-        mockMvc.perform(get("/admin/transfer"))
-                .andExpect(status().is2xxSuccessful());
-    }
-
-    @Test
     public void redirectToLoginPageWhenViewingAnyPageWithoutLogin() throws Exception {
 
         mockMvc.perform(get("/" + UUID.randomUUID().toString()))

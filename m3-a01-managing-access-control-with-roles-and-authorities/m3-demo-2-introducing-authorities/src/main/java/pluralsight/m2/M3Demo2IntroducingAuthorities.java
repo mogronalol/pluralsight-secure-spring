@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class M2Demo4PermissionBasedAccess {
+public class M3Demo2IntroducingAuthorities {
     public static void main(String[] args) {
-        SpringApplication.run(M2Demo4PermissionBasedAccess.class);
+        SpringApplication.run(M3Demo2IntroducingAuthorities.class);
     }
 }

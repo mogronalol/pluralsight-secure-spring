@@ -24,11 +24,11 @@ public enum Roles {
     public Set<SimpleGrantedAuthority> getGrantedAuthorities() {
         return Stream.concat(authorities.stream()
                                 .map(a -> new SimpleGrantedAuthority(a.name())),
-                        Stream.of(new SimpleGrantedAuthority(grantedAuthorityName())))
+                        Stream.of(new SimpleGrantedAuthority(getGrantedAuthorityName())))
                 .collect(toSet());
     }
 
-    public String grantedAuthorityName() {
+    public String getGrantedAuthorityName() {
         return "ROLE_" + this.name();
     }
 }
