@@ -8,7 +8,7 @@ import pluralsight.m2.security.Roles;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-public class RoleBasedArgumentProvider implements ArgumentsProvider {
+public class RoleBasedArgumentsProvider implements ArgumentsProvider {
     @Override
     public Stream<? extends Arguments> provideArguments(final ExtensionContext context)
             throws Exception {
@@ -20,6 +20,7 @@ public class RoleBasedArgumentProvider implements ArgumentsProvider {
                 allowedRolesAnnotation.value();
 
         return Arrays.stream(Roles.values())
-                .map(r -> Arguments.of(r, Arrays.asList(allowedRoles).contains(r)));
+                .map(r -> Arguments.of(TestUtils.createTestAuthentication(r),
+                        Arrays.asList(allowedRoles).contains(r)));
     }
 }

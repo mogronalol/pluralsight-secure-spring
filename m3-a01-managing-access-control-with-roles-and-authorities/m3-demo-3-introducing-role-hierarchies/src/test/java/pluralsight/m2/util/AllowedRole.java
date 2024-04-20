@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AllowedRoles {
-    Roles[] value();
+public @interface AllowedRole {
+    Roles role();
+    String[] visibleResourceIds() default {};
 }

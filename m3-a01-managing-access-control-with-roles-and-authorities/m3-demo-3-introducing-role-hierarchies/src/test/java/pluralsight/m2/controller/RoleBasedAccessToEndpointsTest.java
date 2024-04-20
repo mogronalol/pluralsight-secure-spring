@@ -9,135 +9,217 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import pluralsight.m2.domain.Account;
+import pluralsight.m2.domain.Employee;
 import pluralsight.m2.repository.AccountRepository;
-import pluralsight.m2.repository.TestDataFactory;
+import pluralsight.m2.repository.EmployeeRepository;
 import pluralsight.m2.security.Roles;
+import pluralsight.m2.util.AllowedRole;
 import pluralsight.m2.util.AllowedRoles;
-import pluralsight.m2.util.RoleBasedArgumentsProvider;
+import pluralsight.m2.util.AllowedRolesArgumentProvider;
+
+import java.util.Set;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class RoleBasedAccessToEndpointsTest {
+@SpringBootTest @AutoConfigureMockMvc public class RoleBasedAccessToEndpointsTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    public static final String EMPLOYEES_MENU_ITEM = "data-test-id=\"nav-employees\"";
+    public static final String ACCOUNTS_MENU_ITEM = "data-test-id=\"nav-admin-accounts\"";
+    public static final String TRANSFERS_MENU_ITEM = "data-test-id=\"nav-admin-transfers\"";
 
-    @Autowired
-    private AccountRepository accountRepository;
+    @Autowired private MockMvc mockMvc;
 
-    @ParameterizedTest
-    @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER})
-    public void myAccountsIsSecured(final Authentication authentication,
-                                    final boolean permitted) throws Exception {
+    @Autowired private AccountRepository accountRepository;
 
-        final ResultActions perform = mockMvc.perform(
-                get("/my-accounts")
-                        .with(authentication(authentication)));
-
-        if (permitted) {
-            perform
-                    .andExpect(status().is(200))
-                    .andExpect(content().string(
-                            containsString("data-test-id=\"nav-my-accounts\"")))
-                    .andExpect(content().string(
-                            not(containsString("data-test-id=\"nav-admin-accounts\""))))
-                    .andExpect(content().string(
-                            not(containsString("data-test-id=\"nav-admin-transactions\""))));
-        } else {
-            perform
-                    .andExpect(status().is(403));
-        }
-    }
+    @Autowired private EmployeeRepository employeeRepository;
 
     @ParameterizedTest
-    @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER})
-    public void myAccountTransactionsIsSecured(final Authentication authentication,
-                                               final boolean permitted) throws Exception {
-
-        accountRepository.save(TestDataFactory.generateAccount("user", 0));
-
-        final ResultActions perform = mockMvc.perform(
-                get("/accounts/0/transactions")
-                        .with(authentication(authentication)));
-
-        if (permitted) {
-            perform
-                    .andExpect(status().is(200))
-                    .andExpect(content().string(
-                            containsString("data-test-id=\"nav-my-accounts\"")))
-                    .andExpect(content().string(
-                            not(containsString("data-test-id=\"nav-admin-accounts\""))))
-                    .andExpect(content().string(
-                            not(containsString("data-test-id=\"nav-admin-transactions\""))));
-        } else {
-            perform
-                    .andExpect(status().is(403));
-        }
-
-        accountRepository.deleteAll();
-    }
-
-    @ParameterizedTest
-    @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER_SERVICE, Roles.CUSTOMER_SERVICE_MANAGER,
-            Roles.SENIOR_VICE_PRESIDENT})
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles(
+            allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
+            allowed = {
+                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
+                    @AllowedRole(role = Roles.CUSTOMER_SERVICE,
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM}),
+                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
+                                    TRANSFERS_MENU_ITEM})})
     public void adminAccountsPageIsSecuredByRoles(final Authentication authentication,
-                                                  final boolean permitted) throws Exception {
+                                                  final Set<String> permittedDataTestIds,
+                                                  final Set<String> notPermittedDataTestIds,
+                                                  boolean permitted) throws Exception {
 
-        final ResultActions perform = mockMvc.perform(
-                        get("/admin/accounts")
-                                .with(authentication(authentication)))
-                .andExpect(status().is(permitted ? 200 : 403));
-
-        if (permitted) {
-
-            perform
-                    .andExpect(status().is(200))
-                    .andExpect(content().string(
-                            not(containsString("data-test-id=\"nav-my-accounts\""))))
-                    .andExpect(content().string(
-                            containsString("data-test-id=\"nav-admin-accounts\"")))
-                    .andExpect(content().string(
-                            containsString("data-test-id=\"nav-admin-transactions\"")));
-        } else {
-            perform
-                    .andExpect(status().is(403));
-        }
+        verifyAccess(get("/admin/accounts"),
+                authentication,
+                permittedDataTestIds,
+                notPermittedDataTestIds,
+                permitted);
     }
 
     @ParameterizedTest
-    @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER, Roles.CUSTOMER_SERVICE,
-            Roles.SENIOR_VICE_PRESIDENT})
-    public void transferPageIsSecuredByRoles(final Authentication authentication,
-                                             final boolean permitted) throws Exception {
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles(
+            allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
+            allowed = {
+                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
+                    @AllowedRole(role = Roles.CUSTOMER_SERVICE,
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM}),
+                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
+                                    TRANSFERS_MENU_ITEM})})
+    public void accountPageIsSecuredByRoles(final Authentication authentication,
+                                            final Set<String> permittedDataTestIds,
+                                            final Set<String> notPermittedDataTestIds,
+                                            boolean permitted) throws Exception {
 
-        final ResultActions perform = mockMvc.perform(
-                get("/admin/transfer")
-                        .with(authentication(authentication))
-        );
+        accountRepository.save(Account.builder().accountCode("code").build());
+
+        verifyAccess(get("/admin/accounts/code"),
+                authentication,
+                permittedDataTestIds,
+                notPermittedDataTestIds,
+                permitted);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles(
+            allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
+            allowed = {
+                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
+                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
+                                    TRANSFERS_MENU_ITEM})})
+    public void transferPageIsSecuredByRoles(final Authentication authentication,
+                                             final Set<String> permittedDataTestIds,
+                                             final Set<String> notPermittedDataTestIds,
+                                             boolean permitted) throws Exception {
+
+        verifyAccess(get("/admin/transfer"),
+                authentication,
+                permittedDataTestIds,
+                notPermittedDataTestIds,
+                permitted);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles(
+            allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
+            allowed = {
+                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER),
+                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT)})
+    public void performTransferIsSecuredByRoles(final Authentication authentication,
+                                                final Set<String> permittedDataTestIds,
+                                                final Set<String> notPermittedDataTestIds,
+                                                boolean permitted) throws Exception {
+
+        accountRepository.save(Account.builder().accountCode("ABC").build());
+
+        accountRepository.save(Account.builder().accountCode("DEF").build());
+
+        verifyAccess(post("/admin/transfer").param("fromAccountCode", "ABC")
+                        .param("toAccountCode", "DEF").param("amount", "100").with(csrf()),
+                authentication,
+                permittedDataTestIds,
+                notPermittedDataTestIds,
+                permitted, 302);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles(
+            allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
+            allowed = {
+                    @AllowedRole(role = Roles.HUMAN_RESOURCES,
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM}),
+                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
+                                    TRANSFERS_MENU_ITEM})})
+    public void employeesPageIsSecuredByRoles(final Authentication authentication,
+                                              final Set<String> permittedDataTestIds,
+                                              final Set<String> notPermittedDataTestIds,
+                                              boolean permitted) throws Exception {
+
+        verifyAccess(get("/employees"),
+                authentication,
+                permittedDataTestIds,
+                notPermittedDataTestIds,
+                permitted);
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles(
+            allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
+            allowed = {
+                    @AllowedRole(role = Roles.HUMAN_RESOURCES,
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM}),
+                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
+                                    TRANSFERS_MENU_ITEM})})
+    public void employeePageIsSecuredByRoles(final Authentication authentication,
+                                             final Set<String> permittedDataTestIds,
+                                             final Set<String> notPermittedDataTestIds,
+                                             boolean permitted) throws Exception {
+
+        final UUID employeeId = UUID.randomUUID();
+        employeeRepository.save(Employee.builder().employeeId(employeeId).build());
+
+        verifyAccess(get("/employees/" + employeeId),
+                authentication,
+                permittedDataTestIds,
+                notPermittedDataTestIds,
+                permitted);
+    }
+
+    private void verifyAccess(final MockHttpServletRequestBuilder requestBuilder,
+                              final Authentication authentication,
+                              final Set<String> permittedDataTestIds,
+                              final Set<String> notPermittedDataTestIds,
+                              final boolean permitted,
+                              final int permittedStatusCode) throws Exception {
+
+        final ResultActions result =
+                mockMvc.perform(requestBuilder.with(authentication(authentication)));
 
         if (permitted) {
-            perform
-                    .andExpect(status().is(200))
-                    .andExpect(content().string(
-                            not(containsString("data-test-id=\"nav-my-accounts\""))))
-                    .andExpect(content().string(
-                            containsString("data-test-id=\"nav-admin-accounts\"")))
-                    .andExpect(content().string(
-                            containsString("data-test-id=\"nav-admin-transactions\"")));
+
+            result.andExpect(status().is(permittedStatusCode));
+
+            for (String p : permittedDataTestIds) {
+                result.andExpect(content().string(containsString(p)));
+            }
+
+            for (String p : notPermittedDataTestIds) {
+                result.andExpect(content().string(not(containsString(p))));
+            }
         } else {
-            perform
-                    .andExpect(status().is(403));
+            result.andExpect(status().isForbidden());
         }
+    }
+
+    private void verifyAccess(final MockHttpServletRequestBuilder requestBuilder,
+                              final Authentication authentication,
+                              final Set<String> permittedDataTestIds,
+                              final Set<String> notPermittedDataTestIds,
+                              final boolean permitted) throws Exception {
+
+        verifyAccess(requestBuilder, authentication, permittedDataTestIds,
+                notPermittedDataTestIds, permitted, 200);
+
     }
 }

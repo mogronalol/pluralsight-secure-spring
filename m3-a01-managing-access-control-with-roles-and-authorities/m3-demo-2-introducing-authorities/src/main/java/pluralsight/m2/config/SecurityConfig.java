@@ -24,12 +24,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests
 
+                                .requestMatchers("/admin/transfer")
+                                .hasAuthority(Authorities.TRANSFERS.name())
 
                                 .requestMatchers("/admin/accounts")
                                 .hasAuthority(Authorities.VIEW_ACCOUNTS.name())
-
-                                .requestMatchers("/admin/transfer")
-                                .hasAuthority(Authorities.TRANSFERS.name())
 
                                 .requestMatchers("/my-accounts", "/accounts/*/transactions")
                                 .hasRole(Roles.CUSTOMER.name())

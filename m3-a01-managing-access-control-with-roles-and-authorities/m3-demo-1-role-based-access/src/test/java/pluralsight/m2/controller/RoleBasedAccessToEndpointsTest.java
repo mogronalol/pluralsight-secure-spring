@@ -145,17 +145,15 @@ public class RoleBasedAccessToEndpointsTest {
 
         if (permitted) {
 
-            final Matcher<String> containsAdminTransactions =
-                    containsString("data-test-id=\"nav-admin-transactions\"");
-
             perform
                     .andExpect(status().is(200))
                     .andExpect(content().string(
                             not(containsString("data-test-id=\"nav-my-accounts\""))))
                     .andExpect(content().string(
                             containsString("data-test-id=\"nav-admin-accounts\"")))
-                    .andExpect(content().string(role.equals(Roles.CUSTOMER_SERVICE_MANAGER) ?
-                            containsAdminTransactions : not(containsAdminTransactions)));
+                    .andExpect(content().string(
+                            containsString("data-test-id=\"nav-admin-transactions\"")
+                    ));
         } else {
             perform
                     .andExpect(status().isForbidden());

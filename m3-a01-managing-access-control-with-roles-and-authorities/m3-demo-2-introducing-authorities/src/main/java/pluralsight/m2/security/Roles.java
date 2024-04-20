@@ -4,28 +4,25 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toSet;
-import static pluralsight.m2.security.Authorities.TRANSFERS;
-import static pluralsight.m2.security.Authorities.VIEW_ACCOUNTS;
 
 public enum Roles {
     CUSTOMER,
-    CUSTOMER_SERVICE(VIEW_ACCOUNTS, TRANSFERS),
-    CUSTOMER_SERVICE_MANAGER(VIEW_ACCOUNTS, TRANSFERS);
+    CUSTOMER_SERVICE(Authorities.VIEW_ACCOUNTS),
+    CUSTOMER_SERVICE_MANAGER(Authorities.TRANSFERS, Authorities.VIEW_ACCOUNTS);
 
     private final Set<Authorities> authorities;
 
-    Roles(Authorities... authorities) {
-        this.authorities = Arrays.stream(authorities).collect(toSet());
+    Roles(final Authorities... authorities) {
+        this.authorities = Arrays.stream(authorities).collect(Collectors.toSet());
     }
 
     public Set<SimpleGrantedAuthority> getGrantedAuthorities() {
-        return Stream.concat(authorities.stream()
-                                .map(a -> new SimpleGrantedAuthority(a.name())),
+        return Stream.concat(
+                        authorities.stream().map(a -> new SimpleGrantedAuthority(a.name())),
                         Stream.of(new SimpleGrantedAuthority(getGrantedAuthorityName())))
-                .collect(toSet());
+                .collect(Collectors.toSet());
     }
 
     public String getGrantedAuthorityName() {

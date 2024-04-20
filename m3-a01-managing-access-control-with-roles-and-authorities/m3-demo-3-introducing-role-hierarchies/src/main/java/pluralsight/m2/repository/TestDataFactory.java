@@ -1,11 +1,13 @@
 package pluralsight.m2.repository;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pluralsight.m2.domain.Account;
 import pluralsight.m2.domain.AccountType;
+import pluralsight.m2.domain.Employee;
 import pluralsight.m2.domain.Transaction;
 import pluralsight.m2.security.Roles;
 
@@ -14,11 +16,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toCollection;
 
 @Component
+@RequiredArgsConstructor
 public class TestDataFactory {
     public static final String[] POSSIBLE_DESCRIPTIONS = {
             "Grocery Store Purchase",
@@ -34,10 +38,10 @@ public class TestDataFactory {
     };
 
     public static final List<UserDetails> USERS = List.of(
-            createUser("tom", Roles.CUSTOMER),
-            createUser("jane", Roles.CUSTOMER),
-            createUser("jack", Roles.CUSTOMER_SERVICE),
-            createUser("jill", Roles.CUSTOMER_SERVICE_MANAGER)
+            createUser("hr", Roles.HUMAN_RESOURCES),
+            createUser("customer-service", Roles.CUSTOMER_SERVICE),
+            createUser("customer-service-manager", Roles.CUSTOMER_SERVICE_MANAGER),
+            createUser("senior-vice-president", Roles.SENIOR_VICE_PRESIDENT)
     );
 
     public static final Random RANDOM = new Random(1);
@@ -45,10 +49,7 @@ public class TestDataFactory {
     private static int accountCode = 1000000;
 
     private final AccountRepository accountRepository;
-
-    public TestDataFactory(final AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
+    private final EmployeeRepository employeeRepository;
 
     private static UserDetails createUser(String username, Roles role) {
         // Note: User.withDefaultPasswordEncoder() is deprecated and should only be used for
@@ -92,10 +93,31 @@ public class TestDataFactory {
                 .build();
     }
 
+    public static Employee generateEmployee(final String name) {
+        final String[] departments = new String[] {"Loans", "Mortgages", "Customer Support"};
+        int randomIndex = RANDOM.nextInt(departments.length);
+
+        return Employee.builder()
+                .employeeId(UUID.randomUUID())
+                .name(name)
+                .department(departments[randomIndex])
+                .build();
+    }
+
     @PostConstruct
     public void generateAccounts() {
         saveAccount("tom");
         saveAccount("jane");
+    }
+
+    @PostConstruct
+    public void generateEmployees() {
+        employeeRepository.save(generateEmployee("John"));
+        employeeRepository.save(generateEmployee("Tom"));
+        employeeRepository.save(generateEmployee("Peter"));
+        employeeRepository.save(generateEmployee("Jane"));
+        employeeRepository.save(generateEmployee("Jack"));
+        employeeRepository.save(generateEmployee("Jill"));
     }
 
     private void saveAccount(final String username) {

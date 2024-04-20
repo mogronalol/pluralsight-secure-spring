@@ -14,8 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import pluralsight.m2.repository.TestDataFactory;
-import pluralsight.m2.security.BankingPermissionEvaluator;
-import pluralsight.m2.security.Roles;
+import pluralsight.m2.security.Authorities;
 
 @Configuration
 @EnableWebSecurity
@@ -27,17 +26,19 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
-                                .requestMatchers("/admin/accounts")
-                                .hasAnyRole(Roles.CUSTOMER_SERVICE.name(),
-                                        Roles.CUSTOMER_SERVICE_MANAGER.name())
+
+                                .requestMatchers("/admin/accounts", "/admin/accounts/*")
+                                .hasAuthority(Authorities.VIEW_ACCOUNTS.name())
+
                                 .requestMatchers("/admin/transfer")
-                                .hasAnyRole(Roles.CUSTOMER_SERVICE.name(),
-                                        Roles.CUSTOMER_SERVICE_MANAGER.name())
-                                .requestMatchers("/my-accounts").hasRole(Roles.CUSTOMER.name())
-                                .requestMatchers("/accounts/*/transactions")
-                                .hasRole(Roles.CUSTOMER.name())
+                                .hasAuthority(Authorities.TRANSFERS.name())
+
+                                .requestMatchers("/employees/**")
+                                .hasAuthority(Authorities.VIEW_EMPLOYEES.name())
+
                                 .requestMatchers("/").authenticated()
+
+                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
@@ -57,23 +58,22 @@ public class SecurityConfig {
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         roleHierarchy.setHierarchy("""
-                ROLE_CUSTOMER_SERVICE > TRANSFERS
                 ROLE_CUSTOMER_SERVICE > VIEW_ACCOUNTS
-                ROLE_CUSTOMER_SERVICE_MANAGER > LARGE_TRANSFERS
+                ROLE_CUSTOMER_SERVICE_MANAGER > TRANSFERS
                 ROLE_CUSTOMER_SERVICE_MANAGER > ROLE_CUSTOMER_SERVICE
+                ROLE_HUMAN_RESOURCES > VIEW_EMPLOYEES
                 ROLE_SENIOR_VICE_PRESIDENT > ROLE_CUSTOMER_SERVICE_MANAGER
+                ROLE_SENIOR_VICE_PRESIDENT > ROLE_HUMAN_RESOURCES
                 """
         );
         return roleHierarchy;
     }
 
     @Bean
-    public MethodSecurityExpressionHandler expressionHandler(RoleHierarchy roleHierarchy,
-                                                             BankingPermissionEvaluator bankingPermissionEvaluator) {
+    public MethodSecurityExpressionHandler expressionHandler(RoleHierarchy roleHierarchy) {
         DefaultMethodSecurityExpressionHandler expressionHandler =
                 new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setRoleHierarchy(roleHierarchy);
-        expressionHandler.setPermissionEvaluator(bankingPermissionEvaluator);
         return expressionHandler;
     }
 }

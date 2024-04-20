@@ -1,5 +1,6 @@
 package pluralsight.m2.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pluralsight.m2.domain.Account;
 import pluralsight.m2.domain.Transaction;
@@ -10,13 +11,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class AccountsService {
+
     private final AccountRepository accountRepository;
-
-    public AccountsService(AccountRepository accountRepository) {
-        this.accountRepository = accountRepository;
-    }
-
 
     public void transfer(final TransferModel transfer) {
         final Account from = accountRepository.getAccountByCode(transfer.getFromAccountCode());

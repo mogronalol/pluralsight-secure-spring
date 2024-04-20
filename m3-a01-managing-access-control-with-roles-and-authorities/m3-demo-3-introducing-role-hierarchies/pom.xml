@@ -9,7 +9,7 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m4-demo-3-introducing-role-hierarchies</artifactId>
+    <artifactId>m3-demo-3-introducing-role-hierarchies</artifactId>
 
     <dependencies>
         <dependency>

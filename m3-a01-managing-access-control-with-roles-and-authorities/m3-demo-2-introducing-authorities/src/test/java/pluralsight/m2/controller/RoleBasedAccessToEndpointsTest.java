@@ -13,8 +13,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import pluralsight.m2.repository.AccountRepository;
 import pluralsight.m2.repository.TestDataFactory;
 import pluralsight.m2.security.Roles;
-import pluralsight.m2.util.AllowedRoles;
-import pluralsight.m2.util.RoleBasedArgumentsProvider;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
@@ -22,7 +20,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static pluralsight.m2.util.Utils.hasRole;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -67,7 +64,7 @@ public class RoleBasedAccessToEndpointsTest {
             final Authentication authentication,
             final boolean permitted) throws Exception {
 
-        accountRepository.save(TestDataFactory.generateAccount("user", 0));
+        accountRepository.save(TestDataFactory.generateAccount("username", 0));
 
         final ResultActions perform = mockMvc.perform(
                 get("/accounts/0/transactions")
@@ -106,30 +103,45 @@ public class RoleBasedAccessToEndpointsTest {
 
         if (permitted) {
 
-            final Matcher<String> containsAdminTransactions =
-                    containsString("data-test-id=\"nav-admin-transactions\"");
-
             perform
                     .andExpect(status().is(200))
                     .andExpect(content().string(
                             not(containsString("data-test-id=\"nav-my-accounts\""))))
                     .andExpect(
                             content().string(
-                                    containsString("data-test-id=\"nav-admin-accounts\"")))
-                    .andExpect(content().string(
-                            hasRole(authentication, Roles.CUSTOMER_SERVICE_MANAGER) ?
-                                    containsAdminTransactions :
-                                    not(containsAdminTransactions)));
+                                    containsString("data-test-id=\"nav-admin-accounts\"")));
         } else {
             perform
-                    .andExpect(status().is(403));
+                    .andExpect(status().isForbidden());
         }
     }
 
     @ParameterizedTest
     @ArgumentsSource(RoleBasedArgumentsProvider.class)
-    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER,
-            Roles.CUSTOMER_SERVICE})
+    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER})
+    public void adminAccountsPageTransferLinkIsSecuredByRoles(final Authentication authentication,
+                                                              final boolean permitted)
+            throws Exception {
+
+        final ResultActions perform = mockMvc.perform(
+                get("/admin/accounts")
+                        .with(authentication(authentication)));
+
+        final Matcher<String> containsAdminTransactions =
+                containsString("data-test-id=\"nav-admin-transactions\"");
+
+        if (permitted) {
+            perform
+                    .andExpect(content().string(containsAdminTransactions));
+        } else {
+            perform
+                    .andExpect(content().string(not(containsAdminTransactions)));
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(RoleBasedArgumentsProvider.class)
+    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER})
     public void transferPageIsSecuredByRoles(
             final Authentication authentication,
             final boolean permitted) throws Exception {
@@ -140,24 +152,16 @@ public class RoleBasedAccessToEndpointsTest {
         );
 
         if (permitted) {
-
-            final Matcher<String> containsAdminTransactions =
-                    containsString("data-test-id=\"nav-admin-transactions\"");
-
             perform
                     .andExpect(status().is(200))
                     .andExpect(content().string(
                             not(containsString("data-test-id=\"nav-my-accounts\""))))
                     .andExpect(
                             content().string(
-                                    containsString("data-test-id=\"nav-admin-accounts\"")))
-                    .andExpect(content().string(
-                            hasRole(authentication, Roles.CUSTOMER_SERVICE_MANAGER) ?
-                                    containsAdminTransactions :
-                                    not(containsAdminTransactions)));
+                                    containsString("data-test-id=\"nav-admin-accounts\"")));
         } else {
             perform
-                    .andExpect(status().is(403));
+                    .andExpect(status().isForbidden());
         }
     }
 }

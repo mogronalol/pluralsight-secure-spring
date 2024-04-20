@@ -3,5 +3,6 @@ package pluralsight.m2.security;
 
 public enum Authorities {
     TRANSFERS,
-    LARGE_TRANSFERS
+    VIEW_ACCOUNTS,
+    VIEW_EMPLOYEES,
 }

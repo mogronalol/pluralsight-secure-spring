@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import pluralsight.m2.security.Roles;
-import pluralsight.m2.util.WithMockRole;
 
 import java.util.UUID;
 

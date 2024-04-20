@@ -1,6 +1,5 @@
 package pluralsight.m2.controller.mvc;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,9 +42,6 @@ public class AdminController {
     }
 
     @PostMapping("/transfer")
-    @PreAuthorize(
-            "hasAuthority('TRANSFERS') and (#transfer.amount < 1000 || hasAuthority" +
-                    "('LARGE_TRANSFERS'))")
     public String processTransfer(@ModelAttribute TransferModel transfer,
                                   final RedirectAttributes redirectAttributes) {
 
