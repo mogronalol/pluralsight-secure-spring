@@ -40,8 +40,7 @@ public class TestDataFactory {
     public static final List<UserDetails> USERS = List.of(
             createUser("hr", Roles.HUMAN_RESOURCES),
             createUser("customer-service", Roles.CUSTOMER_SERVICE),
-            createUser("customer-service-manager", Roles.CUSTOMER_SERVICE_MANAGER),
-            createUser("senior-vice-president", Roles.SENIOR_VICE_PRESIDENT)
+            createUser("customer-service-manager", Roles.CUSTOMER_SERVICE_MANAGER)
     );
 
     public static final Random RANDOM = new Random(1);

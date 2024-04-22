@@ -26,8 +26,7 @@ public class HomeController {
                 .collect(Collectors.toSet());
 
         if (usersRoles.contains(Roles.CUSTOMER_SERVICE)
-                || usersRoles.contains(Roles.CUSTOMER_SERVICE_MANAGER)
-                || usersRoles.contains(Roles.SENIOR_VICE_PRESIDENT)) {
+                || usersRoles.contains(Roles.CUSTOMER_SERVICE_MANAGER)) {
             return "redirect:/admin/accounts";
         } else if (usersRoles.contains(Roles.HUMAN_RESOURCES)) {
             return "redirect:/employees";

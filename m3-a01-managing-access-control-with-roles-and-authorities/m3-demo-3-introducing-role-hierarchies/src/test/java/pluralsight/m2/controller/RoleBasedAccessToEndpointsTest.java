@@ -51,10 +51,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                     @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
                             visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
                     @AllowedRole(role = Roles.CUSTOMER_SERVICE,
-                            visibleResourceIds = {ACCOUNTS_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
-                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
-                                    TRANSFERS_MENU_ITEM})})
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM})
+            })
     public void adminAccountsPageIsSecuredByRoles(final Authentication authentication,
                                                   final Set<String> permittedDataTestIds,
                                                   final Set<String> notPermittedDataTestIds,
@@ -75,10 +73,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                     @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
                             visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
                     @AllowedRole(role = Roles.CUSTOMER_SERVICE,
-                            visibleResourceIds = {ACCOUNTS_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
-                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
-                                    TRANSFERS_MENU_ITEM})})
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM})
+            })
     public void accountPageIsSecuredByRoles(final Authentication authentication,
                                             final Set<String> permittedDataTestIds,
                                             final Set<String> notPermittedDataTestIds,
@@ -99,10 +95,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
                     @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
-                            visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
-                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
-                                    TRANSFERS_MENU_ITEM})})
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM})
+            })
     public void transferPageIsSecuredByRoles(final Authentication authentication,
                                              final Set<String> permittedDataTestIds,
                                              final Set<String> notPermittedDataTestIds,
@@ -120,8 +114,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     @AllowedRoles(
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
-                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT)})
+                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER)})
     public void performTransferIsSecuredByRoles(final Authentication authentication,
                                                 final Set<String> permittedDataTestIds,
                                                 final Set<String> notPermittedDataTestIds,
@@ -145,10 +138,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
                     @AllowedRole(role = Roles.HUMAN_RESOURCES,
-                            visibleResourceIds = {EMPLOYEES_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
-                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
-                                    TRANSFERS_MENU_ITEM})})
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM})
+            })
     public void employeesPageIsSecuredByRoles(final Authentication authentication,
                                               final Set<String> permittedDataTestIds,
                                               final Set<String> notPermittedDataTestIds,
@@ -167,10 +158,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
                     @AllowedRole(role = Roles.HUMAN_RESOURCES,
-                            visibleResourceIds = {EMPLOYEES_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
-                            visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
-                                    TRANSFERS_MENU_ITEM})})
+                            visibleResourceIds = {EMPLOYEES_MENU_ITEM})
+            })
     public void employeePageIsSecuredByRoles(final Authentication authentication,
                                              final Set<String> permittedDataTestIds,
                                              final Set<String> notPermittedDataTestIds,

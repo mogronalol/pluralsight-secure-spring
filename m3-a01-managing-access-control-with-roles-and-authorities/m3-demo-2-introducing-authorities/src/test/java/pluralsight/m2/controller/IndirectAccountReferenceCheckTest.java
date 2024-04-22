@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class IndirectAccountReferenceCheckTest {
+public class  IndirectAccountReferenceCheckTest {
 
     @Autowired
     private MockMvc mockMvc;

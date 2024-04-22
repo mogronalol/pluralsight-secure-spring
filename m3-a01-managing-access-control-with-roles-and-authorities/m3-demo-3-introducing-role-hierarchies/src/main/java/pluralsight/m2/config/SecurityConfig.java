@@ -2,8 +2,6 @@ package pluralsight.m2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -56,25 +54,16 @@ public class SecurityConfig {
 
     @Bean
     public RoleHierarchy roleHierarchy() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         roleHierarchy.setHierarchy("""
                 ROLE_CUSTOMER_SERVICE > VIEW_ACCOUNTS
-                ROLE_CUSTOMER_SERVICE_MANAGER > TRANSFERS
                 ROLE_CUSTOMER_SERVICE_MANAGER > ROLE_CUSTOMER_SERVICE
+                ROLE_CUSTOMER_SERVICE_MANAGER > TRANSFERS
                 ROLE_HUMAN_RESOURCES > VIEW_EMPLOYEES
                 ROLE_SENIOR_VICE_PRESIDENT > ROLE_CUSTOMER_SERVICE_MANAGER
                 ROLE_SENIOR_VICE_PRESIDENT > ROLE_HUMAN_RESOURCES
-                """
-        );
+                """);
         return roleHierarchy;
-    }
-
-    @Bean
-    public MethodSecurityExpressionHandler expressionHandler(RoleHierarchy roleHierarchy) {
-        DefaultMethodSecurityExpressionHandler expressionHandler =
-                new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setRoleHierarchy(roleHierarchy);
-        return expressionHandler;
     }
 }
 
