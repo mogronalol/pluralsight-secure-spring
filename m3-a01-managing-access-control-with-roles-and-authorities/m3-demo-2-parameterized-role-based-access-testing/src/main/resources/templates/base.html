@@ -20,14 +20,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item" data-test-id="nav-my-accounts" sec:authorize="hasRole('CUSTOMER')">
+                <li class="nav-item" data-test-id="nav-my-accounts">
                     <a aria-current="page" class="nav-link active" href="/my-accounts">My Accounts</a>
                 </li>
-                <li class="nav-item" data-test-id="nav-admin-accounts"
-                    sec:authorize="hasAnyRole('CUSTOMER_SERVICE', 'CUSTOMER_SERVICE_MANAGER')">
+                <li class="nav-item" data-test-id="nav-admin-accounts">
                     <a aria-current="page" class="nav-link active" href="/admin/accounts">Accounts</a>
-                <li class="nav-item" data-test-id="nav-admin-transactions"
-                    sec:authorize="hasRole('CUSTOMER_SERVICE_MANAGER')">
+                <li class="nav-item" data-test-id="nav-admin-transactions">
                     <a aria-current="page" class="nav-link active" href="/admin/transfer">Transfers</a>
                 </li>
             </ul>

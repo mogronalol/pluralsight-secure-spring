@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pluralsight.m2.model.TransferModel;
 import pluralsight.m2.service.AccountsService;
+import pluralsight.m2.model.TransferModel;
 
 @Controller
 @RequestMapping("/admin")

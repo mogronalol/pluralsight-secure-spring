@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import pluralsight.m2.domain.Account;
-import pluralsight.m2.domain.AccountType;
 import pluralsight.m2.domain.Transaction;
+import pluralsight.m2.domain.AccountType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

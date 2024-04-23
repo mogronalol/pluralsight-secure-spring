@@ -3,8 +3,8 @@ package pluralsight.m2.service;
 import org.springframework.stereotype.Component;
 import pluralsight.m2.domain.Account;
 import pluralsight.m2.domain.Transaction;
-import pluralsight.m2.model.TransferModel;
 import pluralsight.m2.repository.AccountRepository;
+import pluralsight.m2.model.TransferModel;
 
 import java.time.LocalDateTime;
 import java.util.List;
