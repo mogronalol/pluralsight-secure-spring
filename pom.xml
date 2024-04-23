@@ -18,7 +18,8 @@
     <modules>
         <module>m2-a01-access-control-attack-vectors-and-mitigation-in-spring-applications</module>
         <module>m3-a01-managing-access-control-with-roles-and-authorities</module>
-        <module>m4-a01-managing-access-control-with-annotations-and-hierarchies</module>
+        <module>m4-a01-introducing-role-hierarchies</module>
+        <module>m5-a01-defence-in-depth-with-method-level-security-and-permissions</module>
     </modules>
 
     <dependencies>

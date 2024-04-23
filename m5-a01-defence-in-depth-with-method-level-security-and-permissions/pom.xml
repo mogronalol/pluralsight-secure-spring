@@ -10,14 +10,12 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>m3-a01-managing-access-control-with-roles-and-authorities</artifactId>
+    <artifactId>m5-a01-defence-in-depth-with-method-level-security-and-permissions</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>m3-demo-1-role-based-access</module>
-        <module>m3-demo-2-parameterized-role-based-access-testing</module>
-        <module>m3-demo-3-multi-layered-role-based-access</module>
-        <module>m3-demo-4-introducing-authorities</module>
+        <module>m5-demo-1-method-level-security</module>
+        <module>m5-demo-2-permission-based-access</module>
     </modules>
 
     <properties>
