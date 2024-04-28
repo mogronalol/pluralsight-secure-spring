@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:th="http://www.thymeleaf.org">
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Online Bank</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,15 +20,13 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item" data-test-id="nav-my-accounts" sec:authorize="hasRole('CUSTOMER')">
-                    <a aria-current="page" class="nav-link active" href="/my-accounts">My Accounts</a>
-                </li>
-                <li class="nav-item" data-test-id="nav-admin-accounts"
-                    sec:authorize="hasRole('CUSTOMER_SERVICE') or hasRole('CUSTOMER_SERVICE_MANAGER')">
+                <li class="nav-item" data-test-id="nav-admin-accounts" sec:authorize="hasAuthority('VIEW_ACCOUNTS')">
                     <a aria-current="page" class="nav-link active" href="/admin/accounts">Accounts</a>
-                <li class="nav-item" data-test-id="nav-admin-transactions"
-                    sec:authorize="hasRole('CUSTOMER_SERVICE_MANAGER')">
+                <li class="nav-item" data-test-id="nav-admin-transfers" sec:authorize="hasAuthority('TRANSFERS')">
                     <a aria-current="page" class="nav-link active" href="/admin/transfer">Transfers</a>
+                </li>
+                <li class="nav-item" data-test-id="nav-employees" sec:authorize="hasAuthority('VIEW_EMPLOYEES')">
+                    <a aria-current="page" class="nav-link active" href="/employees">Employees</a>
                 </li>
             </ul>
             <div class="dropdown">

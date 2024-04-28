@@ -1,6 +1,5 @@
 package pluralsight.m5.util;
 
-import org.springframework.security.test.context.support.WithSecurityContext;
 import pluralsight.m5.security.Roles;
 
 import java.lang.annotation.ElementType;
@@ -8,9 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@WithSecurityContext(factory = WithMockRoleSecurityContextFactory.class)
-public @interface WithMockRole {
-    Roles value();
+public @interface AllowedRoleAndResources {
+    Roles role();
+    String[] visibleResourceIds() default {};
 }

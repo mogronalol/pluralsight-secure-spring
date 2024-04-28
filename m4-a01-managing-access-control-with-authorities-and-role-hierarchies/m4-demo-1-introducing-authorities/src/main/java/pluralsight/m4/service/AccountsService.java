@@ -1,28 +1,22 @@
-package pluralsight.m5.service;
+package pluralsight.m4.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-import pluralsight.m5.domain.Account;
-import pluralsight.m5.domain.Transaction;
-import pluralsight.m5.model.TransferModel;
-import pluralsight.m5.repository.AccountRepository;
+import pluralsight.m4.domain.Account;
+import pluralsight.m4.domain.Transaction;
+import pluralsight.m4.model.TransferModel;
+import pluralsight.m4.repository.AccountRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
 public class AccountsService {
-
     private final AccountRepository accountRepository;
 
-    @PreAuthorize("""
-            (#transfer.amount.compareTo(new java.math.BigDecimal('500')) < 0 && hasAuthority('TRANSFERS'))
-            || hasAuthority('LARGE_TRANSFERS')
-            """)
+    public AccountsService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
     public void transfer(final TransferModel transfer) {
         final Account from = accountRepository.getAccountByCode(transfer.getFromAccountCode());
         from.getTransactions().add(Transaction.builder()
@@ -41,16 +35,10 @@ public class AccountsService {
                 .build());
     }
 
-    @PostFilter("""
-            filterObject.username == authentication.name || hasAuthority('VIEW_ACCOUNTS')
-            """)
     public List<Account> findAllAccounts() {
         return accountRepository.findAllAccounts();
     }
 
-    @PostAuthorize("""
-            returnObject.username == authentication.name || hasAuthority('VIEW_ACCOUNTS')
-            """)
     public Account getAccountByCode(final String accountCode) {
         return accountRepository.getAccountByCode(accountCode);
     }

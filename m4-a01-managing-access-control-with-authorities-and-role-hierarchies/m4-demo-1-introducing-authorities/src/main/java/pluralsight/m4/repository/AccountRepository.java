@@ -1,10 +1,9 @@
-package pluralsight.m5.repository;
+package pluralsight.m4.repository;
 
 import org.springframework.stereotype.Component;
-import pluralsight.m5.domain.Account;
+import pluralsight.m4.domain.Account;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -18,10 +17,6 @@ public class AccountRepository {
 
     public void save(final Account account) {
         allAccounts.add(account);
-    }
-
-    public void saveAll(final Collection<Account> account) {
-        allAccounts.addAll(account);
     }
 
     public void deleteAll() {

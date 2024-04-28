@@ -1,4 +1,4 @@
-package pluralsight.m5.controller.mvc;
+package pluralsight.m4.controller.mvc;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pluralsight.m5.model.TransferModel;
-import pluralsight.m5.service.AccountsService;
+import pluralsight.m4.model.TransferModel;
+import pluralsight.m4.service.AccountsService;
 
 @Controller
 @RequestMapping("/admin")

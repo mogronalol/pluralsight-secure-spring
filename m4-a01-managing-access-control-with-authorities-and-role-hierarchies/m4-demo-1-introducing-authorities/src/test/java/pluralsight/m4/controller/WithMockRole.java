@@ -1,7 +1,7 @@
-package pluralsight.m5.util;
+package pluralsight.m4.controller;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
-import pluralsight.m5.security.Roles;
+import pluralsight.m4.security.Roles;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

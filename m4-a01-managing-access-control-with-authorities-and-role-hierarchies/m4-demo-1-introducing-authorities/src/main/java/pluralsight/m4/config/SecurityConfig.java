@@ -1,4 +1,4 @@
-package pluralsight.m3.config;
+package pluralsight.m4.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,12 +9,13 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import pluralsight.m3.repository.TestDataFactory;
-import pluralsight.m3.security.Roles;
+import pluralsight.m4.repository.TestDataFactory;
+import pluralsight.m4.security.Authorities;
+import pluralsight.m4.security.Roles;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity()
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -22,14 +23,20 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(requests ->
                         requests
+
                                 .requestMatchers("/admin/transfer")
-                                    .hasRole(Roles.CUSTOMER_SERVICE_MANAGER.name())
+                                .hasAuthority(Authorities.TRANSFERS.name())
+
                                 .requestMatchers("/admin/accounts")
-                                .hasAnyRole(Roles.CUSTOMER_SERVICE_MANAGER.name(), Roles.CUSTOMER_SERVICE.name())
-                                .requestMatchers("/my-accounts",
-                                        "/accounts/*/transactions").hasRole(Roles.CUSTOMER.name())
+                                .hasAuthority(Authorities.VIEW_ACCOUNTS.name())
+
+                                .requestMatchers("/my-accounts", "/accounts/*/transactions")
+                                .hasRole(Roles.CUSTOMER.name())
+
                                 .requestMatchers("/").authenticated()
-                                .requestMatchers("/images/**", "/favicon.ico").permitAll()
+
+                                .requestMatchers("/images/**", "/favicon.ico")
+                                .permitAll()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
