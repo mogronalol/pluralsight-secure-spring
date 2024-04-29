@@ -9,7 +9,7 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m5-demo-2-permission-based-access</artifactId>
+    <artifactId>m5-demo-1-post-and-filter-method-level-security</artifactId>
 
     <dependencies>
         <dependency>

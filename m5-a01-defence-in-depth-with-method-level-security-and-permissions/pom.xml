@@ -14,8 +14,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>m5-demo-1-method-level-security</module>
-        <module>m5-demo-2-permission-based-access</module>
+        <module>m5-demo-1-post-and-filter-method-level-security</module>
+        <module>m5-demo-2-pre-method-level-security</module>
+        <module>m5-demo-3-permission-evaluation</module>
     </modules>
 
     <properties>
