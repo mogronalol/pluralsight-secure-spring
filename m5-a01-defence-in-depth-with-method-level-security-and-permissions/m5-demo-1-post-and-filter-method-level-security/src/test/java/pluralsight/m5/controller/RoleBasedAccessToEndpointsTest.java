@@ -31,7 +31,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest @AutoConfigureMockMvc public class RoleBasedAccessToEndpointsTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+public class RoleBasedAccessToEndpointsTest {
 
     public static final String EMPLOYEES_MENU_ITEM =
             "data-test-id=\"nav-employees\"";
@@ -40,11 +42,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     public static final String TRANSFERS_MENU_ITEM =
             "data-test-id=\"nav-admin-transfers\"";
 
-    @Autowired private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Autowired private AccountRepository accountRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
-    @Autowired private EmployeeRepository employeeRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @ParameterizedTest
     @ArgumentsSource(AllowedRolesAndResourcesArgumentProvider.class)

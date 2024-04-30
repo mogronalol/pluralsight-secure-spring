@@ -9,16 +9,20 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pluralsight.m5.domain.Account;
+import pluralsight.m5.model.TransferModel;
 import pluralsight.m5.repository.AccountRepository;
 import pluralsight.m5.repository.TestDataFactory;
 import pluralsight.m5.security.Roles;
 import pluralsight.m5.util.AllowedRoles;
 import pluralsight.m5.util.AllowedRolesArgumentProvider;
+import pluralsight.m5.util.DoubleArgumentsPerRole;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static pluralsight.m5.util.TestAccountBuilder.testAccountBuilder;
 
 @SpringBootTest
 class AccountsServiceAccessControlTests {
@@ -45,7 +49,7 @@ class AccountsServiceAccessControlTests {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        accountRepository.save(Account.builder().accountCode("code").username("user").build());
+        accountRepository.save(testAccountBuilder().build());
 
         final Throwable throwable = Assertions.catchThrowable(
                 () -> accountsService.getAccountByCode("code"));
@@ -67,8 +71,10 @@ class AccountsServiceAccessControlTests {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        accountRepository.save(
-                Account.builder().accountCode("code").username("other").build());
+        accountRepository.save(testAccountBuilder()
+                .accountCode("code")
+                .username("other")
+                .build());
 
         final Throwable throwable = Assertions.catchThrowable(
                 () -> accountsService.getAccountByCode("code"));
@@ -111,6 +117,70 @@ class AccountsServiceAccessControlTests {
         } else {
             assertThat(found)
                     .containsExactlyInAnyOrder(userAccount1, userAccount2);
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles({Roles.CUSTOMER_SERVICE, Roles.CUSTOMER_SERVICE_MANAGER,
+            Roles.SENIOR_VICE_PRESIDENT})
+    @DoubleArgumentsPerRole({0, 1, 499.99})
+    public void onlyAuthorizedUsersShouldPerformTransfers(Authentication authentication,
+                                                          double transferAmount,
+                                                          boolean permitted) {
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        accountRepository.save(testAccountBuilder()
+                .accountCode("from")
+                .build());
+
+        accountRepository.save(testAccountBuilder()
+                .accountCode("to")
+                .build());
+
+        final Throwable throwable = Assertions.catchThrowable(
+                () -> accountsService.transfer(TransferModel.builder()
+                        .fromAccountCode("from")
+                        .toAccountCode("to")
+                        .amount(BigDecimal.valueOf(transferAmount))
+                        .build()));
+
+        if (permitted) {
+            assertThat(throwable).isNull();
+        } else {
+            assertThat(throwable).isNotNull();
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER, Roles.SENIOR_VICE_PRESIDENT})
+    @DoubleArgumentsPerRole({500, 500.01, Double.MAX_VALUE})
+    public void onlyAuthorizedUsersShouldPerformLargeTransfers(Authentication authentication,
+                                                               double transferAmount,
+                                                               boolean permitted) {
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        accountRepository.save(testAccountBuilder()
+                .accountCode("from")
+                .build());
+        accountRepository.save(testAccountBuilder()
+                .accountCode("to")
+                .build());
+
+        final Throwable throwable = Assertions.catchThrowable(
+                () -> accountsService.transfer(TransferModel.builder()
+                        .fromAccountCode("from")
+                        .toAccountCode("to")
+                        .amount(BigDecimal.valueOf(transferAmount))
+                        .build()));
+
+        if (permitted) {
+            assertThat(throwable).isNull();
+        } else {
+            assertThat(throwable).isNotNull();
         }
     }
 }

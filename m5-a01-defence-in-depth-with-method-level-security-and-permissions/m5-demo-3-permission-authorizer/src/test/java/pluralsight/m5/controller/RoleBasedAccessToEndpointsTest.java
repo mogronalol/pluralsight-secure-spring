@@ -1,4 +1,4 @@
-package pluralsight.m4.controller;
+package pluralsight.m5.controller;
 
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,14 +10,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import pluralsight.m4.domain.Account;
-import pluralsight.m4.domain.Employee;
-import pluralsight.m4.repository.AccountRepository;
-import pluralsight.m4.repository.EmployeeRepository;
-import pluralsight.m4.security.Roles;
-import pluralsight.m4.util.AllowedRole;
-import pluralsight.m4.util.AllowedRoles;
-import pluralsight.m4.util.AllowedRolesArgumentProvider;
+import pluralsight.m5.domain.Employee;
+import pluralsight.m5.repository.AccountRepository;
+import pluralsight.m5.repository.EmployeeRepository;
+import pluralsight.m5.security.Roles;
+import pluralsight.m5.util.AllowedRoleAndResources;
+import pluralsight.m5.util.AllowedRolesAndResources;
+import pluralsight.m5.util.AllowedRolesAndResourcesArgumentProvider;
 
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pluralsight.m5.util.TestAccountBuilder.testAccountBuilder;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -52,15 +52,15 @@ public class RoleBasedAccessToEndpointsTest {
     private EmployeeRepository employeeRepository;
 
     @ParameterizedTest
-    @ArgumentsSource(AllowedRolesArgumentProvider.class)
-    @AllowedRoles(
+    @ArgumentsSource(AllowedRolesAndResourcesArgumentProvider.class)
+    @AllowedRolesAndResources(
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
-                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
+                    @AllowedRoleAndResources(role = Roles.CUSTOMER_SERVICE_MANAGER,
                             visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
-                    @AllowedRole(role = Roles.CUSTOMER_SERVICE,
-                            visibleResourceIds = {ACCOUNTS_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                    @AllowedRoleAndResources(role = Roles.CUSTOMER_SERVICE,
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
+                    @AllowedRoleAndResources(role = Roles.SENIOR_VICE_PRESIDENT,
                             visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
                                     TRANSFERS_MENU_ITEM})})
     public void adminAccountsPageIsSecuredByRoles(final Authentication authentication,
@@ -76,15 +76,15 @@ public class RoleBasedAccessToEndpointsTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(AllowedRolesArgumentProvider.class)
-    @AllowedRoles(
+    @ArgumentsSource(AllowedRolesAndResourcesArgumentProvider.class)
+    @AllowedRolesAndResources(
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
-                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
+                    @AllowedRoleAndResources(role = Roles.CUSTOMER_SERVICE_MANAGER,
                             visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
-                    @AllowedRole(role = Roles.CUSTOMER_SERVICE,
-                            visibleResourceIds = {ACCOUNTS_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                    @AllowedRoleAndResources(role = Roles.CUSTOMER_SERVICE,
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
+                    @AllowedRoleAndResources(role = Roles.SENIOR_VICE_PRESIDENT,
                             visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
                                     TRANSFERS_MENU_ITEM})})
     public void accountPageIsSecuredByRoles(final Authentication authentication,
@@ -92,7 +92,7 @@ public class RoleBasedAccessToEndpointsTest {
                                             final Set<String> notPermittedDataTestIds,
                                             boolean permitted) throws Exception {
 
-        accountRepository.save(Account.builder().accountCode("code").build());
+        accountRepository.save(testAccountBuilder().build());
 
         verifyAccess(get("/admin/accounts/code"),
                 authentication,
@@ -102,13 +102,15 @@ public class RoleBasedAccessToEndpointsTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(AllowedRolesArgumentProvider.class)
-    @AllowedRoles(
+    @ArgumentsSource(AllowedRolesAndResourcesArgumentProvider.class)
+    @AllowedRolesAndResources(
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
-                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER,
+                    @AllowedRoleAndResources(role = Roles.CUSTOMER_SERVICE,
                             visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                    @AllowedRoleAndResources(role = Roles.CUSTOMER_SERVICE_MANAGER,
+                            visibleResourceIds = {ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM}),
+                    @AllowedRoleAndResources(role = Roles.SENIOR_VICE_PRESIDENT,
                             visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
                                     TRANSFERS_MENU_ITEM})})
     public void transferPageIsSecuredByRoles(final Authentication authentication,
@@ -124,20 +126,21 @@ public class RoleBasedAccessToEndpointsTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(AllowedRolesArgumentProvider.class)
-    @AllowedRoles(
+    @ArgumentsSource(AllowedRolesAndResourcesArgumentProvider.class)
+    @AllowedRolesAndResources(
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
-                    @AllowedRole(role = Roles.CUSTOMER_SERVICE_MANAGER),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT)})
+                    @AllowedRoleAndResources(role = Roles.CUSTOMER_SERVICE_MANAGER),
+                    @AllowedRoleAndResources(role = Roles.CUSTOMER_SERVICE),
+                    @AllowedRoleAndResources(role = Roles.SENIOR_VICE_PRESIDENT)})
     public void performTransferIsSecuredByRoles(final Authentication authentication,
                                                 final Set<String> permittedDataTestIds,
                                                 final Set<String> notPermittedDataTestIds,
                                                 boolean permitted) throws Exception {
 
-        accountRepository.save(Account.builder().accountCode("ABC").build());
+        accountRepository.save(testAccountBuilder().accountCode("ABC").build());
 
-        accountRepository.save(Account.builder().accountCode("DEF").build());
+        accountRepository.save(testAccountBuilder().accountCode("DEF").build());
 
         verifyAccess(post("/admin/transfer").param("fromAccountCode", "ABC")
                         .param("toAccountCode", "DEF").param("amount", "100").with(csrf()),
@@ -148,13 +151,13 @@ public class RoleBasedAccessToEndpointsTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(AllowedRolesArgumentProvider.class)
-    @AllowedRoles(
+    @ArgumentsSource(AllowedRolesAndResourcesArgumentProvider.class)
+    @AllowedRolesAndResources(
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
-                    @AllowedRole(role = Roles.HUMAN_RESOURCES,
+                    @AllowedRoleAndResources(role = Roles.HUMAN_RESOURCES,
                             visibleResourceIds = {EMPLOYEES_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                    @AllowedRoleAndResources(role = Roles.SENIOR_VICE_PRESIDENT,
                             visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
                                     TRANSFERS_MENU_ITEM})})
     public void employeesPageIsSecuredByRoles(final Authentication authentication,
@@ -170,13 +173,13 @@ public class RoleBasedAccessToEndpointsTest {
     }
 
     @ParameterizedTest
-    @ArgumentsSource(AllowedRolesArgumentProvider.class)
-    @AllowedRoles(
+    @ArgumentsSource(AllowedRolesAndResourcesArgumentProvider.class)
+    @AllowedRolesAndResources(
             allResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM, TRANSFERS_MENU_ITEM},
             allowed = {
-                    @AllowedRole(role = Roles.HUMAN_RESOURCES,
+                    @AllowedRoleAndResources(role = Roles.HUMAN_RESOURCES,
                             visibleResourceIds = {EMPLOYEES_MENU_ITEM}),
-                    @AllowedRole(role = Roles.SENIOR_VICE_PRESIDENT,
+                    @AllowedRoleAndResources(role = Roles.SENIOR_VICE_PRESIDENT,
                             visibleResourceIds = {EMPLOYEES_MENU_ITEM, ACCOUNTS_MENU_ITEM,
                                     TRANSFERS_MENU_ITEM})})
     public void employeePageIsSecuredByRoles(final Authentication authentication,
