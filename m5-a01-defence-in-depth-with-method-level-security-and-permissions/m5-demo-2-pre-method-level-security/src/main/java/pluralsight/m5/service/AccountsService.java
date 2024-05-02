@@ -3,6 +3,7 @@ package pluralsight.m5.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import pluralsight.m5.domain.Account;
 import pluralsight.m5.domain.Transaction;
@@ -18,7 +19,10 @@ public class AccountsService {
 
     private final AccountRepository accountRepository;
 
-
+    @PreAuthorize("""
+hasAuthority('LARGE_TRANSFERS')
+|| #transfer.amount.compareTo(new java.math.BigDecimal('500')) < 0 && hasAuthority('TRANSFERS')
+""")
     public void transfer(final TransferModel transfer) {
         final Account from = accountRepository.getAccountByCode(transfer.getFromAccountCode());
         from.getTransactions().add(Transaction.builder()

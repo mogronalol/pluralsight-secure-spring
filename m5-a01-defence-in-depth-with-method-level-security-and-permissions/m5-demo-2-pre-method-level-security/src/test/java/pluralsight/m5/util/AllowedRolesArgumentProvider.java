@@ -26,8 +26,21 @@ public class AllowedRolesArgumentProvider implements ArgumentsProvider {
                         Collections.emptySet() :
                         Arrays.stream(allowedRolesAnnotations.value()).collect(toSet());
 
+        final AllowedRoleArguments allowedRoleArguments =
+                context.getRequiredTestMethod().getAnnotation(AllowedRoleArguments.class);
+
+        if (allowedRoleArguments == null ||
+            allowedRoleArguments.doubleArguments().length == 0) {
+            return Stream.of(Roles.values())
+                    .map(r -> Arguments.of(createTestAuthentication(r),
+                            allowedRoles.contains(r)));
+        }
+
         return Stream.of(Roles.values())
-                .map(r -> Arguments.of(createTestAuthentication(r),
-                        allowedRoles.contains(r)));
+                .flatMap(r -> Arrays.stream(allowedRoleArguments.doubleArguments())
+                        .boxed()
+                        .map(d -> Arguments.of(createTestAuthentication(r),
+                                allowedRoles.contains(r), d)));
+
     }
 }

@@ -6,19 +6,24 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pluralsight.m5.domain.Account;
+import pluralsight.m5.model.TransferModel;
 import pluralsight.m5.repository.AccountRepository;
 import pluralsight.m5.repository.TestDataFactory;
 import pluralsight.m5.security.Roles;
+import pluralsight.m5.util.AllowedRoleArguments;
 import pluralsight.m5.util.AllowedRoles;
 import pluralsight.m5.util.AllowedRolesArgumentProvider;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.ThrowableAssert.catchThrowable;
 
 @SpringBootTest
 class AccountsServiceAccessControlTests {
@@ -111,6 +116,64 @@ class AccountsServiceAccessControlTests {
         } else {
             assertThat(found)
                     .containsExactlyInAnyOrder(userAccount1, userAccount2);
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles({Roles.CUSTOMER_SERVICE, Roles.CUSTOMER_SERVICE_MANAGER,
+            Roles.SENIOR_VICE_PRESIDENT})
+    @AllowedRoleArguments(doubleArguments = {0.01, 250, 499.99})
+    public void onlyUsersWithTransfersOrLargeTransfersAuthorityCanPerformLowTransfers(
+            Authentication authentication,
+            boolean permitted,
+            double transactionAmount
+    ) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        accountRepository.save(Account.builder().accountCode("from").build());
+        accountRepository.save(Account.builder().accountCode("to").build());
+
+        final Throwable throwable =
+                catchThrowable(() -> accountsService.transfer(TransferModel.builder()
+                        .fromAccountCode("from")
+                        .toAccountCode("to")
+                        .amount(new BigDecimal(transactionAmount))
+                        .build()));
+
+        if(permitted) {
+            assertThat(throwable).isNull();
+        } else {
+            assertThat(throwable).isInstanceOf(AccessDeniedException.class);
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(AllowedRolesArgumentProvider.class)
+    @AllowedRoles({Roles.CUSTOMER_SERVICE_MANAGER,
+            Roles.SENIOR_VICE_PRESIDENT})
+    @AllowedRoleArguments(doubleArguments = {500, 500.01, Double.MAX_VALUE})
+    public void onlyUsersWithLargeTransfersAuthorityCanPerformLargeTransfers(
+            Authentication authentication,
+            boolean permitted,
+            double transactionAmount
+    ) {
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        accountRepository.save(Account.builder().accountCode("from").build());
+        accountRepository.save(Account.builder().accountCode("to").build());
+
+        final Throwable throwable =
+                catchThrowable(() -> accountsService.transfer(TransferModel.builder()
+                        .fromAccountCode("from")
+                        .toAccountCode("to")
+                        .amount(new BigDecimal(transactionAmount))
+                        .build()));
+
+        if(permitted) {
+            assertThat(throwable).isNull();
+        } else {
+            assertThat(throwable).isInstanceOf(AccessDeniedException.class);
         }
     }
 }
