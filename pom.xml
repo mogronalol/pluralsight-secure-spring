@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.2</version>
+        <version>3.2.5</version>
     </parent>
 
     <modules>
@@ -20,6 +20,9 @@
         <module>m3-a01-managing-access-control-with-roles</module>
         <module>m4-a01-managing-access-control-with-authorities-and-role-hierarchies</module>
         <module>m5-a01-defence-in-depth-with-method-level-security-and-permissions</module>
+        <module>m7-a03-injection-vulnerabilities-in-spring-applications</module>
+        <module>m10-a06-addressing-vulnerable-components</module>
+        <module>m12-a08-software-and-data-integrity-failures</module>
     </modules>
 
     <dependencies>

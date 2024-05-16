@@ -19,8 +19,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(requests ->
                         requests
-                                .requestMatchers("/images/**", "favicon.ico").permitAll()
                                 .requestMatchers("/admin/**", "/").authenticated()
+                                .requestMatchers("/images/**", "favicon.ico").permitAll()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
