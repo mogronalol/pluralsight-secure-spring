@@ -17,4 +17,47 @@
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>pluralsight-example</artifactId>-->
+<!--            <version>3.2.2</version>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>local-repo</id>-->
+<!--            <name>Local Maven Repository</name>-->
+<!--            <url>http://localhost:8080/</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>false</enabled>-->
+<!--            </snapshots>-->
+<!--            <releases>-->
+<!--                <checksumPolicy>fail</checksumPolicy>-->
+<!--            </releases>-->
+<!--        </repository>-->
+<!--    </repositories>-->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.simplify4u.plugins</groupId>
+                <artifactId>pgpverify-maven-plugin</artifactId>
+                <version>1.17.0</version>
+                <executions>
+                    <execution>
+                        <id>verify-signatures</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <failNoSignature>true</failNoSignature>
+<!--                    <keysMapLocation>${project.basedir}/keysmap.file</keysMapLocation>-->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -41,7 +41,7 @@
                 </executions>
                 <configuration>
                     <failBuildOnCVSS>7.0</failBuildOnCVSS>
-                    <suppressionFile>owasp-suppression.xml</suppressionFile>
+                    <suppressionFile>${project.basedir}/owasp-suppression.xml</suppressionFile>
                 </configuration>
             </plugin>
         </plugins>
