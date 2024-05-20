@@ -13,6 +13,10 @@
     <artifactId>m7-a03-injection-vulnerabilities-in-spring-applications</artifactId>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>m7-demo-1-sql-injection</module>
+    </modules>
+
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

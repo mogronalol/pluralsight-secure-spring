@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
         <artifactId>spring-framework-secure-coding</artifactId>
         <version>1</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.17.1</version>
-        </dependency>
-    </dependencies>
-
-    <artifactId>m5-a06-addressing-vulnerable-components</artifactId>
+    <artifactId>m12-demo-2-pgp</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -29,22 +21,25 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.owasp</groupId>
-                <artifactId>dependency-check-maven</artifactId>
-                <version>9.0.10</version>
+                <groupId>org.simplify4u.plugins</groupId>
+                <artifactId>pgpverify-maven-plugin</artifactId>
+                <version>1.17.0</version>
                 <executions>
                     <execution>
-                        <phase>verify</phase>
+                        <id>verify-signatures</id>
                         <goals>
                             <goal>check</goal>
                         </goals>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
                 <configuration>
-                    <failBuildOnCVSS>7</failBuildOnCVSS>
-                    <suppressionFile>${project.basedir}/owasp-suppression.xml</suppressionFile>
+                    <failNoSignature>true</failNoSignature>
+<!--                    Uncommenting me will make the build fail due to untrusted PGP keys-->
+<!--                    <keysMapLocation>${project.basedir}/keysmap.file</keysMapLocation>-->
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>
