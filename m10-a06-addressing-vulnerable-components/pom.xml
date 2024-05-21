@@ -18,7 +18,7 @@
         </dependency>
     </dependencies>
 
-    <artifactId>m5-a06-addressing-vulnerable-components</artifactId>
+    <artifactId>m10-a06-addressing-vulnerable-components</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

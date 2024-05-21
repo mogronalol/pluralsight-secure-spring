@@ -15,6 +15,7 @@
 
     <modules>
         <module>m7-demo-1-sql-injection</module>
+        <module>m7-demo-2-command-injection</module>
     </modules>
 
 

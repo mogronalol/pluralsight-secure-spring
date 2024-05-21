@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Image Resizer</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">Image Resizer</a>
+    </div>
+</header>
+<main class="container mt-4">
+    <div class="card">
+        <div class="card-header">Resize Your Image</div>
+        <div class="card-body">
+            <form method="POST" action="/" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="file" class="form-label">Choose image to upload (JPEG, PNG, etc.):</label>
+                    <input type="file" class="form-control" id="file" name="file" required>
+                </div>
+                <div class="mb-3">
+                    <label for="width" class="form-label">Width:</label>
+                    <input class="form-control" id="width" name="width" min="1" required>
+                </div>
+                <div class="mb-3">
+                    <label for="height" class="form-label">Height:</label>
+                    <input class="form-control" id="height" name="height" min="1" required>
+                </div>
+                <div class="mb-3">
+                    <label for="format" class="form-label">Format:</label>
+                    <select id="format" name="format" class="form-select">
+                        <option value="png">PNG</option>
+                        <option value="gif">GIF</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Resize Image</button>
+            </form>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
