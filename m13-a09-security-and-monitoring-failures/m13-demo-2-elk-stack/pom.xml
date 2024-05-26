@@ -7,16 +7,22 @@
         <groupId>com.pluralsight</groupId>
         <artifactId>spring-framework-secure-coding</artifactId>
         <version>1</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <packaging>pom</packaging>
+    <artifactId>m13-demo-2-elk-stack</artifactId>
 
-    <artifactId>m13-a09-security-and-monitoring-failures</artifactId>
-
-    <modules>
-        <module>m13-demo-1-logging-security-events</module>
-        <module>m13-demo-2-elk-stack</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.4</version>
+        </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
