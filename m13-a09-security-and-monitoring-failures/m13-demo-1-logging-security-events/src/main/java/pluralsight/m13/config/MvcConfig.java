@@ -12,4 +12,12 @@ public class MvcConfig implements WebMvcConfigurer {
         registry.addViewController("/login").setViewName("login");
     }
 
+//    @Bean
+//    public FilterRegistrationBean<RequestAndContextLoggingFilter> loggingFilter() {
+//        FilterRegistrationBean<RequestAndContextLoggingFilter> registrationBean =
+//                new FilterRegistrationBean<>();
+//        registrationBean.setFilter(new RequestAndContextLoggingFilter());
+//        registrationBean.setOrder(Integer.MIN_VALUE);
+//        return registrationBean;
+//    }
 }

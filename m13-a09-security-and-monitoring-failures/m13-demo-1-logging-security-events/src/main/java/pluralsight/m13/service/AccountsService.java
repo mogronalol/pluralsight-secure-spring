@@ -1,6 +1,7 @@
 package pluralsight.m13.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,12 +16,16 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AccountsService {
 
     private final AccountRepository accountRepository;
 
     @PreAuthorize("@permissionAuthorizer.canPerformTransfer(#transfer)")
     public void transfer(final TransferModel transfer) {
+
+        log.info("Performing transfer...");
+
         final Account from = accountRepository.getAccountByCode(transfer.getFromAccountCode());
         from.getTransactions().add(Transaction.builder()
                 .description("Transfer to " + transfer.getToAccountCode())
@@ -40,11 +45,13 @@ public class AccountsService {
 
     @PostFilter("@permissionAuthorizer.getCanViewAccount(filterObject)")
     public List<Account> findAllAccounts() {
+        log.info("Finding all accounts...");
         return accountRepository.findAllAccounts();
     }
 
     @PostAuthorize("@permissionAuthorizer.getCanViewAccount(returnObject)")
     public Account getAccountByCode(final String accountCode) {
+        log.info("Getting account by code...");
         return accountRepository.getAccountByCode(accountCode);
     }
 }

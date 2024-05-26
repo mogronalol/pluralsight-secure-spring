@@ -13,8 +13,10 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import pluralsight.m13.repository.TestDataFactory;
 import pluralsight.m13.security.Authorities;
+import pluralsight.m13.security.SecurityContextLoggingFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -44,7 +46,9 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll);
+                .logout(LogoutConfigurer::permitAll)
+                .addFilterAfter(new SecurityContextLoggingFilter(),
+                        SecurityContextHolderFilter.class);
 
         return http.build();
     }
