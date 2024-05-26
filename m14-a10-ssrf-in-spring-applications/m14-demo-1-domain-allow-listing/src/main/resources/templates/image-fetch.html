@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>Image Fetcher</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">Image Fetcher</a>
+    </div>
+</header>
+<main class="container mt-4">
+    <div class="card">
+        <div class="card-header">Fetch and Display Image</div>
+        <div class="card-body">
+            <form th:action="@{/fetch-image}" method="GET">
+                <div class="mb-3">
+                    <label for="url" class="form-label">Enter Image URL:</label>
+                    <input type="text" class="form-control" id="url" name="url" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Fetch Image</button>
+            </form>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

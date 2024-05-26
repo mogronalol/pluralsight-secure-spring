@@ -1,4 +1,4 @@
-package pluralsight.m7.controller.mvc;
+package pluralsight.m13.controller.mvc;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pluralsight.m7.model.TransferModel;
-import pluralsight.m7.service.AccountsService;
+import pluralsight.m13.model.TransferModel;
+import pluralsight.m13.service.AccountsService;
 
 @Controller
 @RequestMapping("/admin")
@@ -31,14 +31,12 @@ public class AdminController {
     @GetMapping("/accounts/{accountCode}")
     public String transactions(final Model model,
                                @PathVariable("accountCode") String accountCode) {
-
         model.addAttribute("account", accountsService.getAccountByCode(accountCode));
         return "transactions";
     }
 
     @GetMapping("/accounts")
     public String accounts(final Model model) {
-
         model.addAttribute("accounts", accountsService.findAllAccounts());
         return "accounts";
     }
