@@ -5,13 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>spring-framework-secure-coding</artifactId>
+        <artifactId>m6-a03-cryptographic-failures</artifactId>
         <version>1</version>
     </parent>
 
-    <packaging>pom</packaging>
-
-    <artifactId>m6-a03-cryptographic-failures</artifactId>
+    <artifactId>m6-demo-5-secure-passwords-with-work-factor</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -19,12 +17,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <modules>
-        <module>m6-demo-1-https</module>
-        <module>m6-demo-2-mtls</module>
-        <module>m6-demo-3-insecure-passwords</module>
-        <module>m6-demo-4-secure-passwords</module>
-        <module>m6-demo-5-secure-passwords-with-work-factor</module>
-    </modules>
-
+    <dependencies>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.17.0</version>
+        </dependency>
+    </dependencies>
 </project>
