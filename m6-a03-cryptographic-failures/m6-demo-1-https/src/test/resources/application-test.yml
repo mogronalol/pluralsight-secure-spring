@@ -1,0 +1,8 @@
+spring:
+  ssl:
+    bundle:
+      jks:
+        application:
+          truststore:
+            location: "classpath:demo-truststore.p12"
+            password: "notsecure"
