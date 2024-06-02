@@ -11,7 +11,7 @@
 
     <packaging>pom</packaging>
 
-    <artifactId>m6-a03-cryptographic-failures</artifactId>
+    <artifactId>m6-a02-cryptographic-failures</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

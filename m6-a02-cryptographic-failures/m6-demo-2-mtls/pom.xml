@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>m6-a03-cryptographic-failures</artifactId>
+        <artifactId>m6-a02-cryptographic-failures</artifactId>
         <version>1</version>
     </parent>
 
