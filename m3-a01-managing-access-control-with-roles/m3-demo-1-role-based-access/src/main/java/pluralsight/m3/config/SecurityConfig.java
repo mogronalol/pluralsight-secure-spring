@@ -28,7 +28,7 @@ public class SecurityConfig {
                                 .hasAnyRole(Roles.CUSTOMER_SERVICE_MANAGER.name(), Roles.CUSTOMER_SERVICE.name())
                                 .requestMatchers("/my-accounts",
                                         "/accounts/*/transactions").hasRole(Roles.CUSTOMER.name())
-                                .requestMatchers("/").authenticated()
+                                .requestMatchers("/", "/error").authenticated()
                                 .requestMatchers("/images/**", "/favicon.ico").permitAll()
                 )
                 .formLogin((form) -> form

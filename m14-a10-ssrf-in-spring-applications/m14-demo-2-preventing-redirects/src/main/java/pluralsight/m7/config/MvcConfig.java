@@ -38,7 +38,7 @@ public class MvcConfig implements WebMvcConfigurer {
                             final String httpMethod)
                             throws IOException {
                         super.prepareConnection(connection, httpMethod);
-                        connection.setInstanceFollowRedirects(true);
+                        connection.setInstanceFollowRedirects(false);
                     }
                 })
                 .build();

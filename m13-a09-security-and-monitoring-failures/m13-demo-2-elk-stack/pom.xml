@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>spring-framework-secure-coding</artifactId>
+        <artifactId>m13-a09-security-and-monitoring-failures</artifactId>
         <version>1</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>m13-demo-2-elk-stack</artifactId>

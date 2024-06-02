@@ -18,7 +18,7 @@ import java.util.List;
 public class ImageFetcherController {
 
     private static final List<String>
-            allowedDomains = Arrays.asList("www.pluralsight.com", "www.other-pluralsight.com");
+            allowedDomains = Arrays.asList("www.pluralsight.com", "other-pluralsight.com");
 
     private final RestTemplate restTemplate;
 

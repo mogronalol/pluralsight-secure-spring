@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 .requestMatchers("/employees/**")
                                 .hasAuthority(Authorities.VIEW_EMPLOYEES.name())
 
-                                .requestMatchers("/").authenticated()
+                                .requestMatchers("/", "/error").authenticated()
 
                                 .requestMatchers("/images/**", "/favicon.ico").permitAll()
                 )

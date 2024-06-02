@@ -16,6 +16,8 @@
     <modules>
         <module>m13-demo-1-logging-security-events</module>
         <module>m13-demo-2-elk-stack</module>
+        <module>m13-demo-3-sensitive-data-masking</module>
+        <module>m13-demo-4-actuator</module>
     </modules>
 
     <properties>

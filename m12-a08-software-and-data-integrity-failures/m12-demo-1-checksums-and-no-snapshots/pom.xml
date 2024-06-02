@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>spring-framework-secure-coding</artifactId>
+        <artifactId>m12-a08-software-and-data-integrity-failures</artifactId>
         <version>1</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>m12-demo-1-checksums-and-no-snapshots</artifactId>

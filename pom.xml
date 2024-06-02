@@ -25,7 +25,6 @@
         <module>m12-a08-software-and-data-integrity-failures</module>
         <module>m14-a10-ssrf-in-spring-applications</module>
         <module>m13-a09-security-and-monitoring-failures</module>
-        <module>m13-a09-security-and-monitoring-failures/m13-demo-1-logging-security-events</module>
     </modules>
 
     <dependencies>

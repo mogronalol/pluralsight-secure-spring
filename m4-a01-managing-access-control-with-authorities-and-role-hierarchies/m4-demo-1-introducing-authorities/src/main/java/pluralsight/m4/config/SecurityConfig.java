@@ -33,7 +33,7 @@ public class SecurityConfig {
                                 .requestMatchers("/my-accounts", "/accounts/*/transactions")
                                 .hasRole(Roles.CUSTOMER.name())
 
-                                .requestMatchers("/").authenticated()
+                                .requestMatchers("/", "/error").authenticated()
 
                                 .requestMatchers("/images/**", "/favicon.ico")
                                 .permitAll()

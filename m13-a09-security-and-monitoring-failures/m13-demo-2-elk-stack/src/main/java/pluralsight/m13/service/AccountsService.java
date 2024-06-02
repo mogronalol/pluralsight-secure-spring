@@ -24,7 +24,7 @@ public class AccountsService {
     @PreAuthorize("@permissionAuthorizer.canPerformTransfer(#transfer)")
     public void transfer(final TransferModel transfer) {
 
-        log.info("Performing transfer...");
+        log.info("Performing transfer... {}", transfer);
 
         final Account from = accountRepository.getAccountByCode(transfer.getFromAccountCode());
         from.getTransactions().add(Transaction.builder()
@@ -51,7 +51,7 @@ public class AccountsService {
 
     @PostAuthorize("@permissionAuthorizer.getCanViewAccount(returnObject)")
     public Account getAccountByCode(final String accountCode) {
-        log.info("Getting account by code...");
+        log.info("Getting account by code... {}", accountCode);
         return accountRepository.getAccountByCode(accountCode);
     }
 }

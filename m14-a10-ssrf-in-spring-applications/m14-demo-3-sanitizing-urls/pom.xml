@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>spring-framework-secure-coding</artifactId>
+        <artifactId>m14-a10-ssrf-in-spring-applications</artifactId>
         <version>1</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>m14-demo-3-sanitizing-urls</artifactId>

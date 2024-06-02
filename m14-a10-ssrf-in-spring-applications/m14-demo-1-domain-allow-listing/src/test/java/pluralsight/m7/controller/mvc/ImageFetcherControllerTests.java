@@ -23,9 +23,9 @@ public class ImageFetcherControllerTests {
 
     private static Stream<Object[]> arguments() {
         return Stream.of(
-                new Object[]{"http://pluralsight.com", true},
+                new Object[]{"http://www.pluralsight.com", true},
                 new Object[]{"http://other-pluralsight.com", true},
-                new Object[]{"http://pluralsight.com/path", true},
+                new Object[]{"http://www.pluralsight.com/path", true},
                 new Object[]{"http://other-pluralsight.com/path", true},
                 new Object[]{"http://subdomain.pluralsight.com", false},
                 new Object[]{"http://subdomain.other-pluralsight.com", false},

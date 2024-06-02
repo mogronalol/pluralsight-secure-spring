@@ -1,0 +1,11 @@
+spring.thymeleaf.cache: false
+management:
+  server:
+    port: 8080
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    jolokia:
+      enabled: true

@@ -37,9 +37,10 @@ public class ImageFetcherControllerTests {
 
     private static Stream<Object[]> arguments() {
         return Stream.of(
-                new Object[]{"http://pluralsight.com", true},
+                new Object[]{"http://www.pluralsight.com", true},
                 new Object[]{"http://other-pluralsight.com", true},
-                new Object[]{"http://pluralsight.com/path", true},
+                new Object[]{"http://www.pluralsight.com/path", true},
+                new Object[]{"http://www.pluralsight.com/path", true},
                 new Object[]{"http://other-pluralsight.com/path", true},
                 new Object[]{"http://subdomain.pluralsight.com", false},
                 new Object[]{"http://subdomain.other-pluralsight.com", false},
@@ -69,7 +70,7 @@ public class ImageFetcherControllerTests {
     public void shouldPerformRequest(String url, boolean allowed) throws Exception {
 
         hoverfly.simulate(
-                dsl(service("http://pluralsight.com")
+                dsl(service("http://www.pluralsight.com")
                         .anyMethod(newRegexMatcher(".*"))
                         .willReturn(success())),
                 dsl(service("http://other-pluralsight.com")
