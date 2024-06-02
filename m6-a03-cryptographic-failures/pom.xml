@@ -21,6 +21,7 @@
 
     <modules>
         <module>m6-demo-1-https</module>
+        <module>m6-demo-2-mtls</module>
     </modules>
 
 </project>

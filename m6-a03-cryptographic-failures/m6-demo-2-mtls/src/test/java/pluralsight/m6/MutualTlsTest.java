@@ -10,15 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
+import pluralsight.m6.domain.Account;
+import pluralsight.m6.repository.AccountRepository;
 
-import java.util.List;
+import javax.net.ssl.SSLHandshakeException;
+import java.net.ConnectException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
-public class HttpsTest {
+public class MutualTlsTest {
 
     @Autowired
     RestClient.Builder builder;
@@ -26,29 +28,35 @@ public class HttpsTest {
     @Autowired
     RestClientSsl restClientSsl;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     private RestClient restClient;
 
     @BeforeEach
     public void buildRestClient() {
         restClient = builder
-                .apply(restClientSsl.fromBundle("application"))
+                .apply(restClientSsl.fromBundle("client"))
                 .build();
+
+        accountRepository.save(Account.builder()
+                    .accountCode("accountCode")
+                    .index(0)
+                    .username("test")
+                    .displayName("test account")
+                    .build());
     }
 
     @Test
-    public void testHttpToHttpsRedirect() {
+    public void testHttpRejected() {
 
-        final ResponseEntity<Void> response = restClient
+        assertThatThrownBy(() -> restClient
                 .get()
                 .uri("http://localhost:8080")
                 .retrieve()
-                .toBodilessEntity();
-
-        assertThat(response.getStatusCode())
-                .isEqualTo(HttpStatus.FOUND);
-
-        assertThat(response.getHeaders())
-                .containsEntry("Location", List.of("https://localhost:8443/"));
+                .toBodilessEntity())
+                .hasCauseInstanceOf(ConnectException.class)
+                .hasMessageContaining("Connection refused");
     }
 
     @Test
@@ -63,15 +71,26 @@ public class HttpsTest {
     }
 
     @Test
-    public void testStrictTransportSecurityForHttps() {
+    public void testMutualTlsPermitted() {
         final ResponseEntity<Void> responseEntity = restClient.get()
-                .uri("https://localhost:8443")
+                .uri("https://localhost:8443/accounts/accountCode")
                 .retrieve()
                 .toBodilessEntity();
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getHeaders())
-                .containsEntry("Strict-Transport-Security", List.of("max-age=31536000 ; includeSubDomains"));
+    }
+
+    @Test
+    public void testOneWayTlsRejected() {
+        assertThatThrownBy(() -> builder
+                .apply(restClientSsl.fromBundle("client-no-client-cert"))
+                .build()
+                .get()
+                .uri("https://localhost:8443")
+                .retrieve()
+                .toBodilessEntity())
+                .hasCauseInstanceOf(SSLHandshakeException.class)
+                .hasMessageContaining("bad_certificate");
     }
 }
 

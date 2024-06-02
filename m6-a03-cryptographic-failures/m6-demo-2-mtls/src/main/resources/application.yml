@@ -1,0 +1,28 @@
+spring.thymeleaf.cache: false
+logging:
+  level:
+    org.springframework.security: debug
+
+spring:
+  ssl:
+    bundle:
+      jks:
+        server:
+          key:
+            alias: "server"
+          keystore:
+            location: "classpath:demo-server-keystore.p12"
+            password: "notsecure"
+            type: "PKCS12"
+          truststore:
+            location: "classpath:demo-server-truststore.p12"
+            password: "notsecure"
+            type: "PKCS12"
+
+server:
+  port: 8443
+  ssl:
+    bundle: "server"
+    client-auth: need
+
+http.port: 8080

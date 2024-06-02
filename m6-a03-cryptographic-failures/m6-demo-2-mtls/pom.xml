@@ -9,7 +9,7 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m6-demo-1-https</artifactId>
+    <artifactId>m6-demo-2-mtls</artifactId>
 
     <dependencies>
         <dependency>
