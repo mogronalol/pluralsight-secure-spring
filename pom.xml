@@ -22,6 +22,7 @@
         <module>m5-a01-defence-in-depth-with-method-level-security-and-permissions</module>
         <module>m6-a02-cryptographic-failures</module>
         <module>m7-a03-injection-vulnerabilities-in-spring-applications</module>
+        <module>m8-a04-insecure-design</module>
         <module>m10-a06-addressing-vulnerable-components</module>
         <module>m12-a08-software-and-data-integrity-failures</module>
         <module>m14-a10-ssrf-in-spring-applications</module>
