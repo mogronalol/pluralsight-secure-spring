@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class ImageFetcherController {
     private static final List<String>
             allowedDomains = Arrays.asList("www.pluralsight.com", "other-pluralsight.com");
 
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
 
     @GetMapping("/")
     private String imageConversion() {
@@ -37,7 +37,10 @@ public class ImageFetcherController {
         }
 
         final ResponseEntity<byte[]> responseEntity =
-                restTemplate.getForEntity(uri, byte[].class);
+                restClient.get()
+                        .uri(uri)
+                        .retrieve()
+                        .toEntity(byte[].class);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setCacheControl("no-cache, no-store, must-revalidate");

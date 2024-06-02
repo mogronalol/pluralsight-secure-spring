@@ -8,14 +8,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 import pluralsight.m14.domain.Account;
 
 @Controller
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
 
     @GetMapping("/")
     public String redirectRootToAccounts(Model model,
@@ -31,8 +31,9 @@ public class AccountController {
             url += "&accountType=" + accountType.toLowerCase();
         }
 
-        final Account[] accounts = restTemplate.getForObject(url,
-                Account[].class);
+        final Account[] accounts = restClient.get().uri(url).
+                retrieve()
+                .body(Account[].class);
 
         model.addAttribute("accounts", accounts);
         return "accounts";
