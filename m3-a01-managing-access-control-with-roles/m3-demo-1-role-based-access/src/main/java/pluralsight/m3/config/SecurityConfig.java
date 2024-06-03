@@ -24,7 +24,7 @@ public class SecurityConfig {
                         requests
                                 .requestMatchers("/admin/transfer")
                                     .hasRole(Roles.CUSTOMER_SERVICE_MANAGER.name())
-                                .requestMatchers("/admin/accounts")
+                                .requestMatchers("/admin/accounts/**")
                                 .hasAnyRole(Roles.CUSTOMER_SERVICE_MANAGER.name(), Roles.CUSTOMER_SERVICE.name())
                                 .requestMatchers("/my-accounts",
                                         "/accounts/*/transactions").hasRole(Roles.CUSTOMER.name())

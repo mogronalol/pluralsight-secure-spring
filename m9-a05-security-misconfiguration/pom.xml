@@ -14,6 +14,8 @@
     <modules>
         <module>m9-demo-1-default-passwords</module>
         <module>m9-demo-2-disabling-error-page</module>
+        <module>m9-demo-3-csrf-vulnerability</module>
+        <module>m9-demo-4-cors-vulnerability</module>
     </modules>
 
     <properties>

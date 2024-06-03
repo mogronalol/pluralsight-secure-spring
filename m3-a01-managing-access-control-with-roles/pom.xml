@@ -7,7 +7,6 @@
         <groupId>com.pluralsight</groupId>
         <artifactId>spring-framework-secure-coding</artifactId>
         <version>1</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>m3-a01-managing-access-control-with-roles</artifactId>
