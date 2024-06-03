@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error Page</title>
+</head>
+<body>
+<main class="container mt-4" layout:fragment="content" role="main">
+    <div class="card mb-4">
+        <div class="card-header">
+            Something Went Wrong!
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">Unexpected Error</h4>
+            <p class="card-text"><strong>Something went wrong at our end, please try again later</strong></p>
+            <div>
+                <a th:href="@{/}" class="btn btn-primary">Go to Home Page</a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

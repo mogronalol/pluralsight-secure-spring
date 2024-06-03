@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home Page</title>
+</head>
+<body>
+<main class="container mt-4" layout:fragment="content" role="main">
+    <div class="card mb-4">
+        <div class="card-header">
+            Welcome to Our Site!
+        </div>
+        <div class="card-body">
+            <h4 class="card-title">Hello, Visitor!</h4>
+            <p class="card-text">Welcome to our website. We hope you find what you're looking for. Feel free to browse around and explore our features.</p>
+            <div>
+                <a th:href="@{/error-example}" class="btn btn-info">Learn more</a>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
