@@ -3,20 +3,13 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>m2-a01-access-control-attack-vectors-and-mitigation-in-spring-applications</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>m2-demo-1-deny-by-default</module>
-        <module>m2-demo-2-indirect-object-references</module>
-    </modules>
-
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>spring-framework-secure-coding</artifactId>
+        <artifactId>m6-a02-cryptographic-failures-in-transit</artifactId>
         <version>1</version>
     </parent>
+
+    <artifactId>m6-demo-2-mtls</artifactId>
 
     <dependencies>
         <dependency>

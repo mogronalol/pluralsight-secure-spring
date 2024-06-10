@@ -7,7 +7,6 @@
         <groupId>com.pluralsight</groupId>
         <artifactId>m4-a01-managing-access-control-with-authorities-and-role-hierarchies</artifactId>
         <version>1</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>m4-demo-2-introducing-role-hierarchies</artifactId>

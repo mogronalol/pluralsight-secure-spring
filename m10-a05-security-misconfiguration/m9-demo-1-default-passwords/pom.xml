@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>spring-framework-secure-coding</artifactId>
+        <artifactId>m10-a05-security-misconfiguration</artifactId>
         <version>1</version>
     </parent>
 
-    <artifactId>m4-a01-managing-access-control-with-authorities-and-role-hierarchies</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>m4-demo-1-introducing-authorities</module>
-        <module>m4-demo-2-introducing-role-hierarchies</module>
-    </modules>
+    <artifactId>m9-demo-1-default-passwords</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -9,13 +9,15 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m5-a01-defence-in-depth-with-method-level-security-and-permissions</artifactId>
     <packaging>pom</packaging>
 
+    <artifactId>m14-a09-security-and-monitoring-failures</artifactId>
+
     <modules>
-        <module>m5-demo-1-post-and-filter-method-level-security</module>
-        <module>m5-demo-2-pre-method-level-security</module>
-        <module>m5-demo-3-permission-authorizer</module>
+        <module>m13-demo-1-logging-security-events</module>
+        <module>m13-demo-2-elk-stack</module>
+        <module>m13-demo-3-sensitive-data-masking</module>
+        <module>m13-demo-4-actuator</module>
     </modules>
 
     <properties>

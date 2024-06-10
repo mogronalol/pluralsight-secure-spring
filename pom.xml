@@ -20,14 +20,16 @@
         <module>m3-a01-managing-access-control-with-roles</module>
         <module>m4-a01-managing-access-control-with-authorities-and-role-hierarchies</module>
         <module>m5-a01-defence-in-depth-with-method-level-security-and-permissions</module>
-        <module>m6-a02-cryptographic-failures</module>
-        <module>m7-a03-injection-vulnerabilities-in-spring-applications</module>
-        <module>m8-a04-insecure-design</module>
-        <module>m9-a05-security-misconfiguration</module>
-        <module>m10-a06-addressing-vulnerable-components</module>
-        <module>m12-a08-software-and-data-integrity-failures</module>
-        <module>m14-a10-ssrf-in-spring-applications</module>
-        <module>m13-a09-security-and-monitoring-failures</module>
+        <module>m6-a02-cryptographic-failures-in-transit</module>
+        <module>m7-a02-cryptographic-failures-with-passwords</module>
+        <module>m8-a03-injection-vulnerabilities-in-spring-applications</module>
+        <module>m9-a04-insecure-design</module>
+        <module>m10-a05-security-misconfiguration</module>
+        <module>m11-a06-addressing-vulnerable-components</module>
+        <module>m12-a11-combatting-identification-and-authentication-failures-in-spring-framework</module>
+        <module>m13-a08-software-and-data-integrity-failures</module>
+        <module>m14-a09-security-and-monitoring-failures</module>
+        <module>m15-a10-ssrf-in-spring-applications</module>
     </modules>
 
     <dependencies>

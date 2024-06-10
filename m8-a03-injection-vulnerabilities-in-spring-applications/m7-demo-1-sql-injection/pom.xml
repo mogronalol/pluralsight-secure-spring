@@ -3,22 +3,23 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>m2-a01-access-control-attack-vectors-and-mitigation-in-spring-applications</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>m2-demo-1-deny-by-default</module>
-        <module>m2-demo-2-indirect-object-references</module>
-    </modules>
-
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>spring-framework-secure-coding</artifactId>
+        <artifactId>m8-a03-injection-vulnerabilities-in-spring-applications</artifactId>
         <version>1</version>
     </parent>
 
+    <artifactId>m7-demo-1-sql-injection</artifactId>
+
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>

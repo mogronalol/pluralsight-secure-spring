@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -9,14 +9,8 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m5-a01-defence-in-depth-with-method-level-security-and-permissions</artifactId>
+    <artifactId>m12-a11-combatting-identification-and-authentication-failures-in-spring-framework</artifactId>
     <packaging>pom</packaging>
-
-    <modules>
-        <module>m5-demo-1-post-and-filter-method-level-security</module>
-        <module>m5-demo-2-pre-method-level-security</module>
-        <module>m5-demo-3-permission-authorizer</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

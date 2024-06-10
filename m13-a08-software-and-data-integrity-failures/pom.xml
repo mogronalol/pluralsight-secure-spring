@@ -9,14 +9,8 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m5-a01-defence-in-depth-with-method-level-security-and-permissions</artifactId>
+    <artifactId>m13-a08-software-and-data-integrity-failures</artifactId>
     <packaging>pom</packaging>
-
-    <modules>
-        <module>m5-demo-1-post-and-filter-method-level-security</module>
-        <module>m5-demo-2-pre-method-level-security</module>
-        <module>m5-demo-3-permission-authorizer</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -24,4 +18,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <modules>
+        <module>m12-demo-1-checksums-and-no-snapshots</module>
+        <module>m12-demo-2-pgp</module>
+    </modules>
 </project>
