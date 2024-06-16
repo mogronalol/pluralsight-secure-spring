@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -9,18 +9,20 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m10-a05-security-misconfiguration</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>m9-demo-1-default-passwords</module>
-        <module>m9-demo-2-disabling-error-page</module>
-        <module>m9-demo-3-csrf-vulnerability</module>
-    </modules>
+
+    <artifactId>m07-a02-cryptographic-failures-with-passwords</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <modules>
+        <module>m6-demo-1-insecure-passwords</module>
+        <module>m6-demo-2-secure-passwords</module>
+        <module>m6-demo-3-secure-passwords-with-work-factor</module>
+    </modules>
 
 </project>

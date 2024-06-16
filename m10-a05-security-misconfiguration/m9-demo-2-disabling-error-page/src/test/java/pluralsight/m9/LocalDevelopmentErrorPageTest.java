@@ -24,7 +24,7 @@ public class LocalDevelopmentErrorPageTest {
     private int port;
 
     @Test
-    public void noTestUsers() {
+    public void showStackTrace() {
 
         final HttpServerErrorException httpServerErrorException =
                 (HttpServerErrorException) catchThrowable(() -> builder.build()

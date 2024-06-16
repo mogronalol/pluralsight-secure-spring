@@ -1,0 +1,734 @@
+{
+  "version": "2.2.0",
+  "summary": {
+    "title": "Online Banking Application Threat Model",
+    "owner": "Andrew Morgan",
+    "description": "A Spring Boogt retail banking application.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "id": 2,
+        "title": "High-level System Diagram",
+        "diagramType": "STRIDE",
+        "placeholder": "New STRIDE diagram description",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.2.0",
+        "cells": [
+          {
+            "position": {
+              "x": 740,
+              "y": 160
+            },
+            "size": {
+              "width": 110,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "Web app"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 1,
+            "id": "08b2a6f2-a3dd-4948-85be-9aa82ae0698f",
+            "data": {
+              "type": "tm.Process",
+              "name": "Web app",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": false,
+              "privilegeLevel": "",
+              "threats": [
+                {
+                  "id": "4cff93ac-115a-4498-a117-b0673ff22798",
+                  "title": "Load balancer bypassing",
+                  "status": "Open",
+                  "severity": "High",
+                  "type": "Spoofing",
+                  "description": "Once inside the network, an attacker can call the web application directly, spoofing the load balancer and bypassing any security controls implemented within the load balancer.",
+                  "mitigation": "- MTLS between the load balancer and the application.\n",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 13,
+                  "score": ""
+                },
+                {
+                  "id": "9bf7429d-3cac-4547-a18c-581ef0dd0d8e",
+                  "title": "Denying transactions",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Repudiation",
+                  "description": "The user denies having made a particular transaction.",
+                  "mitigation": "Store all transaction date in logs.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 14,
+                  "score": ""
+                },
+                {
+                  "id": "e4e17bd2-faad-4000-9692-621c804d8da2",
+                  "title": "Gains administrative access",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Elevation of privilege",
+                  "description": "An attacker exploits a vulnerability in the banking application to gain administrative access.",
+                  "mitigation": "- Apply the least privilige principle to all authenticated users.\n- Implement strict role-based access control for all interactions with the system.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 15,
+                  "score": ""
+                },
+                {
+                  "id": "b294b190-7167-4b75-8e76-004e9ce4cabc",
+                  "title": "Compromised password",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Spoofing",
+                  "description": "Attacker logs in using another users leaked password",
+                  "mitigation": "- MFA\n- Storing passwords securely with salts and expensive hashing algorithm\n- Testing passwords against known passwords",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 17,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 940,
+              "y": 410
+            },
+            "size": {
+              "width": 120,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Postgres"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 2,
+            "id": "57dd7310-5bb6-4d08-b135-d2e9c45198d3",
+            "data": {
+              "type": "tm.Store",
+              "name": "Postgres",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": [
+                {
+                  "id": "305484e4-0710-483e-ac70-769410e8fa6e",
+                  "title": "Data breach of all user data",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Information disclosure",
+                  "description": "Bad actor accesses the database and is able to view all user data.",
+                  "mitigation": "- Use encryption at rest\n- Regularly rotate encryption keys and set expiry\n- Strict access controls for data access",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 18,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 40,
+              "y": -10
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Customer"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 3,
+            "id": "d6c936c1-97e6-4225-84c2-b584a2b7a237",
+            "data": {
+              "type": "tm.Actor",
+              "name": "Customer",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "providesAuthentication": false,
+              "threats": []
+            }
+          },
+          {
+            "position": {
+              "x": 140,
+              "y": 150
+            },
+            "size": {
+              "width": 112.5,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Browser"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 4,
+            "id": "6d992055-ca6e-4681-8d10-fe4d61422a39",
+            "data": {
+              "type": "tm.Actor",
+              "name": "Browser",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "providesAuthentication": false,
+              "threats": []
+            }
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "External trust boundart",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            },
+            "id": "54065079-45c3-42f9-8fe6-986840c51a1c",
+            "labels": [
+              "External trust boundary"
+            ],
+            "source": {
+              "x": 30,
+              "y": 410
+            },
+            "target": {
+              "x": 470,
+              "y": -20
+            },
+            "vertices": [
+              {
+                "x": 260,
+                "y": 360
+              },
+              {
+                "x": 390,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "Internal trust boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            },
+            "id": "ca7444cd-a173-423d-9d8c-4c5338f5a74f",
+            "labels": [
+              "Internal trust boundary"
+            ],
+            "source": {
+              "x": 460,
+              "y": 450
+            },
+            "target": {
+              "x": 670,
+              "y": -10
+            },
+            "vertices": []
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "Data access trust boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            },
+            "id": "73a3e7cb-d1ac-4a31-89f9-57bbc58afcce",
+            "labels": [
+              "Data access trust boundary"
+            ],
+            "source": {
+              "x": 610,
+              "y": 450
+            },
+            "target": {
+              "x": 1010,
+              "y": 240
+            }
+          },
+          {
+            "shape": "trust-boundary-curve",
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Boundary",
+              "name": "Log storage trust boundary",
+              "description": "",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            },
+            "id": "629a4048-e7b3-45e9-b0aa-54683b84af76",
+            "labels": [
+              "Log storage trust boundary"
+            ],
+            "source": {
+              "x": 720,
+              "y": -10
+            },
+            "target": {
+              "x": 970,
+              "y": 210
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "User interactions",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": []
+            },
+            "id": "f2182593-e48f-4b7a-9435-ad439411ba43",
+            "labels": [
+              "User interactions"
+            ],
+            "source": {
+              "cell": "d6c936c1-97e6-4225-84c2-b584a2b7a237"
+            },
+            "target": {
+              "cell": "6d992055-ca6e-4681-8d10-fe4d61422a39"
+            },
+            "vertices": [
+              {
+                "x": 140,
+                "y": 130
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Banking data updates and querying",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": []
+            },
+            "id": "09d17ece-14dc-42ab-93d3-90ad28d2d936",
+            "labels": [
+              "Banking data updates and querying"
+            ],
+            "source": {
+              "cell": "08b2a6f2-a3dd-4948-85be-9aa82ae0698f"
+            },
+            "target": {
+              "cell": "57dd7310-5bb6-4d08-b135-d2e9c45198d3"
+            },
+            "vertices": [
+              {
+                "x": 1100,
+                "y": 350
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Logs operation",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": []
+            },
+            "id": "0a7c02d6-500d-4603-8563-448abca2f700",
+            "labels": [
+              "Logs operations"
+            ],
+            "source": {
+              "cell": "08b2a6f2-a3dd-4948-85be-9aa82ae0698f"
+            },
+            "target": {
+              "cell": "b593bf63-255c-4c2b-b83e-b82f2e680447"
+            },
+            "vertices": [
+              {
+                "x": 1040,
+                "y": 90
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "HTTPS",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [
+                {
+                  "id": "6f778336-1971-4e64-89bf-ddc9c8520b5b",
+                  "title": "MITM Attack Data Tampering",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Tampering",
+                  "description": "MITM attacks could be used to intercept financial data coming or being return to the user.",
+                  "mitigation": "Use HTTPS with a signed certificate in load balancer.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 5,
+                  "score": ""
+                },
+                {
+                  "id": "293e63c8-3e29-48c0-a860-e32cfc7ad21e",
+                  "title": "MITM Attack Data Viewing",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Information disclosure",
+                  "description": "A MITM attack can be used to intercept private financial data.",
+                  "mitigation": "Use HTTPS with a signed certificate in load balancer.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 7,
+                  "score": ""
+                }
+              ]
+            },
+            "id": "c3315c8d-5d53-4843-a822-74284bcf8304",
+            "labels": [
+              "HTTPS"
+            ],
+            "source": {
+              "x": 260,
+              "y": 170
+            },
+            "target": {
+              "cell": "82a44158-f236-4f8c-9643-ef288af09c7f"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "targetMarker": {
+                  "name": "block"
+                },
+                "sourceMarker": {
+                  "name": ""
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "HTTPS",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": false,
+              "isPublicNetwork": false,
+              "protocol": "",
+              "threats": [
+                {
+                  "id": "4006c936-5a70-4c57-8875-2591e8dfe55f",
+                  "title": "MITM Attack Data Tampering",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "MITM attacks could be used to modify financial data coming or being return to the user.",
+                  "mitigation": "Re-encrypt HTTPS using a signed certificate between load balancer and application.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 9,
+                  "score": ""
+                },
+                {
+                  "id": "8d376082-387a-4d70-b687-6c592c22f539",
+                  "title": "MITM Attack Data Viewing",
+                  "status": "Open",
+                  "severity": "Medium",
+                  "type": "Tampering",
+                  "description": "A MITM attack can be used to view private financial data.",
+                  "mitigation": "Re-encrypt HTTPS using a signed certificate between load balancer and application.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 10,
+                  "score": ""
+                }
+              ]
+            },
+            "id": "833d897e-8bab-47c1-bdde-0bd98664706c",
+            "labels": [
+              "HTTPS"
+            ],
+            "source": {
+              "cell": "82a44158-f236-4f8c-9643-ef288af09c7f"
+            },
+            "target": {
+              "cell": "08b2a6f2-a3dd-4948-85be-9aa82ae0698f"
+            }
+          },
+          {
+            "position": {
+              "x": 460,
+              "y": 90
+            },
+            "size": {
+              "width": 120,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "Load balancer"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 11,
+            "id": "82a44158-f236-4f8c-9643-ef288af09c7f",
+            "data": {
+              "type": "tm.Process",
+              "name": "Load balancer",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "handlesCardPayment": false,
+              "handlesGoodsOrServices": false,
+              "isWebApplication": false,
+              "privilegeLevel": "",
+              "threats": [
+                {
+                  "id": "f2ad19a2-46ee-4317-a198-e88b35f00e51",
+                  "title": "DDOS Attack",
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "type": "Denial of service",
+                  "description": "System unable to respond due to overwhelming number of requests",
+                  "mitigation": "Use rate limiting solution offered by Cloud provider.",
+                  "modelType": "STRIDE",
+                  "new": false,
+                  "number": 11,
+                  "score": ""
+                }
+              ]
+            }
+          },
+          {
+            "position": {
+              "x": 920,
+              "y": -40
+            },
+            "size": {
+              "width": 120,
+              "height": 60
+            },
+            "attrs": {
+              "text": {
+                "text": "Log storage"
+              },
+              "topLine": {
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "strokeWidth": 1.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 12,
+            "id": "b593bf63-255c-4c2b-b83e-b82f2e680447",
+            "data": {
+              "type": "tm.Store",
+              "name": "Log storage",
+              "description": "",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isALog": false,
+              "isEncrypted": false,
+              "isSigned": false,
+              "storesCredentials": false,
+              "storesInventory": false,
+              "threats": []
+            }
+          }
+        ],
+        "description": "Overview of the key application components and data flow"
+      }
+    ],
+    "diagramTop": 3,
+    "reviewer": "Pluralsight viewers",
+    "threatTop": 18
+  }
+}

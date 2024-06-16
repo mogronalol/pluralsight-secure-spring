@@ -9,13 +9,8 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m10-a05-security-misconfiguration</artifactId>
+    <artifactId>m09-a04-insecure-design</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>m9-demo-1-default-passwords</module>
-        <module>m9-demo-2-disabling-error-page</module>
-        <module>m9-demo-3-csrf-vulnerability</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

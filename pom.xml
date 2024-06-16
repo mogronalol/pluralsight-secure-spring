@@ -12,18 +12,18 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
+        <version>3.3.0</version>
     </parent>
 
     <modules>
-        <module>m2-a01-access-control-attack-vectors-and-mitigation-in-spring-applications</module>
-        <module>m3-a01-managing-access-control-with-roles</module>
-        <module>m4-a01-managing-access-control-with-authorities-and-role-hierarchies</module>
-        <module>m5-a01-defence-in-depth-with-method-level-security-and-permissions</module>
-        <module>m6-a02-cryptographic-failures-in-transit</module>
-        <module>m7-a02-cryptographic-failures-with-passwords</module>
-        <module>m8-a03-injection-vulnerabilities-in-spring-applications</module>
-        <module>m9-a04-insecure-design</module>
+        <module>m02-a01-access-control-attack-vectors-and-mitigation-in-spring-applications</module>
+        <module>m03-a01-managing-access-control-with-roles</module>
+        <module>m04-a01-managing-access-control-with-authorities-and-role-hierarchies</module>
+        <module>m05-a01-defence-in-depth-with-method-level-security-and-permissions</module>
+        <module>m06-a02-cryptographic-failures-in-transit</module>
+        <module>m07-a02-cryptographic-failures-with-passwords</module>
+        <module>m08-a03-injection-vulnerabilities-in-spring-applications</module>
+        <module>m09-a04-insecure-design</module>
         <module>m10-a05-security-misconfiguration</module>
         <module>m11-a06-addressing-vulnerable-components</module>
         <module>m12-a11-combatting-identification-and-authentication-failures-in-spring-framework</module>

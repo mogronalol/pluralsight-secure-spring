@@ -9,13 +9,14 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m10-a05-security-misconfiguration</artifactId>
+    <artifactId>m08-a03-injection-vulnerabilities-in-spring-applications</artifactId>
     <packaging>pom</packaging>
+
     <modules>
-        <module>m9-demo-1-default-passwords</module>
-        <module>m9-demo-2-disabling-error-page</module>
-        <module>m9-demo-3-csrf-vulnerability</module>
+        <module>m7-demo-1-sql-injection</module>
+        <module>m7-demo-2-command-injection</module>
     </modules>
+
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

@@ -9,12 +9,13 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m10-a05-security-misconfiguration</artifactId>
+    <artifactId>m05-a01-defence-in-depth-with-method-level-security-and-permissions</artifactId>
     <packaging>pom</packaging>
+
     <modules>
-        <module>m9-demo-1-default-passwords</module>
-        <module>m9-demo-2-disabling-error-page</module>
-        <module>m9-demo-3-csrf-vulnerability</module>
+        <module>m5-demo-1-post-and-filter-method-level-security</module>
+        <module>m5-demo-2-pre-method-level-security</module>
+        <module>m5-demo-3-permission-authorizer</module>
     </modules>
 
     <properties>
