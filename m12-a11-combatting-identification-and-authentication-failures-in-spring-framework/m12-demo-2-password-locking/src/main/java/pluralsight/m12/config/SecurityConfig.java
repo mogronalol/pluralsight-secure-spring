@@ -7,18 +7,21 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
-import pluralsight.m12.controller.mvc.FailedLoginAttemptHandler;
+import pluralsight.m12.controller.mvc.CompromisedPasswordHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    private FailedLoginAttemptHandler compromisedPasswordHandler;
+    private CompromisedPasswordHandler compromisedPasswordHandler;
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -43,6 +46,14 @@ public class SecurityConfig {
                 .logout(LogoutConfigurer::permitAll);
 
         return http.build();
+    }
+
+    @Bean
+    public UserDetailsManager userDetailsServiceWithoutUsers(PasswordEncoder passwordEncoder) {
+        return new InMemoryUserDetailsManager(User.builder()
+                .username("test@test.com")
+                .password(passwordEncoder.encode("password"))
+                .build());
     }
 
     @Bean

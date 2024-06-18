@@ -4,8 +4,12 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,10 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pluralsight.m12.domain.ValidationError;
-import pluralsight.m12.service.UserService;
-
-import java.util.Set;
 
 @Controller
 @RequestMapping("/reset-password")
@@ -25,9 +25,10 @@ import java.util.Set;
 @Slf4j
 public class ResetPasswordController {
 
-    private final UserService userService;
+    private final UserDetailsManager userDetailsManager;
     private final PasswordEncoder passwordEncoder;
     private final CompromisedPasswordChecker compromisedPasswordChecker;
+    private final MessageSource messageSource;
 
     @GetMapping
     public String resetPassword(Model model, HttpSession session) {
@@ -44,38 +45,40 @@ public class ResetPasswordController {
     }
 
     @PostMapping
-    public String resetPassword(@Valid @ModelAttribute("passwordForm") PasswordForm form,
-                                BindingResult result, RedirectAttributes redirectAttributes) {
+    public String resetPassword(@Valid @ModelAttribute("passwordForm") PasswordForm form, BindingResult result, RedirectAttributes redirectAttributes) {
 
         if (!form.getNewPassword().equals(form.getConfirmPassword())) {
             result.rejectValue("newPassword", "password.mismatch");
             result.rejectValue("confirmPassword", "password.mismatch");
-            return "reset-password";
         }
 
-        final Set<ValidationError> validationErrors =
-                userService.updatePassword(form.getEmail(), form.getCurrentPassword(),
-                        form.getNewPassword());
+        if (userDetailsManager.userExists(form.getEmail())) {
 
-        if (validationErrors.isEmpty()) {
-            redirectAttributes.addFlashAttribute("success",
-                    "Your password has been successfully reset.");
-            return "redirect:/login";
-        } else {
+            final UserDetails userDetails =
+                    userDetailsManager.loadUserByUsername(form.getEmail());
 
-            if (validationErrors.contains(ValidationError.USER_DOES_NOT_EXIST)) {
-                result.rejectValue("email", "email.already.exists");
-            }
+            if (!passwordEncoder.matches(form.getCurrentPassword(), userDetails.getPassword())) {
 
-            if (validationErrors.contains(ValidationError.WRONG_PASSWORD)) {
                 result.rejectValue("currentPassword", "password.incorrect");
             }
 
-            if (validationErrors.contains(ValidationError.PASSWORD_COMPROMISED)) {
+            if (!result.hasFieldErrors("newPassword") && compromisedPasswordChecker.check(form.getNewPassword()).isCompromised()) {
                 result.rejectValue("newPassword", "password.compromised");
             }
 
+        } else if(!form.getEmail().isBlank()) {
+            result.rejectValue("email", "email.does.not.exist");
+        }
+
+        if (result.hasErrors()) {
             return "reset-password";
         }
+
+        userDetailsManager.updateUser(User.withUserDetails(userDetailsManager.loadUserByUsername(form.getEmail()))
+                .password(passwordEncoder.encode(form.getNewPassword())).
+                build());
+
+        redirectAttributes.addFlashAttribute("success", "Your password has been successfully reset.");
+        return "redirect:/login";
     }
 }

@@ -10,12 +10,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.authentication.password.CompromisedPasswordDecision;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import pluralsight.m12.repository.UserRepository;
 
 import java.util.UUID;
 
@@ -24,8 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -34,7 +34,7 @@ public class LoginIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDetailsManager userDetailsManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -44,8 +44,7 @@ public class LoginIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        when(compromisedPasswordChecker.check(any())).thenReturn(
-                new CompromisedPasswordDecision(false));
+        when(compromisedPasswordChecker.check(any())).thenReturn(new CompromisedPasswordDecision(false));
     }
 
     @Test
@@ -84,8 +83,7 @@ public class LoginIntegrationTest {
     @Test
     public void testLogInWithCompromisedPassword() throws Exception {
 
-        when(compromisedPasswordChecker.check("password")).thenReturn(
-                new CompromisedPasswordDecision(true));
+        when(compromisedPasswordChecker.check("password")).thenReturn(new CompromisedPasswordDecision(true));
 
         final String username = createTestUser("password");
 
@@ -107,18 +105,16 @@ public class LoginIntegrationTest {
         assertThat(session.getAttribute("compromisedPassword")).isNull();
 
         String content = redirectedResult.getResponse().getContentAsString();
-        assertThat(content).contains(
-                "The password you tried to use has appeared in data breaches on other sites," +
-                " not ours");
+        assertThat(content).contains("The password you tried to use has appeared in data breaches on other sites, not ours");
     }
 
     private String createTestUser(final String password) {
 
         final String username = "user-" + UUID.randomUUID();
 
-        userRepository.saveUser(pluralsight.m12.domain.User.builder()
-                .username(username)
-                .passwordHash(passwordEncoder.encode(password))
+        userDetailsManager.createUser(User.withUsername(username)
+                .password(passwordEncoder.encode(password))
+                .roles("USER")
                 .build());
 
         return username;

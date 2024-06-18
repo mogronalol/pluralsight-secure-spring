@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.pluralsight</groupId>
-        <artifactId>m10-a05-security-misconfiguration</artifactId>
+        <artifactId>m12-a11-combatting-identification-and-authentication-failures-in-spring-framework</artifactId>
         <version>1</version>
     </parent>
 
