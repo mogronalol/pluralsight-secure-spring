@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class M12Demo1SecurePassword {
+public class M12Demo3Mfa {
     public static void main(String[] args) {
-        SpringApplication.run(M12Demo1SecurePassword.class);
+        SpringApplication.run(M12Demo3Mfa.class);
     }
 }

@@ -13,7 +13,6 @@
 <main class="d-flex mx-3 flex-column justify-content-center align-items-center" style="min-height: 100vh;">
     <form method="post" th:action="@{/login}">
         <div th:if="${registrationSuccess}" class="alert alert-success" th:text="${registrationSuccess}"></div>
-        <div th:if="${success}" th:text="${success}" class="alert alert-success"></div>
 
         <img alt="" class="my-2" src="/images/logo.png" style="height: 80px; width: auto;">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
