@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class M12Demo1SecurePasswordPolicy {
+public class M12Demo2PasswordLocking {
     public static void main(String[] args) {
-        SpringApplication.run(M12Demo1SecurePasswordPolicy.class);
+        SpringApplication.run(M12Demo2PasswordLocking.class);
     }
 }

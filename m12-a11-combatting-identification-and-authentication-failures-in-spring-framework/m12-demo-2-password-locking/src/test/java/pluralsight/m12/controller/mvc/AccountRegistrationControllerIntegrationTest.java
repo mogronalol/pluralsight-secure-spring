@@ -8,12 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.authentication.password.CompromisedPasswordDecision;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.test.web.servlet.MockMvc;
+import pluralsight.m12.domain.User;
+import pluralsight.m12.repository.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,7 +38,7 @@ public class AccountRegistrationControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private UserDetailsManager userDetailsManager;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -50,8 +51,8 @@ public class AccountRegistrationControllerIntegrationTest {
 
     @BeforeEach
     public void resetUsers() {
-        userDetailsManager.deleteUser(VALID_EMAIL);
-        when(compromisedPasswordChecker.check(VALID_PASSWORD)).thenReturn(new CompromisedPasswordDecision(false));
+        userRepository.deleteAll();
+        when(compromisedPasswordChecker.check(any())).thenReturn(new CompromisedPasswordDecision(false));
     }
 
     @Test
@@ -65,9 +66,12 @@ public class AccountRegistrationControllerIntegrationTest {
                 .andExpect(redirectedUrl("/login"))
                 .andExpect(flash().attribute("registrationSuccess", "Registration successful. Please login."));
 
-        final UserDetails userDetails = userDetailsManager.loadUserByUsername(VALID_EMAIL);
 
-        assertThat(passwordEncoder.matches(VALID_PASSWORD, userDetails.getPassword())).isTrue();
+        assertThat(userRepository.getUser(VALID_EMAIL)
+                .map(User::getPasswordHash)
+                .map(h -> passwordEncoder.matches(VALID_PASSWORD, h))
+                .orElse(false)
+        ).isTrue();
     }
 
     @Test
@@ -81,7 +85,7 @@ public class AccountRegistrationControllerIntegrationTest {
                 .andExpect(model().attributeHasFieldErrors("userForm", "email"))
                 .andExpect(view().name("account-registration"));
 
-        assertThat(userDetailsManager.userExists(VALID_EMAIL)).isFalse();
+        assertThat(userRepository.getUser(VALID_EMAIL)).isEmpty();
     }
 
     @Test
@@ -95,7 +99,7 @@ public class AccountRegistrationControllerIntegrationTest {
                 .andExpect(model().attributeHasFieldErrors("userForm", "email"))
                 .andExpect(view().name("account-registration"));
 
-        assertThat(userDetailsManager.userExists(VALID_EMAIL)).isFalse();
+        assertThat(userRepository.getUser("foo@foo@foo")).isEmpty();
     }
 
     @Test
@@ -109,7 +113,7 @@ public class AccountRegistrationControllerIntegrationTest {
                 .andExpect(model().attributeHasFieldErrors("userForm", "password"))
                 .andExpect(view().name("account-registration"));
 
-        assertThat(userDetailsManager.userExists(VALID_EMAIL)).isFalse();
+        assertThat(userRepository.getUser(VALID_EMAIL)).isEmpty();
     }
 
     @Test
@@ -123,7 +127,7 @@ public class AccountRegistrationControllerIntegrationTest {
                 .andExpect(model().attributeHasFieldErrors("userForm", "password"))
                 .andExpect(view().name("account-registration"));
 
-        assertThat(userDetailsManager.userExists(VALID_EMAIL)).isFalse();
+        assertThat(userRepository.getUser(VALID_EMAIL)).isEmpty();
     }
 
     @Test
@@ -137,7 +141,7 @@ public class AccountRegistrationControllerIntegrationTest {
                 .andExpect(model().attributeHasFieldErrors("userForm", "password"))
                 .andExpect(view().name("account-registration"));
 
-        assertThat(userDetailsManager.userExists(VALID_EMAIL)).isFalse();
+        assertThat(userRepository.getUser(VALID_EMAIL)).isEmpty();
     }
 
     @Test
@@ -154,6 +158,6 @@ public class AccountRegistrationControllerIntegrationTest {
                 .andExpect(model().attributeHasFieldErrors("userForm", "password"))
                 .andExpect(view().name("account-registration"));
 
-        assertThat(userDetailsManager.userExists(VALID_EMAIL)).isFalse();
+        assertThat(userRepository.getUser(VALID_EMAIL)).isEmpty();
     }
 }

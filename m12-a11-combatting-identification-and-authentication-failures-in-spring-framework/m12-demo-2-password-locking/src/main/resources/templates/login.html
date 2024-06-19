@@ -18,6 +18,8 @@
         <img alt="" class="my-2" src="/images/logo.png" style="height: 80px; width: auto;">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
+        <div th:if="${locked}" th:text="#{account.locked}" class="alert alert-danger"></div>
+
         <div class="alert alert-danger" role="alert" th:if="${param.error}">
             Invalid username or password.
         </div>

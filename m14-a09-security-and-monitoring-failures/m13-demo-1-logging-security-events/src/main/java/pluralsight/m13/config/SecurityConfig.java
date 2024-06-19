@@ -1,5 +1,6 @@
 package pluralsight.m13.config;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -16,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import pluralsight.m13.repository.TestDataFactory;
 import pluralsight.m13.security.Authorities;
+import pluralsight.m13.security.RequestAndContextLoggingFilter;
 import pluralsight.m13.security.SecurityContextLoggingFilter;
 
 @Configuration
@@ -78,6 +80,15 @@ public class SecurityConfig {
         DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
         handler.setRoleHierarchy(roleHierarchy);
         return handler;
+    }
+
+    @Bean
+    public FilterRegistrationBean<RequestAndContextLoggingFilter> loggingFilter() {
+        FilterRegistrationBean<RequestAndContextLoggingFilter> registrationBean =
+                new FilterRegistrationBean<>();
+        registrationBean.setFilter(new RequestAndContextLoggingFilter());
+        registrationBean.setOrder(Integer.MIN_VALUE);
+        return registrationBean;
     }
 }
 
