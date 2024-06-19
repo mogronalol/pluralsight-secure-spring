@@ -18,7 +18,7 @@ public class TestUserCreator {
 
     @PostConstruct
     public void postConstruct() {
-        userRepository.saveUser(User.builder()
+        userRepository.save(User.builder()
                 .username("test@test.com")
                 .passwordHash(passwordEncoder.encode("password-password-password"))
                 .build());

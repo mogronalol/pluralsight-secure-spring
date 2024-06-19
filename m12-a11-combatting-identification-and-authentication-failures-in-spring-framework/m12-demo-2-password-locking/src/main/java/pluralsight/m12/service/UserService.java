@@ -127,5 +127,4 @@ public class UserService {
         user.setLastFailedLoginTime(null);
         userRepository.saveUser(user);
     }
-
 }

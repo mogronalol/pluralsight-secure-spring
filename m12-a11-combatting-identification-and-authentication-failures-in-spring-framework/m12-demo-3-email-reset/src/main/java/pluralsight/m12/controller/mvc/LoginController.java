@@ -12,11 +12,19 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login(Model model, HttpSession session) {
-        final Object compromisedPassword = session.getAttribute("locked");
-        if (compromisedPassword != null && compromisedPassword.equals(true)) {
+        final Object locked = session.getAttribute("locked");
+
+        if (locked != null && locked.equals(true)) {
             model.addAttribute("locked", true);
             session.removeAttribute("locked");
         }
+
+        final Object compromisedPassword = session.getAttribute("compromisedPassword");
+        if (compromisedPassword != null && compromisedPassword.equals(true)) {
+            model.addAttribute("compromisedPassword", true);
+            session.removeAttribute("compromisedPassword");
+        }
+
         return "login";
     }
 }

@@ -12,7 +12,7 @@ import java.util.UUID;
 public class UserRepository {
     private Map<String, User> users = new HashMap<>();
 
-    public void saveUser(User user) {
+    public void save(User user) {
         user.setUserId(UUID.randomUUID());
         users.put(user.getUsername(), user);
     }

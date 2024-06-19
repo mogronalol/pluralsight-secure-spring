@@ -33,6 +33,7 @@ public class SecurityConfig {
                                         "/account-registration",
                                         "/error",
                                         "/reset-password",
+                                        "/reset-password/initiate",
                                         "/login")
                                 .permitAll()
                                 .requestMatchers("/**").authenticated()

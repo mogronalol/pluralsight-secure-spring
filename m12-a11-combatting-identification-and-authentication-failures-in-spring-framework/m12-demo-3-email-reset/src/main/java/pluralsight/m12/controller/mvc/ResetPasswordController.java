@@ -1,6 +1,5 @@
 package pluralsight.m12.controller.mvc;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pluralsight.m12.domain.ValidationError;
 import pluralsight.m12.service.UserService;
@@ -29,15 +29,32 @@ public class ResetPasswordController {
     private final PasswordEncoder passwordEncoder;
     private final CompromisedPasswordChecker compromisedPasswordChecker;
 
-    @GetMapping
-    public String resetPassword(Model model, HttpSession session) {
+    @GetMapping("/initiate")
+    public String initiateResetPassword(Model model) {
+        model.addAttribute("passwordResetForm", new InitiatePasswordResetForm());
+        model.addAttribute("reset", false);
+        return "initiate-password-reset";
+    }
 
-        final Object compromisedPassword = session.getAttribute("compromisedPassword");
+    @PostMapping("/initiate")
+    public String initiateResetPassword(
+            @Valid @ModelAttribute("passwordResetForm") PasswordForm form,
+            BindingResult result,
+            Model model) {
 
-        if (compromisedPassword != null && compromisedPassword.equals(true)) {
-            model.addAttribute("compromisedPassword", true);
-            session.removeAttribute("compromisedPassword");
+        if (!result.hasErrors()) {
+            userService.triggerPasswordReset(form.getEmail());
         }
+
+        model.addAttribute("reset", !result.hasErrors());
+
+        return "initiate-password-reset";
+    }
+
+    @GetMapping
+    public String resetPassword(@RequestParam("token") String token, Model model) {
+
+        model.addAttribute("token", token);
 
         model.addAttribute("passwordForm", new PasswordForm());
         return "reset-password";
@@ -54,8 +71,12 @@ public class ResetPasswordController {
         }
 
         final Set<ValidationError> validationErrors =
-                userService.updatePassword(form.getEmail(), form.getCurrentPassword(),
-                        form.getNewPassword());
+                userService.updatePassword(
+                        form.getEmail(),
+                        form.getResetToken(),
+                        form.getCurrentPassword(),
+                        form.getNewPassword()
+                );
 
         if (validationErrors.isEmpty()) {
             redirectAttributes.addFlashAttribute("success",
@@ -63,16 +84,16 @@ public class ResetPasswordController {
             return "redirect:/login";
         } else {
 
-            if (validationErrors.contains(ValidationError.USER_DOES_NOT_EXIST)) {
-                result.rejectValue("email", "email.already.exists");
-            }
-
             if (validationErrors.contains(ValidationError.WRONG_PASSWORD)) {
                 result.rejectValue("currentPassword", "password.incorrect");
             }
 
             if (validationErrors.contains(ValidationError.PASSWORD_COMPROMISED)) {
                 result.rejectValue("newPassword", "password.compromised");
+            }
+
+            if (validationErrors.contains(ValidationError.WRONG_OR_EXPIRED_TOKEN)) {
+                result.rejectValue("resetToken", "token.invalid");
             }
 
             return "reset-password";

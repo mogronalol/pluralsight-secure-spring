@@ -2,6 +2,7 @@ package pluralsight.m12.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import pluralsight.m12.domain.User;
 import pluralsight.m12.repository.UserRepository;
 
@@ -17,6 +18,7 @@ class UserServiceTest {
     private UserService userService;
     private UserRepository userRepository; // Not mocked, assumed to be interacting directly
     private Clock fixedClock;
+    private CompromisedPasswordChecker compromisedPasswordChecker;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +41,7 @@ class UserServiceTest {
 
         User updatedUser = userRepository.getUser(username).orElseThrow();
         assertThat(updatedUser.getFailedLoginAttempts()).isZero();
-        assertThat(updatedUser.getLastFailedLoginTime()).isNull();
+        assertThat(updatedUser.getLastFailedLoginTime()).isEmpty();
     }
 
     @Test
@@ -55,7 +57,7 @@ class UserServiceTest {
 
         User updatedUser = userRepository.getUser(username).orElseThrow();
         assertThat(updatedUser.getFailedLoginAttempts()).isEqualTo(2);
-        assertThat(updatedUser.getLastFailedLoginTime()).isEqualTo(LocalDateTime.now(fixedClock));
+        assertThat(updatedUser.getLastFailedLoginTime()).contains(LocalDateTime.now(fixedClock));
     }
 
     @Test

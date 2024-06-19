@@ -119,7 +119,7 @@ public class LoginIntegrationTest {
 
         final String username = "user-" + UUID.randomUUID();
 
-        userRepository.saveUser(pluralsight.m12.domain.User.builder()
+        userRepository.save(pluralsight.m12.domain.User.builder()
                 .username(username)
                 .passwordHash(passwordEncoder.encode(password))
                 .build());
@@ -176,7 +176,7 @@ public class LoginIntegrationTest {
         final User user = userRepository.getUser(username).orElseThrow();
         user.setFailedLoginAttempts(10);
         user.setLastFailedLoginTime(LocalDateTime.now().minusMinutes(2));
-        userRepository.saveUser(user);
+        userRepository.save(user);
 
         final MvcResult mvcResult = login(username, "password")
                 .andExpect(status().is3xxRedirection())

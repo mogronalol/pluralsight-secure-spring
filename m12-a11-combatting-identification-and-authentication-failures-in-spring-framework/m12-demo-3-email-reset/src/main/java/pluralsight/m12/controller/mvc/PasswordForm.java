@@ -16,4 +16,6 @@ public class PasswordForm {
     private String newPassword;
     @Size(min = 8, max = 64, message = "{password.length.invalid}")
     private String confirmPassword;
+    @Size(min = 8, max = 64, message = "{password.length.invalid}")
+    private String resetToken;
 }

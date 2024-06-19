@@ -2,6 +2,7 @@ package pluralsight.m12.controller.mvc;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,9 +11,14 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.authentication.password.CompromisedPasswordDecision;
 import org.springframework.test.web.servlet.MockMvc;
 import pluralsight.m12.repository.UserRepository;
+import pluralsight.m12.service.EmailClient;
 import pluralsight.m12.service.UserService;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,6 +39,8 @@ public class ResetPasswordControllerIntegrationTest {
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
+    @MockBean
+    private EmailClient emailClient;
 
     @BeforeEach
     public void setup() {
@@ -46,8 +54,10 @@ public class ResetPasswordControllerIntegrationTest {
     @Test
     void whenNewPasswordAndConfirmPasswordDoNotMatch_thenShowsFormWithErrors()
             throws Exception {
+
         mockMvc.perform(post("/reset-password")
                         .param("email", VALID_EMAIL)
+                        .param("resetToken", requestPasswordResetAndCaptureToken())
                         .param("currentPassword", VALID_CURRENT_PASSWORD)
                         .param("newPassword", VALID_NEW_PASSWORD)
                         .param("confirmPassword", "Mismatch123!")
@@ -59,11 +69,13 @@ public class ResetPasswordControllerIntegrationTest {
 
     @Test
     void whenPasswordIsCompromised_thenShowsFormWithErrors() throws Exception {
+
         when(compromisedPasswordChecker.check("Compromised123!")).thenReturn(
                 new CompromisedPasswordDecision(true));
 
         mockMvc.perform(post("/reset-password")
                         .param("email", VALID_EMAIL)
+                        .param("resetToken", requestPasswordResetAndCaptureToken())
                         .param("currentPassword", VALID_CURRENT_PASSWORD)
                         .param("newPassword", "Compromised123!")
                         .param("confirmPassword", "Compromised123!")
@@ -75,9 +87,10 @@ public class ResetPasswordControllerIntegrationTest {
 
     @Test
     void whenCurrentPasswordIsIncorrect_thenShowsFormWithErrors() throws Exception {
-        // Assuming the service detects the incorrect password
+
         mockMvc.perform(post("/reset-password")
                         .param("email", VALID_EMAIL)
+                        .param("resetToken", requestPasswordResetAndCaptureToken())
                         .param("newPassword", VALID_NEW_PASSWORD)
                         .param("confirmPassword", VALID_NEW_PASSWORD)
                         .param("currentPassword", "Incorrect123!")
@@ -92,19 +105,22 @@ public class ResetPasswordControllerIntegrationTest {
 
         mockMvc.perform(post("/reset-password")
                         .param("email", "nonexistent@example.com")
+                        .param("resetToken", requestPasswordResetAndCaptureToken())
                         .param("currentPassword", VALID_CURRENT_PASSWORD)
                         .param("newPassword", VALID_NEW_PASSWORD)
                         .param("confirmPassword", VALID_NEW_PASSWORD)
                         .with(csrf()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrors("passwordForm", "email"))
+                .andExpect(model().attributeHasFieldErrors("passwordForm", "resetToken"))
                 .andExpect(view().name("reset-password"));
     }
 
     @Test
     void givenValidInputs_thenRedirectToLogin() throws Exception {
+
         mockMvc.perform(post("/reset-password")
                         .param("email", VALID_EMAIL)
+                        .param("resetToken", requestPasswordResetAndCaptureToken())
                         .param("currentPassword", VALID_CURRENT_PASSWORD)
                         .param("newPassword", VALID_NEW_PASSWORD)
                         .param("confirmPassword", VALID_NEW_PASSWORD)
@@ -113,6 +129,36 @@ public class ResetPasswordControllerIntegrationTest {
                 .andExpect(redirectedUrl("/login"))
                 .andExpect(flash().attribute("success",
                         "Your password has been successfully reset."));
+    }
+
+    private String requestPasswordResetAndCaptureToken() throws Exception {
+        mockMvc.perform(post("/reset-password/initiate")
+                        .param("email", VALID_EMAIL)
+                        .with(csrf()))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(content().string(containsString("we will send a password reset " +
+                                                          "link to that email")));
+
+        final ArgumentCaptor<String> tokenCaptor =
+                ArgumentCaptor.forClass(String.class);
+        verify(emailClient).sendPasswordResetEmail(eq(VALID_EMAIL), tokenCaptor.capture());
+        assertThat(tokenCaptor.getValue()).isNotNull();
+        return tokenCaptor.getValue();
+    }
+
+    @Test
+    void whenTokenIsInvalid_thenShowsFormWithErrors() throws Exception {
+
+        mockMvc.perform(post("/reset-password")
+                        .param("email", VALID_EMAIL)
+                        .param("resetToken", "invalid")
+                        .param("currentPassword", VALID_CURRENT_PASSWORD)
+                        .param("newPassword", VALID_NEW_PASSWORD)
+                        .param("confirmPassword", VALID_NEW_PASSWORD)
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrors("passwordForm", "resetToken"))
+                .andExpect(view().name("reset-password"));
     }
 }
 
