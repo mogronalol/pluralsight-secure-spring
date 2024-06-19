@@ -9,7 +9,7 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m12-demo-3-mfa</artifactId>
+    <artifactId>m12-demo-4-mfa</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
