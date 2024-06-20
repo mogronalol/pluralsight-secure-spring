@@ -19,12 +19,6 @@ public class LoginController {
             session.removeAttribute("locked");
         }
 
-        final Object compromisedPassword = session.getAttribute("compromisedPassword");
-        if (compromisedPassword != null && compromisedPassword.equals(true)) {
-            model.addAttribute("compromisedPassword", true);
-            session.removeAttribute("compromisedPassword");
-        }
-
         return "login";
     }
 }

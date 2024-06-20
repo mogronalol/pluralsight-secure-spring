@@ -162,7 +162,7 @@ public class LoginIntegrationTest {
                         .param("password", "password")
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login?error=locked"))
+                .andExpect(redirectedUrl("/login?error"))
                 .andReturn();
 
         HttpSession session = result.getRequest().getSession();

@@ -7,7 +7,7 @@ import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pluralsight.m12.domain.User;
-import pluralsight.m12.domain.User.ResetToken;
+import pluralsight.m12.domain.User.SecureToken;
 import pluralsight.m12.domain.ValidationError;
 import pluralsight.m12.repository.UserRepository;
 
@@ -110,7 +110,7 @@ public class UserService {
         return validationErrors;
     }
 
-    private boolean mismatchedResetTokenOrExpiry(final String resetToken, final ResetToken t) {
+    private boolean mismatchedResetTokenOrExpiry(final String resetToken, final SecureToken t) {
         return !passwordEncoder.matches(resetToken, t.getResetTokenHash()) ||
                t.getResetTokenGeneratedAt().plusHours(1).isBefore(LocalDateTime.now(clock));
     }
@@ -149,11 +149,11 @@ public class UserService {
                 .ifPresent(u -> {
                     final String token = KeyGenerators.string().generateKey();
                     final String tokenHash = passwordEncoder.encode(token);
-                    final ResetToken resetToken = new ResetToken();
+                    final SecureToken resetToken = new SecureToken();
                     resetToken.setResetTokenGeneratedAt(LocalDateTime.now(clock));
                     resetToken.setResetTokenHash(tokenHash);
                     u.setPasswordResetToken(
-                            new ResetToken(tokenHash, LocalDateTime.now(clock)));
+                            new SecureToken(tokenHash, LocalDateTime.now(clock)));
                     userRepository.save(u);
                     emailClient.sendPasswordResetEmail(email, token);
                 });

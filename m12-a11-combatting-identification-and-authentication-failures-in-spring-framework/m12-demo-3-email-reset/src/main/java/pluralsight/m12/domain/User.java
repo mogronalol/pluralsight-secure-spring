@@ -17,7 +17,7 @@ public class User {
     private String username;
     private UUID userId;
     private String passwordHash;
-    private ResetToken passwordResetToken;
+    private SecureToken passwordResetToken;
     private int failedLoginAttempts;
     private LocalDateTime lastFailedLoginTime;
 
@@ -25,7 +25,7 @@ public class User {
         return Optional.ofNullable(lastFailedLoginTime);
     }
 
-    public Optional<ResetToken> getPasswordResetToken() {
+    public Optional<SecureToken> getPasswordResetToken() {
         return Optional.ofNullable(passwordResetToken);
     }
 
@@ -33,7 +33,7 @@ public class User {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class ResetToken {
+    public static class SecureToken {
         private String resetTokenHash;
         private LocalDateTime resetTokenGeneratedAt;
     }

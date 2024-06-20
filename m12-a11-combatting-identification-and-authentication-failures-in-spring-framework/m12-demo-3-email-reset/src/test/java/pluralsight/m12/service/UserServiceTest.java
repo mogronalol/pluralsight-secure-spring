@@ -151,7 +151,8 @@ class UserServiceTest {
     void updatePasswordWithWrongToken() {
         String email = "user@example.com";
         String storedToken = "storedToken";
-        final User.ResetToken resetToken = new User.ResetToken(passwordEncoder.encode(storedToken), LocalDateTime.now());
+        final User.SecureToken
+                resetToken = new User.SecureToken(passwordEncoder.encode(storedToken), LocalDateTime.now());
         userRepository.save(User.builder()
                 .username(email)
                 .passwordHash(passwordEncoder.encode("currentPassword"))
@@ -169,7 +170,8 @@ class UserServiceTest {
     void updatePasswordWithExpiredToken() {
         String email = "user@example.com";
         String validToken = "validToken";
-        final User.ResetToken resetToken = new User.ResetToken(passwordEncoder.encode(validToken), LocalDateTime.now().minusDays(1));
+        final User.SecureToken
+                resetToken = new User.SecureToken(passwordEncoder.encode(validToken), LocalDateTime.now().minusDays(1));
         userRepository.save(User.builder()
                 .username(email)
                 .passwordHash(passwordEncoder.encode("currentPassword"))
@@ -187,8 +189,8 @@ class UserServiceTest {
     void updatePasswordWithEmailWhichDoesNotMatchToken() {
         String email = "user@example.com";
         String validToken = "validToken";
-        final User.ResetToken resetToken =
-                new User.ResetToken(passwordEncoder.encode(validToken), LocalDateTime.now());
+        final User.SecureToken resetToken =
+                new User.SecureToken(passwordEncoder.encode(validToken), LocalDateTime.now());
         User user = User.builder()
                 .username(email)
                 .passwordHash(passwordEncoder.encode("currentPassword"))
@@ -210,8 +212,8 @@ class UserServiceTest {
     void updatePasswordWithWrongCurrentPassword() {
         String email = "user@example.com";
         String validToken = "validToken";
-        final User.ResetToken resetToken =
-                new User.ResetToken(passwordEncoder.encode(validToken), LocalDateTime.now());
+        final User.SecureToken resetToken =
+                new User.SecureToken(passwordEncoder.encode(validToken), LocalDateTime.now());
         User user = User.builder()
                 .username(email)
                 .passwordHash(passwordEncoder.encode("currentPassword"))
@@ -231,8 +233,8 @@ class UserServiceTest {
     void updatePasswordWithWrongCompromisedPassword() {
         String email = "user@example.com";
         String validToken = "validToken";
-        final User.ResetToken resetToken =
-                new User.ResetToken(passwordEncoder.encode(validToken), LocalDateTime.now());
+        final User.SecureToken resetToken =
+                new User.SecureToken(passwordEncoder.encode(validToken), LocalDateTime.now());
         User user = User.builder()
                 .username(email)
                 .passwordHash(passwordEncoder.encode("currentPassword"))
@@ -257,7 +259,7 @@ class UserServiceTest {
         User user = User.builder()
                 .username(email)
                 .passwordHash(passwordEncoder.encode("currentPassword"))
-                .passwordResetToken(new User.ResetToken(passwordEncoder.encode(validToken), LocalDateTime.now()))
+                .passwordResetToken(new User.SecureToken(passwordEncoder.encode(validToken), LocalDateTime.now()))
                 .build();
         userRepository.save(user);
 

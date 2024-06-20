@@ -1,5 +1,6 @@
 package pluralsight.m12.controller.mvc;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pluralsight.m12.controller.mvc.model.InitiatePasswordResetForm;
+import pluralsight.m12.controller.mvc.model.PasswordForm;
 import pluralsight.m12.domain.ValidationError;
 import pluralsight.m12.service.UserService;
 
@@ -30,9 +33,14 @@ public class ResetPasswordController {
     private final CompromisedPasswordChecker compromisedPasswordChecker;
 
     @GetMapping("/initiate")
-    public String initiateResetPassword(Model model) {
+    public String initiateResetPassword(Model model, final HttpSession session) {
         model.addAttribute("passwordResetForm", new InitiatePasswordResetForm());
         model.addAttribute("reset", false);
+        final Object compromisedPassword = session.getAttribute("compromisedPassword");
+        if (compromisedPassword != null && compromisedPassword.equals(true)) {
+            model.addAttribute("compromisedPassword", true);
+            session.removeAttribute("compromisedPassword");
+        }
         return "initiate-password-reset";
     }
 
@@ -62,7 +70,8 @@ public class ResetPasswordController {
 
     @PostMapping
     public String resetPassword(@Valid @ModelAttribute("passwordForm") PasswordForm form,
-                                BindingResult result, RedirectAttributes redirectAttributes) {
+                                BindingResult result,
+                                RedirectAttributes redirectAttributes) {
 
         if (!form.getNewPassword().equals(form.getConfirmPassword())) {
             result.rejectValue("newPassword", "password.mismatch");
@@ -93,7 +102,7 @@ public class ResetPasswordController {
             }
 
             if (validationErrors.contains(ValidationError.WRONG_OR_EXPIRED_TOKEN)) {
-                result.rejectValue("resetToken", "token.invalid");
+                result.rejectValue("resetToken", "token.reset.invalid");
             }
 
             return "reset-password";

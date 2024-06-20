@@ -14,7 +14,6 @@
     <form method="post" th:action="@{/login}">
         <div th:if="${registrationSuccess}" class="alert alert-success" th:text="${registrationSuccess}"></div>
         <div th:if="${success}" th:text="${success}" class="alert alert-success"></div>
-        <div th:if="${compromisedPassword}" th:text="#{password.compromised}" class="alert alert-danger"></div>
 
         <img alt="" class="my-2" src="/images/logo.png" style="height: 80px; width: auto;">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
