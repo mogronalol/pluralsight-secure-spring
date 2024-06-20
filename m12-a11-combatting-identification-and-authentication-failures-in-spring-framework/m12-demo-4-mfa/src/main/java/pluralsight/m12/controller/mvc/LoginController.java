@@ -49,6 +49,7 @@ public class LoginController {
 
     @PostMapping("/login/otp")
     public String verifyOtp(@Valid @ModelAttribute("otpForm") OtpForm otpForm,
+                            Model model,
                             Authentication authentication,
                             RedirectAttributes redirectAttributes) {
 
@@ -70,8 +71,8 @@ public class LoginController {
 
             return "redirect:/my-accounts";
         } else {
-            redirectAttributes.addFlashAttribute("error", "Invalid OTP. Please try again.");
-            return "redirect:/login/otp";
+            model.addAttribute("error", true);
+            return "login-otp";
         }
     }
 

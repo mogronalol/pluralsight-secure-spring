@@ -34,7 +34,7 @@ public class User {
         return Optional.ofNullable(passwordResetToken);
     }
 
-    public Optional<SecureToken> otpLoginToken() {
+    public Optional<SecureToken> getOtpLoginToken() {
         return Optional.ofNullable(otpLoginToken);
     }
 

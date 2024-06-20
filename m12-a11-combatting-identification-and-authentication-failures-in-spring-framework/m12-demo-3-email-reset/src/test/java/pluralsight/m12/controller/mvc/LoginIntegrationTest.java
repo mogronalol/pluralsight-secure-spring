@@ -63,7 +63,6 @@ public class LoginIntegrationTest {
 
         mockMvc.perform(get("/")
                         .session((MockHttpSession) mvcResult.getRequest().getSession())) //
-                // Preserve
                 .andExpect(redirectedUrl("/my-accounts"));
     }
 
@@ -79,7 +78,6 @@ public class LoginIntegrationTest {
 
         mockMvc.perform(get("/")
                         .session((MockHttpSession) mvcResult.getRequest().getSession())) //
-                // Preserve
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
@@ -185,7 +183,6 @@ public class LoginIntegrationTest {
 
         mockMvc.perform(get("/")
                         .session((MockHttpSession) mvcResult.getRequest().getSession())) //
-                // Preserve
                 .andExpect(redirectedUrl("/my-accounts"));
     }
 

@@ -152,7 +152,9 @@ public class UserService {
     public boolean verifyOtp(final String otp, final String email) {
         return userRepository.getUser(email)
                 .map(u -> {
-                    final boolean valid = tokenValidAndNotExpired(otp, u.getOtpLoginToken());
+                    final boolean valid =
+                            u.getOtpLoginToken().map(t -> tokenValidAndNotExpired(otp, t))
+                                    .orElse(false);
                     if (valid) {
                         u.setOtpLoginToken(null);
                         u.setFailedLoginAttempts(0);

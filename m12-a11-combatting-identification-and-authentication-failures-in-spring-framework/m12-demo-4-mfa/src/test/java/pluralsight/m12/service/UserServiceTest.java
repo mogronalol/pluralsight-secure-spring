@@ -47,23 +47,6 @@ class UserServiceTest {
     }
 
     @Test
-    void shouldResetFailedLoginAttempt() {
-        String username = "user@example.com";
-        User user = User.builder()
-                .username(username)
-                .failedLoginAttempts(3)
-                .lastFailedLoginTime(LocalDateTime.now())
-                .build();
-        userRepository.save(user);
-
-//        userService.resetFailedAttempts(username);
-
-        User updatedUser = userRepository.getUser(username).orElseThrow();
-        AssertionsForClassTypes.assertThat(updatedUser.getFailedLoginAttempts()).isZero();
-        AssertionsForClassTypes.assertThat(updatedUser.getLastFailedLoginTime()).isEmpty();
-    }
-
-    @Test
     void testRecordFailedLoginAttempt() {
         String username = "user@example.com";
         User user = User.builder()
@@ -133,6 +116,42 @@ class UserServiceTest {
     void shouldSendNoPasswordResetEmailIfUserDoesNotExist() {
 
         userService.triggerPasswordReset("does-not-exist");
+
+        verifyNoInteractions(emailClient);
+
+        AssertionsForClassTypes.assertThat(userRepository.getUser("does-not-exist")).isNotPresent();
+    }
+
+    @Test
+    void shouldSendOtpEmailIfUserExists() {
+
+        final ArgumentCaptor<String> tokenCaptor =
+                ArgumentCaptor.forClass(String.class);
+
+        String email = "user@example.com";
+        User user = User.builder()
+                .username(email)
+                .passwordResetToken(null)
+                .build();
+        userRepository.save(user);
+
+        userService.triggerOtp(email);
+
+        verify(emailClient).sendOtpEmail(eq(email), tokenCaptor.capture());
+
+        AssertionsForClassTypes.assertThat(user.getOtpLoginToken())
+                .isPresent()
+                .hasValueSatisfying(token -> {
+                    AssertionsForClassTypes.assertThat(passwordEncoder.matches(tokenCaptor.getValue(),
+                            token.getTokenHash())).isTrue();
+                    AssertionsForClassTypes.assertThat(token.getGeneratedAt()).isEqualTo(LocalDateTime.now(fixedClock));
+                });
+    }
+
+    @Test
+    void shouldSendNoOtpResetEmailIfUserDoesNotExist() {
+
+        userService.triggerOtp("does-not-exist");
 
         verifyNoInteractions(emailClient);
 
@@ -268,4 +287,78 @@ class UserServiceTest {
                 .hasValueSatisfying(u -> assertThat(u.getPasswordResetToken()).isNotPresent());
     }
 
+    @Test
+    void verifyOtpForNonExistentUser() {
+        final boolean valid = userService.verifyOtp("wrongUser", "wrongToken");
+        assertThat(valid).isFalse();
+    }
+
+    @Test
+    void verifyWrongOtp() {
+        String email = "user@example.com";
+        String storedToken = "storedToken";
+        final User.SecureToken resetToken = new User.SecureToken(passwordEncoder.encode(storedToken), LocalDateTime.now());
+        userRepository.save(User.builder()
+                .username(email)
+                .passwordHash(passwordEncoder.encode("currentPassword"))
+                .otpLoginToken(resetToken)
+                .failedLoginAttempts(0)
+                .build());
+
+        final boolean valid = userService.verifyOtp("wrongToken", email);
+
+        assertThat(valid).isFalse();
+        assertThat(userRepository.getUser(email))
+                .hasValueSatisfying(u -> {
+                    assertThat(u.getOtpLoginToken()).contains(resetToken);
+                    assertThat(u.getFailedLoginAttempts()).isEqualTo(1);
+                    assertThat(u.getLastFailedLoginTime()).contains(LocalDateTime.now(fixedClock));
+                });
+    }
+
+    @Test
+    void verifyOtpWithExpiredToken() {
+        String email = "user@example.com";
+        String validToken = "validToken";
+        final User.SecureToken resetToken = new User.SecureToken(passwordEncoder.encode(validToken), LocalDateTime.now().minusDays(1));
+        userRepository.save(User.builder()
+                .username(email)
+                .passwordHash(passwordEncoder.encode("currentPassword"))
+                .otpLoginToken(resetToken)
+                .build());
+
+        final boolean valid = userService.verifyOtp(validToken, email);
+
+        assertThat(valid).isFalse();
+        assertThat(userRepository.getUser(email))
+                .hasValueSatisfying(u -> {
+                    assertThat(u.getOtpLoginToken()).contains(resetToken);
+                    assertThat(u.getFailedLoginAttempts()).isEqualTo(1);
+                    assertThat(u.getLastFailedLoginTime()).contains(LocalDateTime.now(fixedClock));
+                });
+    }
+
+    @Test
+    void verifyOtpSuccess() {
+        String email = "user@example.com";
+        String storedToken = "storedToken";
+        final User.SecureToken resetToken = new User.SecureToken(passwordEncoder.encode(storedToken), LocalDateTime.now());
+        userRepository.save(User.builder()
+                .username(email)
+                .passwordHash(passwordEncoder.encode("currentPassword"))
+                .otpLoginToken(resetToken)
+                .failedLoginAttempts(2)
+                .lastFailedLoginTime(LocalDateTime.now(fixedClock))
+                .build());
+
+        final boolean isValid = userService.verifyOtp(storedToken, email);
+
+        assertThat(isValid).isTrue();
+        assertThat(userRepository.getUser(email))
+                .hasValueSatisfying(u -> {
+                    assertThat(u.getPasswordResetToken()).isEmpty();
+                    assertThat(u.getFailedLoginAttempts()).isEqualTo(0);
+                    assertThat(u.getLastFailedLoginTime()).isEmpty();
+                });
+    }
 }
