@@ -154,15 +154,14 @@ public class RoleBasedAccessToEndpointsTest {
                               final Roles role,
                               final Set<String> permittedDataTestIds,
                               final Set<String> notPermittedDataTestIds,
-                              final boolean permitted,
-                              final int permittedStatusCode) throws Exception {
+                              final boolean permitted) throws Exception {
 
         final ResultActions result =
                 mockMvc.perform(requestBuilder.with(user("username").roles(role.name())));
 
         if (permitted) {
 
-            result.andExpect(status().is(permittedStatusCode));
+            result.andExpect(status().is(200));
 
             for (String p : permittedDataTestIds) {
                 result.andExpect(content().string(containsString(p)));
@@ -174,16 +173,5 @@ public class RoleBasedAccessToEndpointsTest {
         } else {
             result.andExpect(status().isForbidden());
         }
-    }
-
-    private void verifyAccess(final MockHttpServletRequestBuilder requestBuilder,
-                              final Roles roles,
-                              final Set<String> permittedDataTestIds,
-                              final Set<String> notPermittedDataTestIds,
-                              final boolean permitted) throws Exception {
-
-        verifyAccess(requestBuilder, roles, permittedDataTestIds,
-                notPermittedDataTestIds, permitted, 200);
-
     }
 }

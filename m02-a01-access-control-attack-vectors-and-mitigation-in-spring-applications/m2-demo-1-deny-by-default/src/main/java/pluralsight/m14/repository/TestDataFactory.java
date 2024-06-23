@@ -33,7 +33,7 @@ public class TestDataFactory {
     };
 
     public static final List<UserDetails> USERS = List.of(
-            createUser("jack")
+            createUser()
     );
 
     public static final Random RANDOM = new Random(1);
@@ -44,11 +44,11 @@ public class TestDataFactory {
         this.accountRepository = accountRepository;
     }
 
-    private static UserDetails createUser(String username) {
+    private static UserDetails createUser() {
         // Note: User.withDefaultPasswordEncoder() is deprecated and should only be used for
         // demonstration purposes
         return User.withDefaultPasswordEncoder()
-                .username(username)
+                .username("jack")
                 .password("password")
                 .build();
     }

@@ -18,7 +18,7 @@ public class SecurityConfig {
                 )
                 .requiresChannel(channel -> channel
                         .anyRequest().requiresSecure()
-                );;
+                );
 
         return http.build();
     }

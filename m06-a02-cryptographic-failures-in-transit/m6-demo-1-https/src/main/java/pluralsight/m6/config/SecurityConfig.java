@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .logout(LogoutConfigurer::permitAll)
                 .requiresChannel(channel -> channel
                         .anyRequest().requiresSecure()
-                );;
+                );
 
         return http.build();
     }
@@ -59,8 +59,7 @@ public class SecurityConfig {
 
     @Bean
     public RoleHierarchy roleHierarchy() {
-        final RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        roleHierarchy.setHierarchy("""
+        return RoleHierarchyImpl.fromHierarchy("""
                 ROLE_CUSTOMER_SERVICE > VIEW_ACCOUNTS
                 ROLE_CUSTOMER_SERVICE > TRANSFERS
                 ROLE_CUSTOMER_SERVICE_MANAGER > ROLE_CUSTOMER_SERVICE
@@ -69,7 +68,6 @@ public class SecurityConfig {
                 ROLE_SENIOR_VICE_PRESIDENT > ROLE_CUSTOMER_SERVICE_MANAGER
                 ROLE_SENIOR_VICE_PRESIDENT > ROLE_HUMAN_RESOURCES
                 """);
-        return roleHierarchy;
     }
 
     @Bean

@@ -56,7 +56,7 @@ public class DenyByDefaultForceBrowsingTest {
     @Test
     public void redirectToLoginPageWhenViewingAnyPageWithoutLogin() throws Exception {
 
-        mockMvc.perform(get("/" + UUID.randomUUID().toString()))
+        mockMvc.perform(get("/" + UUID.randomUUID()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().stringValues("Location", "http://localhost/login"));
     }

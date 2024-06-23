@@ -19,8 +19,8 @@
     </properties>
 
     <modules>
-        <module>m14-demo-1-domain-allow-listing</module>
-        <module>m14-demo-2-preventing-redirects</module>
-        <module>m14-demo-3-sanitizing-urls</module>
+        <module>m15-demo-1-domain-allow-listing</module>
+        <module>m15-demo-2-preventing-redirects</module>
+        <module>m15-demo-3-sanitizing-urls</module>
     </modules>
 </project>

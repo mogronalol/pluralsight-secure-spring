@@ -19,7 +19,7 @@
     </properties>
 
     <modules>
-        <module>m12-demo-1-checksums-and-no-snapshots</module>
-        <module>m12-demo-2-pgp</module>
+        <module>m13-demo-1-checksums-and-no-snapshots</module>
+        <module>m13-demo-2-pgp</module>
     </modules>
 </project>

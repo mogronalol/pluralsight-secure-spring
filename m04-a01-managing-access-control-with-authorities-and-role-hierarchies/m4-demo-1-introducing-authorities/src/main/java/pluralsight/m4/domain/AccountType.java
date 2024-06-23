@@ -1,6 +1,8 @@
 package pluralsight.m4.domain;
 
-public enum AccountType {
+import lombok.Getter;
+
+@Getter public enum AccountType {
     CHECKING("Checking Account"), CREDIT_CARD("Credit Card");
 
     private final String displayName;
@@ -9,7 +11,4 @@ public enum AccountType {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }

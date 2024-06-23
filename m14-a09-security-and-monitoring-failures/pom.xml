@@ -14,10 +14,10 @@
     <artifactId>m14-a09-security-and-monitoring-failures</artifactId>
 
     <modules>
-        <module>m13-demo-1-logging-security-events</module>
-        <module>m13-demo-2-elk-stack</module>
-        <module>m13-demo-3-sensitive-data-masking</module>
-        <module>m13-demo-4-actuator</module>
+        <module>m14-demo-1-logging-security-events</module>
+        <module>m14-demo-2-elk-stack</module>
+        <module>m14-demo-3-sensitive-data-masking</module>
+        <module>m14-demo-4-actuator</module>
     </modules>
 
     <properties>
