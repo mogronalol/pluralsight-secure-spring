@@ -21,36 +21,36 @@ import pluralsight.m6.security.Authorities;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(requests ->
-                        requests
+        @Bean
+        public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+            http
+                    .authorizeHttpRequests(requests ->
+                            requests
 
-                                .requestMatchers("/admin/accounts", "/admin/accounts/*")
-                                .hasAuthority(Authorities.VIEW_ACCOUNTS.name())
+                                    .requestMatchers("/admin/accounts", "/admin/accounts/*")
+                                    .hasAuthority(Authorities.VIEW_ACCOUNTS.name())
 
-                                .requestMatchers("/admin/transfer")
-                                .hasAuthority(Authorities. TRANSFERS.name())
+                                    .requestMatchers("/admin/transfer")
+                                    .hasAuthority(Authorities. TRANSFERS.name())
 
-                                .requestMatchers("/employees/**")
-                                .hasAuthority(Authorities.VIEW_EMPLOYEES.name())
+                                    .requestMatchers("/employees/**")
+                                    .hasAuthority(Authorities.VIEW_EMPLOYEES.name())
 
-                                .requestMatchers("/", "/error").authenticated()
+                                    .requestMatchers("/", "/error").authenticated()
 
-                                  .requestMatchers("/images/**", "/favicon.ico").permitAll()
-                )
-                .formLogin((form) -> form
-                        .loginPage("/login")
-                        .permitAll()
-                )
-                .logout(LogoutConfigurer::permitAll)
-                .requiresChannel(channel -> channel
-                        .anyRequest().requiresSecure()
-                );
+                                      .requestMatchers("/images/**", "/favicon.ico").permitAll()
+                    )
+                    .formLogin((form) -> form
+                            .loginPage("/login")
+                            .permitAll()
+                    )
+                    .logout(LogoutConfigurer::permitAll)
+                    .requiresChannel(channel -> channel
+                            .anyRequest().requiresSecure()
+                    );
 
-        return http.build();
-    }
+            return http.build();
+        }
 
     @Bean
     public UserDetailsService userDetailsService() {

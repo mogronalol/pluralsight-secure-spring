@@ -2,7 +2,7 @@ spring:
   ssl:
     bundle:
       jks:
-        application:
+        test-client:
           truststore:
             location: "classpath:demo-truststore.p12"
             password: "notsecure"

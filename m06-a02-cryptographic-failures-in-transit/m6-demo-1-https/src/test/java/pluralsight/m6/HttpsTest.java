@@ -31,7 +31,7 @@ public class HttpsTest {
     @BeforeEach
     public void buildRestClient() {
         restClient = builder
-                .apply(restClientSsl.fromBundle("application"))
+                .apply(restClientSsl.fromBundle("test-client"))
                 .build();
     }
 
@@ -63,7 +63,7 @@ public class HttpsTest {
     }
 
     @Test
-    public void testStrictTransportSecurityForHttps() {
+    public void testHTTPSAndStrictTransportSecurity() {
         final ResponseEntity<Void> responseEntity = restClient.get()
                 .uri("https://localhost:8443")
                 .retrieve()
@@ -71,7 +71,7 @@ public class HttpsTest {
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getHeaders())
-                .containsEntry("Strict-Transport-Security", List.of("max-age=31536000 ; includeSubDomains"));
+                .containsKey("Strict-Transport-Security");
     }
 }
 

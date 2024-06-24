@@ -15,16 +15,14 @@ public class HttpServerConfig {
     @Bean
     public TomcatServletWebServerFactory servletContainer() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-        tomcat.addAdditionalTomcatConnectors(redirectConnector());
+        tomcat.addAdditionalTomcatConnectors(httpConnector());
         return tomcat;
     }
 
-    private Connector redirectConnector() {
+    private Connector httpConnector() {
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
         connector.setPort(httpPort);
-        connector.setRedirectPort(8080);
-        connector.setSecure(false);
         return connector;
     }
 }
