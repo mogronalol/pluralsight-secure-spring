@@ -45,9 +45,7 @@ public class SecurityConfig {
                             .permitAll()
                     )
                     .logout(LogoutConfigurer::permitAll)
-                    .requiresChannel(channel -> channel
-                            .anyRequest().requiresSecure()
-                    );
+                    .requiresChannel(channel -> channel.anyRequest().requiresSecure());
 
             return http.build();
         }

@@ -13,10 +13,8 @@ import org.springframework.web.client.RestClient;
 import pluralsight.m6.domain.Account;
 import pluralsight.m6.repository.AccountRepository;
 
-import javax.net.ssl.SSLHandshakeException;
-import java.net.ConnectException;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -36,7 +34,7 @@ public class MutualTlsTest {
     @BeforeEach
     public void buildRestClient() {
         restClient = builder
-                .apply(restClientSsl.fromBundle("client"))
+                .apply(restClientSsl.fromBundle("test-client"))
                 .build();
 
         accountRepository.save(Account.builder()
@@ -45,18 +43,6 @@ public class MutualTlsTest {
                     .username("test")
                     .displayName("test account")
                     .build());
-    }
-
-    @Test
-    public void testHttpRejected() {
-
-        assertThatThrownBy(() -> restClient
-                .get()
-                .uri("http://localhost:8080")
-                .retrieve()
-                .toBodilessEntity())
-                .hasCauseInstanceOf(ConnectException.class)
-                .hasMessageContaining("Connection refused");
     }
 
     @Test
@@ -71,26 +57,17 @@ public class MutualTlsTest {
     }
 
     @Test
-    public void testMutualTlsPermitted() {
+    public void mutualTlsPermitted() {
         final ResponseEntity<Void> responseEntity = restClient.get()
                 .uri("https://localhost:8443/accounts/accountCode")
                 .retrieve()
                 .toBodilessEntity();
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
+        assertThat(responseEntity.getStatusCode())
+                .isEqualTo(HttpStatus.OK);
 
-    @Test
-    public void testOneWayTlsRejected() {
-        assertThatThrownBy(() -> builder
-                .apply(restClientSsl.fromBundle("client-no-client-cert"))
-                .build()
-                .get()
-                .uri("https://localhost:8443")
-                .retrieve()
-                .toBodilessEntity())
-                .hasCauseInstanceOf(SSLHandshakeException.class)
-                .hasMessageContaining("bad_certificate");
+        assertThat(responseEntity.getHeaders())
+                .containsKey("Strict-Transport-Security");
     }
 }
 

@@ -21,8 +21,9 @@
 
     <modules>
         <module>m7-demo-1-insecure-passwords</module>
-        <module>m7-demo-2-secure-passwords</module>
-        <module>m7-demo-3-secure-passwords-with-work-factor</module>
+        <module>m7-demo-2-bcrypt-password-encoding</module>
+        <module>m7-demo-3-delegating-password-encoder</module>
+        <module>m7-demo-4-secure-passwords-with-work-factor</module>
     </modules>
 
 </project>

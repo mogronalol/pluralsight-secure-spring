@@ -9,7 +9,7 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m7-demo-1-insecure-passwords</artifactId>
+    <artifactId>m7-demo-2-bcrypt-password-encoding</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

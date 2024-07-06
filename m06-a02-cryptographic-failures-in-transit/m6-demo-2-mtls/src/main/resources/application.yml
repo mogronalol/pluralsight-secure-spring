@@ -14,10 +14,6 @@ spring:
             location: "classpath:demo-server-keystore.p12"
             password: "notsecure"
             type: "PKCS12"
-          truststore:
-            location: "classpath:demo-server-truststore.p12"
-            password: "notsecure"
-            type: "PKCS12"
 
 server:
   port: 8443

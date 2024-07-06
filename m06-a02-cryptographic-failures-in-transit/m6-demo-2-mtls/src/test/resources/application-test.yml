@@ -2,19 +2,16 @@ spring:
   ssl:
     bundle:
       jks:
-        client:
-          key:
-            alias: "client"
+        test-client:
+          truststore:
+            location: "classpath:demo-client-truststore.p12"
+            password: "notsecure"
           keystore:
             location: "classpath:demo-client-keystore.p12"
+            password: notsecure
+            type: PKCS12
+        server:
+          truststore:
+            location: "classpath:demo-server-truststore.p12"
             password: "notsecure"
             type: "PKCS12"
-          truststore:
-            location: "classpath:demo-client-truststore.p12"
-            password: "notsecure"
-        client-no-client-cert:
-          key:
-            alias: "client-no-client-cert"
-          truststore:
-            location: "classpath:demo-client-truststore.p12"
-            password: "notsecure"

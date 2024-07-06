@@ -9,15 +9,15 @@ spring:
       jks:
         application:
           key:
-            alias: "demo"
+            alias: demo
           keystore:
             location: "classpath:demo-keystore.p12"
-            password: "notsecure"
-            type: "PKCS12"
+            password: notsecure
+            type: PKCS12
 
 server:
   port: 8443
   ssl:
-    bundle: "application"
+    bundle: application
 
 http.port: 8080

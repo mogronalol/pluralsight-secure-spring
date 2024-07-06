@@ -14,7 +14,7 @@ import org.springframework.web.client.RestClient;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("test")
@@ -26,7 +26,7 @@ public class HttpsTest {
     @Autowired
     RestClientSsl restClientSsl;
 
-    private RestClient restClient;
+    RestClient restClient;
 
     @BeforeEach
     public void buildRestClient() {
@@ -36,42 +36,42 @@ public class HttpsTest {
     }
 
     @Test
-    public void testHttpToHttpsRedirect() {
-
-        final ResponseEntity<Void> response = restClient
-                .get()
+    public void testHttpsRedirect() {
+        final ResponseEntity<Void> responseEntity = restClient.get()
                 .uri("http://localhost:8080")
                 .retrieve()
                 .toBodilessEntity();
 
-        assertThat(response.getStatusCode())
+        assertThat(responseEntity.getStatusCode())
                 .isEqualTo(HttpStatus.FOUND);
 
-        assertThat(response.getHeaders())
-                .containsEntry("Location", List.of("https://localhost:8443/"));
+        assertThat(responseEntity.getHeaders())
+                .containsEntry("Location",
+                        List.of("https://localhost:8443/"));
     }
 
     @Test
     public void testHttpsPortWithHttp() {
-        final HttpClientErrorException exception =
-                (HttpClientErrorException) catchThrowable(() -> restClient.get()
+        final HttpClientErrorException e =
+                catchThrowableOfType(() -> restClient.get()
                         .uri("http://localhost:8443")
                         .retrieve()
-                        .toBodilessEntity());
+                        .toBodilessEntity(), HttpClientErrorException.class);
 
-        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(e.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    public void testHTTPSAndStrictTransportSecurity() {
+    public void testHttpsAndStrictTransportSecurity() {
         final ResponseEntity<Void> responseEntity = restClient.get()
                 .uri("https://localhost:8443")
                 .retrieve()
                 .toBodilessEntity();
 
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getStatusCode())
+                .isEqualTo(HttpStatus.OK);
+
         assertThat(responseEntity.getHeaders())
                 .containsKey("Strict-Transport-Security");
     }
 }
-

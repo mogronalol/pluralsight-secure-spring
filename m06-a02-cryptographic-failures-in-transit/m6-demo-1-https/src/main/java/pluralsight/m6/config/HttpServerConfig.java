@@ -13,14 +13,14 @@ public class HttpServerConfig {
     private int httpPort;
 
     @Bean
-    public TomcatServletWebServerFactory servletContainer() {
+    public TomcatServletWebServerFactory tomcat() {
         TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
         tomcat.addAdditionalTomcatConnectors(httpConnector());
         return tomcat;
     }
 
     private Connector httpConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        final Connector connector = new Connector();
         connector.setScheme("http");
         connector.setPort(httpPort);
         return connector;
