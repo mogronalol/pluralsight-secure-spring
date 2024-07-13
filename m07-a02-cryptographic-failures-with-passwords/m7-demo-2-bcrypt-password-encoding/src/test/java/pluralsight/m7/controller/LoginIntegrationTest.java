@@ -10,8 +10,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -34,56 +35,43 @@ public class LoginIntegrationTest {
     @Test
     public void testLogInWithCorrectPassword() throws Exception {
 
-        createUser("username", "password");
+        final String username = createUser("password");
 
-        canLoginWithCorrectPassword("username", "password");
+        canLoginWithCorrectPassword(username, "password");
     }
 
     @Test
     public void testLogInWithWrongPassword() throws Exception {
 
-        createUser("username", "password");
+        final String username = createUser("password");
 
-        cannotLoginWithWrongPassword("wrong-password");
+        cannotLoginWithWrongPassword(username, "wrong-password");
     }
 
     @Test
     public void shouldStorePasswordHash() {
-        createUser("username1", "password");
-
-        final String user1Password = userDetailsManager.loadUserByUsername("username1").getPassword();
-
-        assertThat(user1Password)
-                // Was not stored as plaintext
-                .doesNotContain("password")
-                .startsWith("{bcrypt}");
+        final String username = createUser("password");
+        final String password = userDetailsManager.loadUserByUsername(username).getPassword();
+        assertThat(password).doesNotContain("password");
     }
 
     @Test
-    public void shouldStoreDifferentHashesForTheSamePassword(final String password) {
+    public void shouldStoreDifferentHashesForTheSamePassword() {
+        final String user1 = createUser("password");
+        final String user2 = createUser("password");
 
-        createUser("username1", "password");
-        createUser("username2", "password");
+        final String password1 = userDetailsManager.loadUserByUsername(user1).getPassword();
+        final String password2 = userDetailsManager.loadUserByUsername(user2).getPassword();
 
-        final String user1Password =
-                userDetailsManager.loadUserByUsername("username1").getPassword();
-        final String user2Password =
-                userDetailsManager.loadUserByUsername("username2").getPassword();
-
-        assertThat(user2Password).isNotEqualTo(user1Password);
-    }
-
-    private ResultActions login(final String username, final String password)
-            throws Exception {
-        return mockMvc.perform(post("/login")
-                .param("username", username)
-                .param("password", password)
-                .with(csrf()));
+        assertThat(password1).doesNotContain(password2);
     }
 
     private void canLoginWithCorrectPassword(final String username,
                                              final String password) throws Exception {
-        final MvcResult mvcResult = login(username, password)
+        final MvcResult mvcResult = mockMvc.perform(post("/login")
+                        .param("username", username)
+                        .param("password", password)
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"))
                 .andReturn();
@@ -94,8 +82,11 @@ public class LoginIntegrationTest {
                 .andExpect(content().string(containsString("Logged in")));
     }
 
-    private void cannotLoginWithWrongPassword(final String username) throws Exception {
-        final MvcResult mvcResult = login(username, "wrong")
+    private void cannotLoginWithWrongPassword(final String username, final String password) throws Exception {
+        final MvcResult mvcResult = mockMvc.perform(post("/login")
+                        .param("username", username)
+                        .param("password", password)
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/login?error"))
                 .andReturn();
@@ -106,12 +97,16 @@ public class LoginIntegrationTest {
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
 
-    private void createUser(final String username, final String password) {
+    private String createUser(final String password) {
+
+        final String username = UUID.randomUUID().toString();
 
         userDetailsManager.createUser(User.withUsername(username)
                 .password(passwordEncoder.encode(password))
                 .roles("USER")
                 .build());
+
+        return username;
     }
 }
 

@@ -14,10 +14,10 @@ public class  EmployeesService {
     private final EmployeeRepository employeeRepository;
 
     public List<Employee> findAllEmployees() {
-        return employeeRepository.findAllEmployees();
+        return employeeRepository.findAll();
     }
 
     public Employee getEmployeeById(final UUID employeeId) {
-        return employeeRepository.getEmployeeById(employeeId);
+        return employeeRepository.findById(employeeId);
     }
 }

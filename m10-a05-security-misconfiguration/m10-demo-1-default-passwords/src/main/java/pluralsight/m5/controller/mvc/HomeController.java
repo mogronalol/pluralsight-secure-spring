@@ -30,6 +30,8 @@ public class HomeController {
             return "redirect:/admin/accounts";
         } else if (usersRoles.contains(Roles.HUMAN_RESOURCES)) {
             return "redirect:/employees";
+        } else if (usersRoles.contains(Roles.CUSTOMER)) {
+            return "redirect:/my-accounts";
         }
 
         throw new AccessDeniedException("UnsupportedRole");

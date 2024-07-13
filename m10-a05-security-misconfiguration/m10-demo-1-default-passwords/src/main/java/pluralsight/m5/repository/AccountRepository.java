@@ -8,35 +8,38 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public class AccountRepository {
+public class AccountRepository implements GenericRepository<Account, String> {
 
     private final List<Account> allAccounts = new ArrayList<>();
 
-    public List<Account> getAccountForUser(final String username) {
-        return allAccounts.stream().filter(a -> a.getUsername().equals(username)).toList();
-    }
-
+    @Override
     public void save(final Account account) {
         allAccounts.add(account);
     }
 
+    public void saveAll(final Set<Account> accounts) {
+        allAccounts.addAll(accounts);
+    }
+
+    @Override
     public void deleteAll() {
         allAccounts.clear();
     }
 
-    public List<Account> findAllAccounts() {
-        return allAccounts;
+    @Override
+    public List<Account> findAll() {
+        return new ArrayList<>(allAccounts);
     }
 
-    public Account getAccountByCode(final String accountCode) {
-        return allAccounts
-                .stream()
-                .filter(a -> a.getAccountCode().equals(accountCode))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+    @Override
+    public Account findById(final String accountCode) {
+        return allAccounts.stream()
+                          .filter(a -> a.getAccountCode().equals(accountCode))
+                          .findFirst()
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
-    public void saveAll(final Set<Account> allAccounts) {
-        this.allAccounts.addAll(allAccounts);
+    public List<Account> getAccountForUser(final String username) {
+        return allAccounts.stream().filter(a -> a.getUsername().equals(username)).toList();
     }
 }

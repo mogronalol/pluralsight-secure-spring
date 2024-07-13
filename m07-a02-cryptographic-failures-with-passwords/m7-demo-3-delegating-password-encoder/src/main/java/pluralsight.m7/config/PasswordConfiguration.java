@@ -1,4 +1,4 @@
-package pluralsight.m6.config;
+package pluralsight.m7.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

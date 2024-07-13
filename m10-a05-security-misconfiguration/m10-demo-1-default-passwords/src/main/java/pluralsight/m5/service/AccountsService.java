@@ -21,7 +21,7 @@ public class AccountsService {
 
     @PreAuthorize("@permissionAuthorizer.canPerformTransfer(#transfer)")
     public void transfer(final TransferModel transfer) {
-        final Account from = accountRepository.getAccountByCode(transfer.getFromAccountCode());
+        final Account from = accountRepository.findById(transfer.getFromAccountCode());
         from.getTransactions().add(Transaction.builder()
                 .description("Transfer to " + transfer.getToAccountCode())
                 .id(from.getTransactions().size())
@@ -29,7 +29,7 @@ public class AccountsService {
                 .amount(transfer.getAmount().negate())
                 .build());
 
-        final Account to = accountRepository.getAccountByCode(transfer.getToAccountCode());
+        final Account to = accountRepository.findById(transfer.getToAccountCode());
         to.getTransactions().add(Transaction.builder()
                 .description("Transfer from " + transfer.getToAccountCode())
                 .id(from.getTransactions().size())
@@ -40,11 +40,11 @@ public class AccountsService {
 
     @PostFilter("@permissionAuthorizer.getCanViewAccount(filterObject)")
     public List<Account> findAllAccounts() {
-        return accountRepository.findAllAccounts();
+        return accountRepository.findAll();
     }
 
     @PostAuthorize("@permissionAuthorizer.getCanViewAccount(returnObject)")
     public Account getAccountByCode(final String accountCode) {
-        return accountRepository.getAccountByCode(accountCode);
+        return accountRepository.findById(accountCode);
     }
 }

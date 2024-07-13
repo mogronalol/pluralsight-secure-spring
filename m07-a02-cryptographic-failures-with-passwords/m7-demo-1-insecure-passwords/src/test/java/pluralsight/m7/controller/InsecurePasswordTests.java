@@ -25,37 +25,37 @@ public class InsecurePasswordTests {
     public static final Map<String, String> RAINBOW_TABLE_OF_MD_5 = Stream.of(COMMON_PASSWORDS)
             .collect(Collectors.toMap(DigestUtils::md5Hex, k -> k));
 
-    private final InSecureMD5PasswordEncoder insecurePasswordEncoder =
+    private final InSecureMD5PasswordEncoder md5PasswordEncoder =
             new InSecureMD5PasswordEncoder();
 
     private final UserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
 
     @Test
-    public void plaintextPasswordsAreInSecure() throws Exception {
-
+    public void plainTextPasswordsAreInsecure() {
         final String username = createTestUser("password");
 
         final UserDetails userDetails = userDetailsManager.loadUserByUsername(username);
 
-        assertThat(userDetails.getPassword())
-                // Was not stored as plaintext
-                .isEqualTo("password");
+        assertThat(userDetails.getPassword()).isEqualTo("password");
     }
 
     @Test
-    public void md5IsInSecureWithoutSaltingIsSusceptibleToRainbowTables() {
+    public void md5IsVulnerableWithoutSaltingToRainbowTables() {
+        final String firstUser = createTestUser(md5PasswordEncoder.encodeWithoutSalt(
+                "password"));
 
-        final String firstUser = createTestUser(
-                insecurePasswordEncoder.encodeWithoutSalt("password"));
+        final String firstPassword = userDetailsManager.loadUserByUsername(firstUser)
+                .getPassword();
 
-        final String firstPassword =
-                userDetailsManager.loadUserByUsername(firstUser).getPassword();
+        assertThat(firstPassword).isNotEqualTo("password");
 
-        final String secondUser = createTestUser(
-                insecurePasswordEncoder.encodeWithoutSalt("password"));
+        final String secondUser = createTestUser(md5PasswordEncoder.encodeWithoutSalt(
+                "password"));
 
-        final String secondPassword =
-                userDetailsManager.loadUserByUsername(secondUser).getPassword();
+        final String secondPassword = userDetailsManager.loadUserByUsername(secondUser)
+                .getPassword();
+
+        assertThat(secondPassword).isNotEqualTo("password");
 
         assertThat(firstPassword).isEqualTo(secondPassword);
 
@@ -64,21 +64,30 @@ public class InsecurePasswordTests {
     }
 
     @Test
-    public void mdfCanBeEasilyBruteforcedWithSalting() {
+    public void md5CanEasilyBeBruteforced() {
+        final String user1 =
+                createTestUser(md5PasswordEncoder.encodeWithSalt("password", "salt1"));
 
-        final String encodedWithSalt = insecurePasswordEncoder.encodeWithSalt("password",
-                "salt");
+        final String user2 =
+                createTestUser(md5PasswordEncoder.encodeWithSalt("password", "salt2"));
 
-        final String salt =
-                encodedWithSalt.substring(1, encodedWithSalt.indexOf("}"));
+        final String user1Password = userDetailsManager.loadUserByUsername(user1).getPassword();
 
-        final Optional<String> any = Arrays.stream(COMMON_PASSWORDS)
-                .filter(p -> insecurePasswordEncoder.encodeWithSalt(p, salt)
-                        .equals(encodedWithSalt))
+        final String user2Password =
+                userDetailsManager.loadUserByUsername(user2).getPassword();
+
+        assertThat(user1Password).isNotEqualTo(user2Password);
+
+        final String salt = user1Password.substring(1, user1Password.indexOf("}"));
+
+        final Optional<String> bruteForced = Arrays.stream(COMMON_PASSWORDS)
+                .filter(p -> md5PasswordEncoder.encodeWithSalt(p, salt)
+                        .equals(user1Password))
                 .findAny();
 
-        assertThat(any).contains("password");
+        assertThat(bruteForced).contains("password");
     }
+
 
     private String createTestUser(final String password) {
 

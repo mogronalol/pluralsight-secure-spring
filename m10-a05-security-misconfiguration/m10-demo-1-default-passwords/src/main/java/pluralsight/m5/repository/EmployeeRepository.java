@@ -8,27 +8,30 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class EmployeeRepository {
+public class EmployeeRepository implements GenericRepository<Employee, UUID> {
 
     private final List<Employee> employees = new ArrayList<>();
 
+    @Override
     public void save(final Employee employee) {
         employees.add(employee);
     }
 
+    @Override
     public void deleteAll() {
         employees.clear();
     }
 
-    public List<Employee> findAllEmployees() {
-        return employees;
+    @Override
+    public List<Employee> findAll() {
+        return new ArrayList<>(employees);
     }
 
-    public Employee getEmployeeById(final UUID employeeId) {
-        return employees
-                .stream()
-                .filter(a -> a.getEmployeeId().equals(employeeId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+    @Override
+    public Employee findById(final UUID employeeId) {
+        return employees.stream()
+                        .filter(e -> e.getEmployeeId().equals(employeeId))
+                        .findFirst()
+                .orElseThrow(() -> new RuntimeException("Not found"));
     }
 }

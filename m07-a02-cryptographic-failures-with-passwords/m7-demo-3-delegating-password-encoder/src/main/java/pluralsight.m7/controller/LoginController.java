@@ -1,4 +1,4 @@
-package pluralsight.m6.controller;
+package pluralsight.m7.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

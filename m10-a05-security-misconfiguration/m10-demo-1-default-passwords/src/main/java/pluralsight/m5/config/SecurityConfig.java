@@ -2,8 +2,6 @@ package pluralsight.m5.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -12,11 +10,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import pluralsight.m5.repository.TestDataFactory;
 import pluralsight.m5.security.Authorities;
+import pluralsight.m5.security.Roles;
 
 @Configuration
 @EnableWebSecurity
@@ -38,6 +34,9 @@ public class SecurityConfig {
                                 .requestMatchers("/employees/**")
                                 .hasAuthority(Authorities.VIEW_EMPLOYEES.name())
 
+                                .requestMatchers("/my-accounts", "/accounts/*/transactions")
+                                .hasRole(Roles.CUSTOMER.name())
+
                                 .requestMatchers("/", "/error").authenticated()
 
                                 .requestMatchers("/images/**", "/favicon.ico").permitAll()
@@ -49,18 +48,6 @@ public class SecurityConfig {
                 .logout(LogoutConfigurer::permitAll);
 
         return http.build();
-    }
-
-    @Bean
-    @Profile("local-development")
-    @Primary
-    public UserDetailsService userDetailsService() {
-        return new InMemoryUserDetailsManager(TestDataFactory.USERS);
-    }
-
-    @Bean
-    public UserDetailsService userDetailsServiceWithoutUsers() {
-        return new InMemoryUserDetailsManager();
     }
 
     @Bean
