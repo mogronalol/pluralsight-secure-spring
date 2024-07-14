@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Register New Account</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet">
+    <style>
+        #strengthMeter {
+            width: 20%;
+            height: 10px; /* Increased height for better visibility */
+            transition: width 0.4s ease-in-out; /* Smooth transition for width changes */
+        }
+
+        .strength-label {
+            display: block; /* Make label a block to format nicely under the meter */
+            text-align: center; /* Center-align the text */
+            margin-top: 5px; /* Space between meter and text */
+        }
+    </style>
+</head>
+<body class="text-center">
+
+<main class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="card w-50">
+        <div class="card-body">
+            <form method="post" th:action="@{/account-registration}" th:object="${userForm}" class="needs-validation"
+                  novalidate>
+                <img alt="Logo" class="mb-4" src="/images/logo.png" style="height: 72px; width: auto;">
+                <h1 class="h3 mb-3 fw-normal">Create your account</h1>
+
+                <!-- Email Field -->
+                <div class="form-floating mb-2">
+                    <input class="form-control" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" id="email"
+                           name="email" placeholder="name@example.com" type="text" th:field="*{email}">
+                    <label for="email">Email</label>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+
+                <div class="form-floating mb-2">
+                    <input class="form-control" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
+                           id="password" name="password" placeholder="Create a password" type="password"
+                           th:field="*{password}" oninput="updatePasswordStrengthMeter()">
+                    <label for="password">Password</label>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    <div id="strengthMeter" class="bg-danger"></div>
+                    <span id="strengthLabel" class="strength-label text-muted">Very Weak</span>
+                    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#passwordModal">
+                        How to create a strong password?
+                    </button>
+                </div>
+
+                <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="passwordModalLabel">Creating a Strong Password</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Longer sentences are great as passwords because they're easy to remember and hard for others to guess.</p>
+                                <p>You can use your browser to generate a password for you.</p>
+                                <p>Avoid using short one-word passwords like 'americas' as they're easy to guess.</p>
+                                <p>Avoid adding pointless symbols at the end of your password, like 'americas1!' as they do not improve password security.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input class="form-control" th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'"
+                           id="confirmPassword" name="confirmPassword" placeholder="Repeat your password"
+                           type="password" th:field="*{confirmPassword}">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('confirmPassword')}"
+                         th:errors="*{confirmPassword}"></div>
+                </div>
+
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+                <p class="mt-4 mb-3 text-muted">Already have an account? <a href="/login">Sign in</a></p>
+            </form>
+        </div>
+    </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/zxcvbn@4.4.2/dist/zxcvbn.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function updatePasswordStrengthMeter() {
+        var password = document.getElementById('password').value;
+        var meter = document.getElementById('strengthMeter');
+        var label = document.getElementById('strengthLabel');
+        var result = zxcvbn(password);
+        var score = result.score;
+
+        // Update the password strength meter
+        meter.style.width = ((score + 1) / 5 * 100) + '%';
+
+        // Update meter color and text label based on strength score
+        switch (score) {
+            case 0:
+                meter.className = 'bg-danger';
+                label.textContent = 'Very Weak';
+                break;
+            case 1:
+                meter.className = 'bg-warning';
+                label.textContent = 'Weak';
+                break;
+            case 2:
+                meter.className = 'bg-info';
+                label.textContent = 'Fair';
+                break;
+            case 3:
+                meter.className = 'bg-primary';
+                label.textContent = 'Good';
+                break;
+            case 4:
+                meter.className = 'bg-success';
+                label.textContent = 'Strong';
+                break;
+            default:
+                meter.className = 'bg-danger';
+                label.textContent = 'Very Weak';
+        }
+    }
+</script>
