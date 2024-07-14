@@ -1,5 +1,0 @@
-server:
-  error:
-    include-stacktrace: always
-    include-message: always
-    include-binding-errors: always
