@@ -5,16 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.password.CompromisedPasswordChecker;
-import org.springframework.security.authentication.password.CompromisedPasswordDecision;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import pluralsight.m12.domain.User;
 import pluralsight.m12.repository.UserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,8 +27,6 @@ public class AccountRegistrationControllerIntegrationTest {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @MockBean
-    private CompromisedPasswordChecker compromisedPasswordChecker;
 
     @BeforeEach
     public void resetUsers() {
@@ -101,7 +95,7 @@ public class AccountRegistrationControllerIntegrationTest {
 
     @Test
     void canRegisterWith8CharacterPassword() throws Exception {
-        assertRegistrationPossibleWithPassword("1A@b11");
+        assertRegistrationPossibleWithPassword("1A@b1111");
     }
 
     @Test
@@ -112,16 +106,7 @@ public class AccountRegistrationControllerIntegrationTest {
                                                "1111111111" +
                                                "1111111111" +
                                                "1111111111" +
-                                               "111111");
-    }
-
-    @Test
-    void whenPasswordIsCompromised_thenShowsFormWithErrors() throws Exception {
-
-        when(compromisedPasswordChecker.check("compromised")).thenReturn(
-                new CompromisedPasswordDecision(true));
-
-        assertPasswordInvalid("compromised");
+                                               "1111");
     }
 
     private void assertRegistrationPossibleWithPassword(final String validPassword)

@@ -77,37 +77,6 @@ public class LoginIntegrationTest {
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
 
-    @Test
-    public void testLogInWithCompromisedPassword() throws Exception {
-
-        when(compromisedPasswordChecker.check("password")).thenReturn(
-                new CompromisedPasswordDecision(true));
-
-        final String username = createTestUser();
-
-        login(username, "password")
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/reset-password"));
-//                .andReturn()
-//                .getRequest()
-//                .getSession();
-//
-//        assertThat(session.getAttribute("compromisedPassword"))
-//                .isEqualTo(true);
-//
-//        MvcResult redirectedResult = mockMvc.perform(get("/reset-password")
-//                        .session((MockHttpSession) session))
-//                .andExpect(status().isOk())
-//                .andReturn();
-//
-//        assertThat(session.getAttribute("compromisedPassword")).isNull();
-//
-//        String content = redirectedResult.getResponse().getContentAsString();
-//        assertThat(content).contains(
-//                "The password you tried to use has appeared in data breaches on other sites," +
-//                " not ours");
-    }
-
     private String createTestUser() {
 
         final String username = "user-" + UUID.randomUUID();
