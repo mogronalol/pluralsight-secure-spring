@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class M13ElkStack {
+public class M14Actuator {
     public static void main(String[] args) {
-        SpringApplication.run(M13ElkStack.class);
+        SpringApplication.run(M14Actuator.class);
     }
 }
