@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      layout:decorate="~{base.html}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Employee Details</title>
+</head>
+<body>
+<main class="container mt-4" layout:fragment="content" role="main">
+    <div class="card mb-4">
+        <div class="card-header">
+            Employee Summary
+        </div>
+        <div class="card-body">
+            <p class="card-text"><strong>Employee ID:</strong> <span th:text="${employee.employeeId}">Employee ID</span></p>
+            <p class="card-text"><strong>Name:</strong> <span th:text="${employee.name}">Name</span></p>
+            <p class="card-text"><strong>Department:</strong> <span th:text="${employee.department}">Department</span></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -15,9 +15,10 @@
 
     <modules>
         <module>m14-demo-1-logging-security-events</module>
-        <module>m14-demo-2-elk-stack</module>
-        <module>m14-demo-3-sensitive-data-masking</module>
+        <module>m14-demo-2-enriching-mdc-metadata</module>
+        <module>m14-demo-3-elk-stack</module>
         <module>m14-demo-4-actuator</module>
+        <module>m14-demo-5-sensitive-data-masking</module>
     </modules>
 
     <properties>

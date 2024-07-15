@@ -9,7 +9,7 @@
         <version>1</version>
     </parent>
 
-    <artifactId>m14-demo-2-elk-stack</artifactId>
+    <artifactId>m14-demo-3-elk-stack</artifactId>
 
     <dependencies>
         <dependency>
