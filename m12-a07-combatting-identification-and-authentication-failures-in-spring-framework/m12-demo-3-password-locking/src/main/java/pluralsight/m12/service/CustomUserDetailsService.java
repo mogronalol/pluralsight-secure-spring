@@ -21,6 +21,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         final User user = userService.getUserOrError(username);
 
+        userService.assertUserNotLocked(user);
+
         return org.springframework.security.core.userdetails.User.builder()
                 .username(username)
                 .password(user.getPasswordHash())

@@ -10,8 +10,8 @@ public class UserRegistrationDto {
     @NotBlank(message = "{email.invalid}")
     @Email(message = "{email.invalid}")
     private String email;
-    @Size(min = 4, max = 12, message = "{password.length.invalid}")
+    @Size(min = 8, max = 64, message = "{password.length.invalid}")
     private String password;
-    @Size(min = 4, max = 12, message = "{password.length.invalid}")
+    @Size(min = 8, max = 64, message = "{password.length.invalid}")
     private String confirmPassword;
 }

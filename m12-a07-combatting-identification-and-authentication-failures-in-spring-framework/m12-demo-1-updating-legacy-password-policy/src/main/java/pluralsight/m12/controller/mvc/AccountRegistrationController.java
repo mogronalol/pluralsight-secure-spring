@@ -46,10 +46,6 @@ public class AccountRegistrationController {
             if (errors.contains(ValidationError.USER_ALREADY_EXISTS)) {
                 result.rejectValue("email", "email.already.exists");
             }
-
-            if (errors.contains(ValidationError.PASSWORD_DOES_NOT_COMPLY_WITH_RULES)) {
-                result.rejectValue("password", "password.does.not.comply.with.rules");
-            }
         }
 
         if (result.hasErrors()) {

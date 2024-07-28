@@ -27,9 +27,10 @@
         <module>m10-a05-security-misconfiguration</module>
         <module>m11-a06-addressing-vulnerable-components</module>
         <module>m12-a07-combatting-identification-and-authentication-failures-in-spring-framework</module>
-        <module>m13-a08-software-and-data-integrity-failures</module>
-        <module>m14-a09-security-and-monitoring-failures</module>
-        <module>m15-a10-ssrf-in-spring-applications</module>
+        <module>m13-a07-multifactor-authentication-in-spring-framework</module>
+        <module>m14-a08-software-and-data-integrity-failures</module>
+        <module>m15-a09-security-and-monitoring-failures</module>
+        <module>m16-a10-ssrf-in-spring-applications</module>
     </modules>
 
     <dependencies>

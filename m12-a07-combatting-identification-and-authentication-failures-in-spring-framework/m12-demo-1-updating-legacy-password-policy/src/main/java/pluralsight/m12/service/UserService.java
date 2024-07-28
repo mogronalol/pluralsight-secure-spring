@@ -1,7 +1,6 @@
 package pluralsight.m12.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,8 +53,5 @@ public class UserService {
     private void validatePassword(final String password,
                                   final Set<ValidationError> validationErrors) {
 
-        if (!password.isBlank() && !password.matches("^(?=.*[A-Z])(?=.*\\d)(?=.*\\W).+$")) {
-            validationErrors.add(ValidationError.PASSWORD_DOES_NOT_COMPLY_WITH_RULES);
-        }
     }
 }

@@ -2,6 +2,8 @@ package pluralsight.m12.controller.mvc;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +16,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import pluralsight.m12.domain.User;
 import pluralsight.m12.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -28,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class LoginIntegrationTest {
+    private static final Logger log = LoggerFactory.getLogger(LoginIntegrationTest.class);
     @Autowired
     private MockMvc mockMvc;
 
@@ -41,9 +46,21 @@ public class LoginIntegrationTest {
     private CompromisedPasswordChecker compromisedPasswordChecker;
 
     @BeforeEach
-    public void setUp() {
-        when(compromisedPasswordChecker.check(any())).thenReturn(
-                new CompromisedPasswordDecision(false));
+    public void beforeEach() {
+        when(compromisedPasswordChecker.check(any()))
+                .thenReturn(new CompromisedPasswordDecision(false));
+    }
+
+    @Test
+    public void testLoginWithCompromisedPassword() throws Exception {
+        when(compromisedPasswordChecker.check("password"))
+                .thenReturn(new CompromisedPasswordDecision(true));
+
+        final String username = createTestUser();
+
+        login(username, "password")
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/reset-password"));
     }
 
     @Test
@@ -77,20 +94,6 @@ public class LoginIntegrationTest {
                 .andExpect(redirectedUrl("http://localhost/login"));
     }
 
-    @Test
-    public void testLogInWithCompromisedPassword() throws Exception {
-
-        when(compromisedPasswordChecker.check("password")).thenReturn(
-                new CompromisedPasswordDecision(true));
-
-        final String username = createTestUser();
-
-        login(username, "password")
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/reset-password"))
-                .andReturn();
-    }
-
     private String createTestUser() {
 
         final String username = "user-" + UUID.randomUUID();
@@ -102,6 +105,32 @@ public class LoginIntegrationTest {
 
         return username;
     }
+
+    @Test
+    public void accountLockedAfterThreeFailedAttemptsAndUnlockedAfterOneMinute()
+            throws Exception {
+        final String username = createTestUser();
+
+        for (int i = 0; i < 3; i++) {
+            login(username, "wrong")
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrl("/login?error"));
+        }
+
+        login(username, "password")
+                .andExpect(redirectedUrl("/login?error"));
+
+        final User user = userRepository.getUser(username).orElseThrow();
+        user.setLastFailedLoginTime(LocalDateTime.now().minusMinutes(10));
+
+        final ResultActions resultActions = login(username, "password")
+                .andExpect(redirectedUrl("/"));
+
+        mockMvc.perform(get("/")
+                .session((MockHttpSession) resultActions.andReturn().getRequest().getSession()))
+                .andExpect(redirectedUrl("/my-accounts"));
+    }
+
 
     private ResultActions login(final String username, final String password)
             throws Exception {

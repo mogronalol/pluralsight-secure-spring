@@ -14,10 +14,9 @@
 
     <modules>
         <module>m12-demo-1-updating-legacy-password-policy</module>
-        <module>m12-demo-2-hibp-password-checking</module>
+        <module>m12-demo-2-hibp-password-checking-on-registration</module>
+        <module>m12-demo-3-hibp-password-checking-on-login</module>
         <module>m12-demo-3-password-locking</module>
-        <module>m12-demo-4-mfa</module>
-        <module>m12-demo-5-password-reset</module>
     </modules>
 
     <properties>

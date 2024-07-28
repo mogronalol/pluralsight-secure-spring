@@ -2,6 +2,7 @@ package pluralsight.m5.repository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import pluralsight.m5.domain.Account;
@@ -18,6 +19,7 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toCollection;
 
 @Component
+@Profile("local-development")
 @RequiredArgsConstructor
 public class TestDataFactory {
     public static final String[] POSSIBLE_DESCRIPTIONS = {

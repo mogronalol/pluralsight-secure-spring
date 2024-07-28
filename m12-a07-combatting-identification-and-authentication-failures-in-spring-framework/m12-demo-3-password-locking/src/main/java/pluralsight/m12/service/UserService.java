@@ -20,9 +20,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class UserService {
     public static final int MAX_LOGIN_BEFORE_LOCK = 3;
+
     private final UserRepository userRepository;
-    private final CompromisedPasswordChecker compromisedPasswordChecker;
     private final PasswordEncoder passwordEncoder;
+    private final CompromisedPasswordChecker compromisedPasswordChecker;
+    private final Clock clock;
 
     public User getUserOrError(final String username) {
         return getUser(username).orElseThrow(() -> new UsernameNotFoundException(username));
@@ -44,10 +46,7 @@ public class UserService {
             validationErrors.add(ValidationError.USER_ALREADY_EXISTS);
         }
 
-        if (!password.isBlank() &&
-            compromisedPasswordChecker.check(password).isCompromised()) {
-            validationErrors.add(ValidationError.PASSWORD_COMPROMISED);
-        }
+        validatePassword(password, validationErrors);
 
         if (validationErrors.isEmpty()) {
             userRepository.saveUser(User.builder()
@@ -57,5 +56,48 @@ public class UserService {
         }
 
         return validationErrors;
+    }
+
+    public void recordFailedLoginAttemptIfExists(String username) {
+        getUser(username).ifPresent(u -> {
+            u.setFailedLoginAttempts(u.getFailedLoginAttempts() + 1);
+            u.setLastFailedLoginTime(LocalDateTime.now(clock));
+            userRepository.saveUser(u);
+        });
+    }
+
+    public void resetFailedLoginAttempts(String username) {
+        final User user = getUserOrError(username);
+        user.setFailedLoginAttempts(0);
+        user.setLastFailedLoginTime(null);
+        userRepository.saveUser(user);
+    }
+
+    public void assertUserNotLocked(User user) {
+        user.getLastFailedLoginTime()
+                .ifPresent(lastFailedLoginTime -> {
+                    final Duration lockDuration = calculateNextLockDuration(user);
+                    final LocalDateTime lockExpiry = lastFailedLoginTime.plus(lockDuration);
+                    final LocalDateTime now = LocalDateTime.now(clock);
+                    if (lockExpiry.isAfter(now)) {
+                        throw new AccountLockedException(user.getUsername());
+                    }
+                });
+    }
+
+    private static Duration calculateNextLockDuration(final User user) {
+        if (user.getFailedLoginAttempts() < MAX_LOGIN_BEFORE_LOCK) {
+            return Duration.ZERO;
+        }
+        return Duration.ofMinutes(1);
+    }
+
+    private void validatePassword(final String password,
+                                  final Set<ValidationError> validationErrors) {
+
+        if (!password.isBlank() &&
+            compromisedPasswordChecker.check(password).isCompromised()) {
+            validationErrors.add(ValidationError.COMPROMISED_PASSWORD);
+        }
     }
 }

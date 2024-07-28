@@ -77,8 +77,8 @@ public class AccountRegistrationControllerIntegrationTest {
     }
 
     @Test
-    void rejectLessThen4CharacterPasswords() throws Exception {
-        assertPasswordInvalid("123");
+    void rejectLessThen8CharacterPasswords() throws Exception {
+        assertPasswordInvalid("1231111");
     }
 
     @Test
@@ -95,28 +95,21 @@ public class AccountRegistrationControllerIntegrationTest {
     }
 
     @Test
-    void rejectPasswordsWithoutSymbol() throws Exception {
-        assertPasswordInvalid("Password1");
-    }
-
-    @Test
-    void rejectPasswordsWithoutNumber() throws Exception {
-        assertPasswordInvalid("Password!");
-    }
-
-    @Test
-    void rejectPasswordsWithoutUppercaseLetter() throws Exception {
-        assertPasswordInvalid("password1!");
-    }
-
-    @Test
-    void canRegisterWith4CharacterPassword() throws Exception {
-        assertRegistrationPossibleWithPassword("1A@b");
+    void canRegisterWith8CharacterPassword() throws Exception {
+        assertRegistrationPossibleWithPassword("1A@b1111");
     }
 
     @Test
     void canRegisterWith12CharacterPassword() throws Exception {
-        assertRegistrationPossibleWithPassword("1A@b11111111");
+        assertRegistrationPossibleWithPassword(
+                "1111111111" +
+                "1111111111" +
+                "1111111111" +
+                "1111111111" +
+                "1111111111" +
+                "1111111111" +
+                "1111"
+        );
     }
 
     private void assertRegistrationPossibleWithPassword(final String validPassword)

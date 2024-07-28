@@ -23,6 +23,11 @@ public class SecurityConfig {
     private FailedLoginAttemptHandler failedLoginAttemptHandler;
 
     @Bean
+    public CompromisedPasswordChecker compromisedPasswordChecker() {
+        return new HaveIBeenPwnedRestApiPasswordChecker();
+    }
+
+    @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests ->
@@ -50,11 +55,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder delegatingPasswordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    @Bean
-    public CompromisedPasswordChecker compromisedPasswordChecker() {
-        return new HaveIBeenPwnedRestApiPasswordChecker();
     }
 
     @Bean

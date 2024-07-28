@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.pluralsight</groupId>
+        <artifactId>spring-framework-secure-coding</artifactId>
+        <version>1</version>
+    </parent>
+
+    <artifactId>m14-a08-software-and-data-integrity-failures</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>m14-demo-1-checksums-and-no-snapshots</module>
+        <module>m14-demo-2-pgp</module>
+    </modules>
+</project>
