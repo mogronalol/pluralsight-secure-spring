@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pluralsight.m13.domain.User;
 import pluralsight.m13.repository.UserRepository;
-import pluralsight.m13.security.MfaClient;
+import pluralsight.m13.security.MfaLoginClient;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -48,7 +48,7 @@ public class LoginIntegrationTest {
     private CompromisedPasswordChecker compromisedPasswordChecker;
 
     @MockBean
-    private MfaClient mfaClient;
+    private MfaLoginClient mfaClient;
 
     @BeforeEach
     public void beforeEach() {
@@ -154,7 +154,7 @@ public class LoginIntegrationTest {
                         .session((MockHttpSession) mvcResult.getRequest().getSession())
                         .param("otp", "wrong")
                         .with(csrf()))
-                .andExpect(redirectedUrl("/login"));
+                .andExpect(redirectedUrl("/login?locked"));
 
         mockMvc.perform(post("/login/otp")
                         .session((MockHttpSession) mvcResult.getRequest().getSession())
@@ -201,15 +201,9 @@ public class LoginIntegrationTest {
         final User user = userRepository.getUser(username).orElseThrow();
         user.setLastFailedLoginTime(LocalDateTime.now().minusMinutes(10));
 
-        final ResultActions resultActions = login(username, "password")
-                .andExpect(redirectedUrl("/"));
-
-        mockMvc.perform(get("/")
-                        .session(
-                                (MockHttpSession) resultActions.andReturn().getRequest().getSession()))
-                .andExpect(redirectedUrl("/my-accounts"));
+        login(username, "password")
+                .andExpect(redirectedUrl("/login/otp"));
     }
-
 
     private ResultActions login(final String username, final String password)
             throws Exception {

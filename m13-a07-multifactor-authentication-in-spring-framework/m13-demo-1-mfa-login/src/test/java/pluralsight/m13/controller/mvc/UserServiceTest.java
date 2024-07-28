@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pluralsight.m13.domain.User;
 import pluralsight.m13.repository.UserRepository;
-import pluralsight.m13.security.MfaClient;
+import pluralsight.m13.security.MfaLoginClient;
 import pluralsight.m13.service.AccountLockedException;
 import pluralsight.m13.service.UserService;
 
@@ -25,14 +25,14 @@ public class UserServiceTest {
     private UserService userService;
     private UserRepository userRepository;
     private Clock clock;
-    private MfaClient mfaClient;
+    private MfaLoginClient mfaClient;
     private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     public void setUp() {
         userRepository = new UserRepository();
         clock = Clock.fixed(Instant.now(), ZoneId.of("UTC"));
-        mfaClient = mock(MfaClient.class);
+        mfaClient = mock(MfaLoginClient.class);
         passwordEncoder = new BCryptPasswordEncoder();
         userService = new UserService(userRepository,
                 passwordEncoder,

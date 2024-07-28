@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import pluralsight.m13.domain.User;
 import pluralsight.m13.domain.ValidationError;
 import pluralsight.m13.repository.UserRepository;
+import pluralsight.m13.security.MfaPasswordResetClient;
 import pluralsight.m13.security.MfaLoginClient;
 
 import java.time.Clock;
@@ -28,8 +29,9 @@ public class UserService {
     private final CompromisedPasswordChecker compromisedPasswordChecker;
     private final Clock clock;
     private final MfaLoginClient mfaClient;
+    private final MfaPasswordResetClient emailClient;
 
-    public void triggerOtp(String username) {
+    public void triggerLoginOtp(String username) {
         final User user = getUserOrError(username);
         final String token = KeyGenerators.string().generateKey();
         final String encodedToken = passwordEncoder.encode(token);
@@ -39,17 +41,28 @@ public class UserService {
                 .build();
         user.setOtpLoginToken(otp);
         userRepository.saveUser(user);
-        mfaClient.sendOtp(username, token);
+        mfaClient.sendLoginOtp(username, token);
     }
 
-    public boolean verifyOtp(String otp, String username) {
+    public void triggerPasswordReset(String email) {
+        userRepository.getUser(email)
+                .ifPresent(u -> {
+                    final String token = KeyGenerators.string().generateKey();
+                    final String tokenHash = passwordEncoder.encode(token);
+                    final User.SecureToken resetToken = User.SecureToken.builder()
+                            .tokenHash(tokenHash)
+                            .generatedAt(LocalDateTime.now(clock))
+                            .build();
+                    u.setPasswordResetToken(resetToken);
+                    userRepository.saveUser(u);
+                    emailClient.sendPasswordResetEmail(email, token);
+                });
+    }
+
+    public boolean verifyLoginOtp(String otp, String username) {
         final User user = getUserOrError(username);
         final Optional<User.SecureToken> otpLoginToken = user.getOtpLoginToken();
-        final boolean validToken = otpLoginToken
-                .filter(t -> passwordEncoder.matches(otp, t.getTokenHash()))
-                .filter(t -> t.getGeneratedAt()
-                        .isAfter(LocalDateTime.now(clock).minusMinutes(10)))
-                .isPresent();
+        final boolean validToken = isValidToken(otp, otpLoginToken);
 
         if (validToken) {
             user.setOtpLoginToken(null);
@@ -61,6 +74,42 @@ public class UserService {
         }
 
         return validToken;
+    }
+
+    public Set<ValidationError> updatePassword(final String email,
+                                               final String resetToken,
+                                               final String nextPassword) {
+
+        final Set<ValidationError> validationErrors = new HashSet<>();
+
+        final boolean isValid =
+                getUser(email)
+                        .map(u -> isValidToken(resetToken, u.getPasswordResetToken()))
+                        .orElse(false);
+
+        if (isValid) {
+            validatePassword(nextPassword, validationErrors);
+        } else {
+            validationErrors.add(ValidationError.PASSWORD_RESET_INVALID);
+        }
+
+        if (validationErrors.isEmpty()) {
+            final User user = getUserOrError(email);
+            user.setPasswordHash(passwordEncoder.encode(nextPassword));
+            user.setPasswordResetToken(null);
+            userRepository.saveUser(user);
+        }
+
+        return validationErrors;
+    }
+
+    private boolean isValidToken(final String otp,
+                                 final Optional<User.SecureToken> secureToken) {
+        return secureToken
+                .filter(t -> passwordEncoder.matches(otp, t.getTokenHash()))
+                .filter(t -> t.getGeneratedAt()
+                        .isAfter(LocalDateTime.now(clock).minusMinutes(10)))
+                .isPresent();
     }
 
     public User getUserOrError(final String username) {
