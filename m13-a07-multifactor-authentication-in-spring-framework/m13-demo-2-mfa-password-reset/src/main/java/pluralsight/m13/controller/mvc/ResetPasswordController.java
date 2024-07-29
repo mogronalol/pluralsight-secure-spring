@@ -1,11 +1,8 @@
 package pluralsight.m13.controller.mvc;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.password.CompromisedPasswordChecker;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,14 +28,8 @@ public class ResetPasswordController {
     private final UserService userService;
 
     @GetMapping("/initiate")
-    public String initiateResetPassword(Model model, final HttpSession session) {
+    public String initiateResetPassword(Model model) {
         model.addAttribute("passwordResetForm", new InitiatePasswordResetForm());
-        model.addAttribute("reset", false);
-        final Object compromisedPassword = session.getAttribute("compromisedPassword");
-        if (compromisedPassword != null && compromisedPassword.equals(true)) {
-            model.addAttribute("compromisedPassword", true);
-            session.removeAttribute("compromisedPassword");
-        }
         return "initiate-password-reset";
     }
 
@@ -59,10 +50,9 @@ public class ResetPasswordController {
 
     @GetMapping
     public String resetPassword(@RequestParam("token") String token, Model model) {
-
-        model.addAttribute("token", token);
-
-        model.addAttribute("passwordForm", new PasswordForm());
+        final PasswordForm passwordForm = new PasswordForm();
+        passwordForm.setResetToken(token);
+        model.addAttribute("passwordForm", passwordForm);
         return "reset-password";
     }
 

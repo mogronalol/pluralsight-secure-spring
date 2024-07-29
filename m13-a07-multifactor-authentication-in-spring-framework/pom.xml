@@ -14,7 +14,6 @@
 
     <modules>
         <module>m13-demo-1-mfa-login</module>
-        <module>m13-demo-2-password-reset</module>
         <module>m13-demo-2-mfa-password-reset</module>
     </modules>
 
