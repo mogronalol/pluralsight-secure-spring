@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y unzip jq yq
 
-COPY elastic-agent-8.13.4-linux-x86_64.tar.gz /tmp/elastic-agent-8.13.4-linux-x86_64.tar.gz
+RUN curl -o /tmp/elastic-agent-8.13.4-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.13.4-linux-x86_64.tar.gz
 RUN mkdir -p /opt/elastic-agent
 RUN tar -xzf /tmp/elastic-agent-8.13.4-linux-x86_64.tar.gz -C /opt/elastic-agent --strip-components=1
 RUN rm /tmp/elastic-agent-8.13.4-linux-x86_64.tar.gz
